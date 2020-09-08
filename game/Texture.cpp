@@ -2,7 +2,10 @@
 #include <stb/stb_image.h>
 #include "Texture.h"
 
-Texture::Texture(const char* texturePath)
+unsigned int Texture::textureCount = 0;
+
+Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum textureWrapping,
+	GLenum mipmapFiltering)
 {
 	glGenTextures(1, &ID);
 	glBindTexture(GL_TEXTURE_2D, ID);
@@ -10,19 +13,24 @@ Texture::Texture(const char* texturePath)
 	/*
 	* Set the wrapping and filtering options (on currently bound texture object).
 	*/
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureWrapping);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureWrapping);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmapFiltering);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mipmapFiltering);
 
 	/*
 	* Load and generate texture.
 	*/
+	if (flipVertical)
+	{
+		stbi_set_flip_vertically_on_load(true);
+	}
+
 	unsigned char* data = stbi_load(texturePath, &width, &height, &nChannels, 0);
 	if (data)
 	{
 		/*
-		* Arguemnts:
+		* Arguments:
 		* 1. texture target (only GL_TEXTURE_2D is affected)
 		* 2. mipmap level to create texture for (0 = base)
 		* 3. the texture format
@@ -32,9 +40,23 @@ Texture::Texture(const char* texturePath)
 		* (in this case: loaded as RGB and stored as char - bytes)
 		* 9. actual image data
 		*/
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
-			GL_RGB, GL_UNSIGNED_BYTE, data);
+		switch (type)
+		{
+		case TEXTURE_JPG:
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, data);
+			break;
+		case TEXTURE_PNG:
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
+				GL_RGBA, GL_UNSIGNED_BYTE, data);
+			break;
+		default:
+			break;
+		}
+		
 		glGenerateMipmap(GL_TEXTURE_2D);
+
+		textureCount++;
 	}
 	else
 	{
@@ -44,7 +66,8 @@ Texture::Texture(const char* texturePath)
 	stbi_image_free(data);
 }
 
-void Texture::use()
+void Texture::use(GLenum textureUnit) const
 {
+	glActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_2D, ID);
 }

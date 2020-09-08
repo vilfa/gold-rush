@@ -1,8 +1,8 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Shader.h"
 #include <stb/stb_image.h>
+#include "Shader.h"
 #include "Texture.h"
 
 void framebufferSizeCallback(GLFWwindow*, int, int);
@@ -56,10 +56,10 @@ int main()
 
 	float vertices[] = {
 		// positions          // colors           // texture coords
-		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f,   // top right
+		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f,   // bottom right
 		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f    // top left 
 	};
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -86,9 +86,19 @@ int main()
 	//Shader transformShader("shaders/transform.vs", "shaders/transform.fs");
 	
 	/*----- SHADERS -----*/
-	Texture basicTexture("textures/wooden-container.jpg");
+	Texture wallTexture("textures/wall.jpg", TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
+	Texture awesomeFaceTexture("textures/awesomeface.png", TEXTURE_PNG, true, GL_MIRRORED_REPEAT, GL_LINEAR);
+	//Texture woodenTexture("textures/wooden-container.jpg");
 
 	/*----- RENDER (RENDER LOOP) -----*/
+	/*
+	* Activate shader and set texture uniforms (specify which texture units we are using).
+	* We are using GL_TEXTURE0, GL_TEXTURE1 (see render loop).
+	*/
+	basicShader.use();
+	basicShader.setInt("texture1", 0);
+	basicShader.setInt("texture2", 1);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// input
@@ -97,9 +107,10 @@ int main()
 		// rendering commands
 		glClearColor(.2f, .3f, .3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		basicShader.use();
-		basicTexture.use();
-		//basicShader.setFloat("offset", .25f);
+
+		wallTexture.use(GL_TEXTURE0);
+		awesomeFaceTexture.use(GL_TEXTURE1);
+		
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -110,6 +121,7 @@ int main()
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 	glfwTerminate();
 	return 0;
 }

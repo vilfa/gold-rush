@@ -70,12 +70,12 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	glDeleteShader(fragmentShader);
 }
 
-void Shader::use()
+void Shader::use() const
 {
 	glUseProgram(ID);
 }
 
-void Shader::checkShaderCompile(GLuint* vertexShader, const char* type)
+void Shader::checkShaderCompile(GLuint* vertexShader, const char* type) const
 {
 	int success;
 	char infoLog[512];
@@ -88,7 +88,7 @@ void Shader::checkShaderCompile(GLuint* vertexShader, const char* type)
 	}
 }
 
-void Shader::checkShaderProgramLink(GLuint* shaderProgram)
+void Shader::checkShaderProgramLink(GLuint* shaderProgram) const
 {
 	int success;
 	char infoLog[512];

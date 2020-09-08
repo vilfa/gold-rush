@@ -15,11 +15,11 @@ public:
 
 	Shader(const char* vertexPath, const char* fragmentPath);
 	
-	void use(); // use/activate shader
+	void use() const; // use/activate shader
 
 	// compile status check functions
-	void checkShaderCompile(GLuint*, const char*);
-	void checkShaderProgramLink(GLuint*);
+	void checkShaderCompile(GLuint*, const char*) const;
+	void checkShaderProgramLink(GLuint*) const;
 
 	// utility uniform functions
 	void setBool(const std::string& name, bool value) const;
