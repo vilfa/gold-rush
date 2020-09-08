@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
+Shader::Shader(const char* vertexPath, const char* fragmentPath, SHenum type)
 {
 	std::string vertexSource, fragmentSource;
 	std::ifstream vShaderFile, fShaderFile;
@@ -15,7 +15,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 	/*
-	* Read shader files (.vs, .fs).
+	* Read shader files.
 	*/
 	try
 	{
@@ -47,12 +47,12 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vShaderSource, NULL);
 	glCompileShader(vertexShader);
-	checkShaderCompile(&vertexShader, "VERTEX");
+	checkCompile(vertexShader, SH_VERTEX);
 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fShaderSource, NULL);
 	glCompileShader(fragmentShader);
-	checkShaderCompile(&fragmentShader, "FRAGMENT");
+	checkCompile(fragmentShader, SH_FRAGMENT);
 
 	/*
 	* Create shader program and link.
@@ -61,7 +61,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
 	glLinkProgram(ID);
-	checkShaderProgramLink(&ID);
+	checkCompile(ID, SH_PROGRAM);
 
 	/*
 	* Delete shader because link is successful.
@@ -75,43 +75,71 @@ void Shader::use() const
 	glUseProgram(ID);
 }
 
-void Shader::checkShaderCompile(GLuint* vertexShader, const char* type) const
+void Shader::checkCompile(GLenum id, SHenum type) const
 {
 	int success;
 	char infoLog[512];
-	glGetShaderiv(*vertexShader, GL_COMPILE_STATUS, &success);
+
+	switch (type)
+	{
+	case SH_VERTEX:
+	case SH_FRAGMENT:
+		glGetShaderiv(id, GL_COMPILE_STATUS, &success);
+		break;
+	case SH_PROGRAM:
+		glGetProgramiv(id, GL_LINK_STATUS, &success);
+		break;
+	default:
+		break;
+	}
 
 	if (!success)
 	{
-		glGetShaderInfoLog(*vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::" << type << "::COMPILATION_FAILED\n" << infoLog << std::endl;
+		switch (type)
+		{
+		case SH_VERTEX:
+		case SH_FRAGMENT:
+			glGetShaderInfoLog(id, 512, NULL, infoLog);
+			std::cout << "ERROR::SHADER::" << type << "::COMPILATION_FAILED" << infoLog << std::endl;
+			break;
+		case SH_PROGRAM:
+			glGetProgramInfoLog(id, 512, NULL, infoLog);
+			std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED" << infoLog << std::endl;
+			break;
+		default:
+			break;
+		}
 	}
 }
 
-void Shader::checkShaderProgramLink(GLuint* shaderProgram) const
+GLint Shader::getUniformLocation(const std::string& name) const
 {
-	int success;
-	char infoLog[512];
-	glGetProgramiv(*shaderProgram, GL_LINK_STATUS, &success);
-
-	if (!success)
+	GLint location = glGetUniformLocation(ID, name.c_str());
+	if (location < 0)
 	{
-		glGetProgramInfoLog(*shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
+		std::cout << "ERROR::SHADER::UNIFORM::UNIFORM_DOESNT_EXIST"
+			<< std::endl << "Uniform name:" << name << std::endl;
 	}
+
+	return location;
 }
 
 void Shader::setBool(const std::string& name, bool value) const
 {
-	glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
+	glUniform1i(getUniformLocation(name), (int)value);
 }
 
 void Shader::setInt(const std::string& name, int value) const
 {
-	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+	glUniform1i(getUniformLocation(name), value);
 }
 
 void Shader::setFloat(const std::string& name, float value) const
 {
-	glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+	glUniform1f(getUniformLocation(name), value);
+}
+
+void Shader::setMat4(const std::string& name, glm::mat4 value, GLboolean transpose) const
+{
+	glUniformMatrix4fv(getUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
