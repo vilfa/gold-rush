@@ -1,8 +1,9 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <glad/glad.h>
 #include <iostream>
+
+#include <glad/glad.h>
 
 enum TXenum {
 	TEXTURE_JPG = 0,
@@ -21,7 +22,7 @@ public:
 	void use(GLenum textureUnit) const;
 
 private:
-	static unsigned int textureCount;
+	static unsigned int _textureCount;
 };
 
 #endif // !TEXTURE_H

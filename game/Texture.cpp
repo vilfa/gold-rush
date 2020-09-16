@@ -1,8 +1,10 @@
 #define STB_IMAGE_IMPLEMENTATION
+
 #include <stb/stb_image.h>
+
 #include "Texture.h"
 
-unsigned int Texture::textureCount = 0;
+unsigned int Texture::_textureCount = 0;
 
 Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum textureWrapping,
 	GLenum mipmapFiltering)
