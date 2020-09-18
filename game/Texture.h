@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include <stb/stb_image.h>
 #include <glad/glad.h>
 
 enum TXenum {
