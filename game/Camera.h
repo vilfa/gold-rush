@@ -17,34 +17,39 @@ enum CAMMOVenum {
 	CAMERA_RIGHT
 };
 
+enum CAMSPDenum {
+	CAMERA_NORMAL,
+	CAMERA_FAST
+};
+
 class Camera
 {
 public:
-	glm::vec3 worldUp;
-	glm::vec3 position;
-	glm::vec3 front;
-	glm::vec3 up;
-	glm::vec3 right;
+	glm::vec3 WorldUp;
+	glm::vec3 Position;
+	glm::vec3 Front;
+	glm::vec3 Up;
+	glm::vec3 Right;
 
-	float frustumNear;
-	float frustumFar;
-	float yaw;
-	float pitch;
-	float movementSpeed;
-	float mouseSensitivity;
-	float fov;
+	float FrustumNear;
+	float FrustumFar;
+	float Yaw;
+	float Pitch;
+	float MovementSpeed;
+	float MovementSpeedFast;
+	float MouseSensitivity;
+	float Fov;
 
-	Camera(Window* window, float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR, 
-		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
+	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+		float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR, 
 		float yaw = _YAW, float pitch = _PITCH);
-	Camera(Window* window, float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch, 
+	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch, 
 		float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR);
 
-	glm::mat4 getViewMatrix() const;
-	glm::mat4 getProjectionMatrix() const;
-	void processKeyboard(CAMMOVenum direction, float deltaTime);
-	void processMouseMovement(float xOffset, float yOffset, GLboolean constrainPitch = true);
-	void processMouseScroll(float yOffset);
+	glm::mat4 GetViewMatrix() const;
+	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime);
+	void ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrainPitch = true);
+	void ProcessMouseScroll(float yOffset);
 
 private:
 	Window* window;
@@ -53,6 +58,7 @@ private:
 	static const float _YAW;
 	static const float _PITCH;
 	static const float _SPEED;
+	static const float _SPEED_FAST;
 	static const float _SENSITIVITY;
 	static const float _FOV;
 

@@ -26,7 +26,7 @@ Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum
 		stbi_set_flip_vertically_on_load(true);
 	}
 
-	unsigned char* data = stbi_load(texturePath, &width, &height, &nChannels, 0);
+	unsigned char* data = stbi_load(texturePath, &Width, &Height, &N_Channels, 0);
 	if (data)
 	{
 		/*
@@ -43,11 +43,11 @@ Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum
 		switch (type)
 		{
 		case TEXTURE_JPG:
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0,
 				GL_RGB, GL_UNSIGNED_BYTE, data);
 			break;
 		case TEXTURE_PNG:
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0,
 				GL_RGBA, GL_UNSIGNED_BYTE, data);
 			break;
 		default:
@@ -56,7 +56,7 @@ Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum
 		
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		textureCount++;
+		_textureCount++;
 	}
 	else
 	{
@@ -66,7 +66,7 @@ Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum
 	stbi_image_free(data);
 }
 
-void Texture::use(GLenum textureUnit) const
+void Texture::Use(GLenum textureUnit) const
 {
 	glActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_2D, ID);

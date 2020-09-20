@@ -24,18 +24,18 @@ public:
 
 	Shader(const char* vertexPath, const char* fragmentPath, SHenum type);
 	
-	void use() const; // use/activate shader
+	void Use() const; // use/activate shader
 
 	// compile status check functions
-	void checkCompile(GLuint id, SHenum type) const;
+	void CheckCompile(GLuint id, SHenum type) const;
 
 	// utility uniform functions
-	GLint getUniformLocation(const std::string& name) const;
+	GLint GetUniformLocation(const std::string& name) const;
 
-	void setBool(const std::string& name, bool value) const;
-	void setInt(const std::string& name, int value) const;
-	void setFloat(const std::string& name, float value) const;
-	void setMat4(const std::string& name, glm::mat4 value, GLboolean transpose) const;
+	void SetBool(const std::string& name, bool value) const;
+	void SetInt(const std::string& name, int value) const;
+	void SetFloat(const std::string& name, float value) const;
+	void SetMat4(const std::string& name, glm::mat4 value, GLboolean transpose) const;
 };
 
 #endif // !SHADER_H

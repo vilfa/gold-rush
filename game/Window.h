@@ -3,9 +3,13 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+typedef void (*FramebufferSizeCallbackFunction)(GLFWwindow*, int, int);
+typedef void (*MouseCallbackFunction)(GLFWwindow*, double, double);
 
 class Window
 {
@@ -15,19 +19,22 @@ public:
         int glProfile = GLFW_OPENGL_CORE_PROFILE, GLFWmonitor* monitor = NULL, 
         GLFWwindow* share = NULL);
 
-    GLFWwindow* getWindow() const;
-    int getWidth() const;
-    int getHeight() const;
-    std::string getName() const;
-    int getWindowShouldClose() const;
-    void setWindowShouldClose(bool shouldClose);
-    void setInputMode(int mode, int value);
+    GLFWwindow* GetWindow() const;
+    std::string GetName() const;
+    int GetWidth() const;
+    int GetHeight() const;
+    int GetWindowShouldClose() const;
+    void SetWindowShouldClose(bool shouldClose);
+    void SetInputMode(int mode, int value);
+    void SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback);
+    void SetMouseMoveCallback(MouseCallbackFunction callback);
+    void SetMouseScrollCallback(MouseCallbackFunction callback);
 
 private:
     GLFWwindow* window;
+    std::string name;
     int width;
     int height;
-    std::string name;
     static const int _GL_VERSION_MAJOR;
     static const int _GL_VERSION_MINOR;
 };

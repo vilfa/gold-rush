@@ -27,6 +27,7 @@ Window::Window(int width, int height, std::string windowName, int glVersionMajor
 		std::exit(EXIT_FAILURE);
 	}
 
+	glfwSetWindowUserPointer(window, this);
 	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -39,32 +40,32 @@ Window::Window(int width, int height, std::string windowName, int glVersionMajor
 	glViewport(0, 0, this->width, this->height);
 }
 
-GLFWwindow* Window::getWindow() const
+GLFWwindow* Window::GetWindow() const
 {
 	return window;
 }
 
-int Window::getWidth() const
-{
-	return width;
-}
-
-int Window::getHeight() const
-{
-	return height;
-}
-
-std::string Window::getName() const
+std::string Window::GetName() const
 {
 	return name;
 }
 
-int Window::getWindowShouldClose() const
+int Window::GetWidth() const
+{
+	return width;
+}
+
+int Window::GetHeight() const
+{
+	return height;
+}
+
+int Window::GetWindowShouldClose() const
 {
 	return glfwWindowShouldClose(window);
 }
 
-void Window::setWindowShouldClose(bool shouldClose)
+void Window::SetWindowShouldClose(bool shouldClose)
 {
 	if (shouldClose)
 	{
@@ -75,7 +76,22 @@ void Window::setWindowShouldClose(bool shouldClose)
 	}
 }
 
-void Window::setInputMode(int mode, int value)
+void Window::SetInputMode(int mode, int value)
 {
 	glfwSetInputMode(window, mode, value);
+}
+
+void Window::SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback)
+{
+	glfwSetFramebufferSizeCallback(window, callback);
+}
+
+void Window::SetMouseMoveCallback(MouseCallbackFunction callback)
+{
+	glfwSetCursorPosCallback(window, callback);
+}
+
+void Window::SetMouseScrollCallback(MouseCallbackFunction callback)
+{
+	glfwSetScrollCallback(window, callback);
 }

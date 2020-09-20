@@ -13,7 +13,9 @@
 #include "Camera.h"
 
 void framebufferSizeCallback(GLFWwindow*, int, int);
-void processInput(GLFWwindow*, Camera&, double);
+void processInput(GLFWwindow*, Camera*, float);
+void mouseMoveCallback(GLFWwindow*, double, double);
+void mouseScrollCallback(GLFWwindow*, double, double);
 
 /*
 * Window setup
@@ -23,27 +25,30 @@ const unsigned int SCR_HEIGHT = 600;
 const std::string WINDOW_NAME = "big pp";
 
 /*
+* Camera setup
+*/
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+double deltaTime = 0.0;
+double lastFrame = 0.0;
+
+/*
 * Mouse setup
 */
 bool firstMouse = true;
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 
-/*
-* Camera setup
-*/
-double deltaTime = 0.0;
-double lastFrame = 0.0;
-
 int main() 
 {
 	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME);
-	glfwSetFramebufferSizeCallback(window.getWindow(), framebufferSizeCallback);
-	window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window.getWindow(), mouseMoveCallback);
-	glfwSetScrollCallback(window.getWindow(), mouseScrollCallback);
+	//glfwSetFramebufferSizeCallback(window.GetWindow(), framebufferSizeCallback);
+	window.SetFramebufferSizeCallback(framebufferSizeCallback);
+	window.SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	Camera camera(&window);
+	//glfwSetCursorPosCallback(window.GetWindow(), mouseMoveCallback);
+	window.SetMouseMoveCallback(mouseMoveCallback);
+	//glfwSetScrollCallback(window.GetWindow(), mouseScrollCallback);
+	window.SetMouseScrollCallback(mouseScrollCallback);
 
 	/*----- GEOMETRY -----*/
 	/*
@@ -139,13 +144,13 @@ int main()
 
 	/*----- SHADERS -----*/
 	Shader basicShader("shaders/vertex.vert", "shaders/fragment.frag", SH_PROGRAM);
-	basicShader.use();
+	basicShader.Use();
 	/*
 	* Activate shader and set texture uniforms (specify which texture units we are using).
 	* We are using GL_TEXTURE0, GL_TEXTURE1 (see render loop).
 	*/
-	basicShader.setInt("texture1", 0);
-	basicShader.setInt("texture2", 1);
+	basicShader.SetInt("texture1", 0);
+	basicShader.SetInt("texture2", 1);
 
 	/*----- RENDER -----*/
 	/*
@@ -155,7 +160,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	/*----- RENDER LOOP -----*/
-	while (!window.getWindowShouldClose())
+	while (!window.GetWindowShouldClose())
 	{
 		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
@@ -163,18 +168,19 @@ int main()
 		std::cout << "FPS:" << 1 / deltaTime << "|" << "Frame Time:" << deltaTime * 1000 << std::endl;
 
 		// Input
-		processInput(window.getWindow(), camera, currentFrame);
+		processInput(window.GetWindow(), &camera, (float)deltaTime);
 
 		// Rendering commands
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear colour and depth buffer
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glClearColor(.2f, .3f, .3f, 1.0f);
 		
-		woodTexture.use(GL_TEXTURE0);
-		crazyCatTexture.use(GL_TEXTURE1);
+		woodTexture.Use(GL_TEXTURE0);
+		crazyCatTexture.Use(GL_TEXTURE1);
 
-		basicShader.setMat4("view", camera.getViewMatrix(), false);
-		basicShader.setMat4("projection", camera.getProjectionMatrix(), false);
+		basicShader.SetMat4("view", camera.GetViewMatrix(), false);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 200.0f);
+		basicShader.SetMat4("projection", projection, false);
 
 		// Draw
 		glBindVertexArray(VAO);
@@ -187,12 +193,12 @@ int main()
 			{
 				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 			}
-			basicShader.setMat4("model", model, false);
+			basicShader.SetMat4("model", model, false);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
 		// Check and call events and swap the buffers
-		glfwSwapBuffers(window.getWindow());
+		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
 
@@ -208,28 +214,37 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window, Camera& camera, double deltaTime)
+void processInput(GLFWwindow* window, Camera* camera, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
 
+	CAMSPDenum speed;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	{
+		speed = CAMERA_FAST;
+	}
+	else
+	{
+		speed = CAMERA_NORMAL;
+	}
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera.processKeyboard(CAMERA_FORWARD, deltaTime);
+		camera->ProcessKeyboard(CAMERA_FORWARD, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera.processKeyboard(CAMERA_BACKWARD, deltaTime);
+		camera->ProcessKeyboard(CAMERA_BACKWARD, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera.processKeyboard(CAMERA_LEFT, deltaTime);
+		camera->ProcessKeyboard(CAMERA_LEFT, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera.processKeyboard(CAMERA_RIGHT, deltaTime);
+		camera->ProcessKeyboard(CAMERA_RIGHT, speed, deltaTime);
 	}
 }
 
@@ -247,10 +262,10 @@ void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 	lastX = (float)xPos;
 	lastY = (float)yPos;
 
-	
+	camera.ProcessMouseMovement(xOffset, yOffset);
 }
 
 void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
-	
+	camera.ProcessMouseScroll((float)yOffset);
 }

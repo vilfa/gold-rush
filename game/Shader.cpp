@@ -47,12 +47,12 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, SHenum type)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vShaderSource, NULL);
 	glCompileShader(vertexShader);
-	checkCompile(vertexShader, SH_VERTEX);
+	CheckCompile(vertexShader, SH_VERTEX);
 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fShaderSource, NULL);
 	glCompileShader(fragmentShader);
-	checkCompile(fragmentShader, SH_FRAGMENT);
+	CheckCompile(fragmentShader, SH_FRAGMENT);
 
 	/*
 	* Create shader program and link.
@@ -61,7 +61,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, SHenum type)
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
 	glLinkProgram(ID);
-	checkCompile(ID, SH_PROGRAM);
+	CheckCompile(ID, SH_PROGRAM);
 
 	/*
 	* Delete shader because link is successful.
@@ -70,12 +70,12 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, SHenum type)
 	glDeleteShader(fragmentShader);
 }
 
-void Shader::use() const
+void Shader::Use() const
 {
 	glUseProgram(ID);
 }
 
-void Shader::checkCompile(GLenum id, SHenum type) const
+void Shader::CheckCompile(GLenum id, SHenum type) const
 {
 	int success;
 	char infoLog[512];
@@ -112,7 +112,7 @@ void Shader::checkCompile(GLenum id, SHenum type) const
 	}
 }
 
-GLint Shader::getUniformLocation(const std::string& name) const
+GLint Shader::GetUniformLocation(const std::string& name) const
 {
 	GLint location = glGetUniformLocation(ID, name.c_str());
 	if (location < 0)
@@ -124,22 +124,22 @@ GLint Shader::getUniformLocation(const std::string& name) const
 	return location;
 }
 
-void Shader::setBool(const std::string& name, bool value) const
+void Shader::SetBool(const std::string& name, bool value) const
 {
-	glUniform1i(getUniformLocation(name), (int)value);
+	glUniform1i(GetUniformLocation(name), (int)value);
 }
 
-void Shader::setInt(const std::string& name, int value) const
+void Shader::SetInt(const std::string& name, int value) const
 {
-	glUniform1i(getUniformLocation(name), value);
+	glUniform1i(GetUniformLocation(name), value);
 }
 
-void Shader::setFloat(const std::string& name, float value) const
+void Shader::SetFloat(const std::string& name, float value) const
 {
-	glUniform1f(getUniformLocation(name), value);
+	glUniform1f(GetUniformLocation(name), value);
 }
 
-void Shader::setMat4(const std::string& name, glm::mat4 value, GLboolean transpose) const
+void Shader::SetMat4(const std::string& name, glm::mat4 value, GLboolean transpose) const
 {
-	glUniformMatrix4fv(getUniformLocation(name), 1, transpose, glm::value_ptr(value));
+	glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
