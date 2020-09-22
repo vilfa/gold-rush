@@ -75,7 +75,7 @@ void Shader::Use() const
 	glUseProgram(ID);
 }
 
-void Shader::CheckCompile(GLenum id, SHenum type) const
+void Shader::CheckCompile(GLuint id, SHenum type) const
 {
 	int success;
 	char infoLog[512];
@@ -127,7 +127,32 @@ void Shader::SetFloat(const std::string& name, float value) const
 	glUniform1f(GetUniformLocation(name), value);
 }
 
+void Shader::SetMat2(const std::string& name, glm::mat2 value, GLboolean transpose) const
+{
+	glUniformMatrix2fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
+}
+
+void Shader::SetMat3(const std::string& name, glm::mat3 value, GLboolean transpose) const
+{
+	glUniformMatrix3fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
+}
+
 void Shader::SetMat4(const std::string& name, glm::mat4 value, GLboolean transpose) const
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
+}
+
+void Shader::SetVec2(const std::string& name, glm::vec2 value) const
+{
+	glUniform2fv(GetUniformLocation(name), 1, glm::value_ptr(value));
+}
+
+void Shader::SetVec3(const std::string& name, glm::vec3 value) const
+{
+	glUniform3fv(GetUniformLocation(name), 1, glm::value_ptr(value));
+}
+
+void Shader::SetVec4(const std::string& name, glm::vec4 value) const
+{
+	glUniform4fv(GetUniformLocation(name), 1, glm::value_ptr(value));
 }
