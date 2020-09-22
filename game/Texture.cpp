@@ -42,11 +42,11 @@ Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum
 		*/
 		switch (type)
 		{
-		case TEXTURE_JPG:
+		case TXenum::TEXTURE_JPG:
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0,
 				GL_RGB, GL_UNSIGNED_BYTE, data);
 			break;
-		case TEXTURE_PNG:
+		case TXenum::TEXTURE_PNG:
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0,
 				GL_RGBA, GL_UNSIGNED_BYTE, data);
 			break;

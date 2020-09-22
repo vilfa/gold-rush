@@ -52,21 +52,21 @@ glm::mat4 Camera::GetViewMatrix() const
 
 void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime)
 {
-	float velocity = (speed == CAMERA_NORMAL) ? 
+	float velocity = (speed == CAMSPDenum::CAMERA_NORMAL) ? 
 		MovementSpeed * deltaTime : MovementSpeedFast * deltaTime;
-	if (direction == CAMERA_FORWARD)
+	if (direction == CAMMOVenum::CAMERA_FORWARD)
 	{
 		Position += Front * velocity;
 	}
-	if (direction == CAMERA_BACKWARD)
+	if (direction == CAMMOVenum::CAMERA_BACKWARD)
 	{
 		Position -= Front * velocity;
 	}
-	if (direction == CAMERA_LEFT)
+	if (direction == CAMMOVenum::CAMERA_LEFT)
 	{
 		Position -= Right * velocity;
 	}
-	if (direction == CAMERA_RIGHT)
+	if (direction == CAMMOVenum::CAMERA_RIGHT)
 	{
 		Position += Right * velocity;
 	}

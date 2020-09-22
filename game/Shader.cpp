@@ -47,12 +47,12 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, SHenum type)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vShaderSource, NULL);
 	glCompileShader(vertexShader);
-	CheckCompile(vertexShader, SH_VERTEX);
+	CheckCompile(vertexShader, SHenum::SH_VERTEX);
 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fShaderSource, NULL);
 	glCompileShader(fragmentShader);
-	CheckCompile(fragmentShader, SH_FRAGMENT);
+	CheckCompile(fragmentShader, SHenum::SH_FRAGMENT);
 
 	/*
 	* Create shader program and link.
@@ -61,7 +61,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, SHenum type)
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
 	glLinkProgram(ID);
-	CheckCompile(ID, SH_PROGRAM);
+	CheckCompile(ID, SHenum::SH_PROGRAM);
 
 	/*
 	* Delete shader because link is successful.
@@ -80,34 +80,22 @@ void Shader::CheckCompile(GLenum id, SHenum type) const
 	int success;
 	char infoLog[512];
 
-	switch (type)
+	if (type == SHenum::SH_VERTEX || type == SHenum::SH_FRAGMENT)
 	{
-	case SH_VERTEX:
-	case SH_FRAGMENT:
 		glGetShaderiv(id, GL_COMPILE_STATUS, &success);
-		break;
-	case SH_PROGRAM:
-		glGetProgramiv(id, GL_LINK_STATUS, &success);
-		break;
-	default:
-		break;
-	}
-
-	if (!success)
-	{
-		switch (type)
+		if (!success)
 		{
-		case SH_VERTEX:
-		case SH_FRAGMENT:
 			glGetShaderInfoLog(id, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::" << type << "::COMPILATION_FAILED" << infoLog << std::endl;
-			break;
-		case SH_PROGRAM:
+			std::cout << "ERROR::SHADER::" << (int)type << "::COMPILATION_FAILED" << infoLog << std::endl;
+		}
+	}
+	else if (type == SHenum::SH_PROGRAM)
+	{
+		glGetProgramiv(id, GL_LINK_STATUS, &success);
+		if (!success)
+		{
 			glGetProgramInfoLog(id, 512, NULL, infoLog);
 			std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED" << infoLog << std::endl;
-			break;
-		default:
-			break;
 		}
 	}
 }

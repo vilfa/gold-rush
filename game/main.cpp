@@ -41,13 +41,9 @@ float lastY = SCR_HEIGHT / 2;
 int main() 
 {
 	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME);
-	//glfwSetFramebufferSizeCallback(window.GetWindow(), framebufferSizeCallback);
 	window.SetFramebufferSizeCallback(framebufferSizeCallback);
 	window.SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	//glfwSetCursorPosCallback(window.GetWindow(), mouseMoveCallback);
 	window.SetMouseMoveCallback(mouseMoveCallback);
-	//glfwSetScrollCallback(window.GetWindow(), mouseScrollCallback);
 	window.SetMouseScrollCallback(mouseScrollCallback);
 
 	/*----- GEOMETRY -----*/
@@ -55,13 +51,15 @@ int main()
 	* Create VAO (Vertex Array Object) to store different buffers.
 	* You can bind all different kinds of buffers to the VAO!
 	*/
-	unsigned int VAO;
+	unsigned int VAO, lightVAO;
 	glGenVertexArrays(1, &VAO);
+	glGenVertexArrays(1, &lightVAO);
 	unsigned int VBO, EBO;
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 
-	glBindVertexArray(VAO);
+	//glBindVertexArray(VAO);
+	glBindVertexArray(lightVAO);
 
 	float vertices[] = {
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -138,12 +136,12 @@ int main()
 	};
 
 	/*----- TEXTURES -----*/
-	Texture woodTexture("textures/wooden-container.jpg", TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
-	Texture awesomeFaceTexture("textures/awesomeface.png", TEXTURE_PNG, true, GL_MIRRORED_REPEAT, GL_LINEAR);
-	Texture crazyCatTexture("textures/crazycat.jpg", TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
+	Texture woodTexture("textures/wooden-container.jpg", TXenum::TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
+	Texture awesomeFaceTexture("textures/awesomeface.png", TXenum::TEXTURE_PNG, true, GL_MIRRORED_REPEAT, GL_LINEAR);
+	Texture crazyCatTexture("textures/crazycat.jpg", TXenum::TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
 
 	/*----- SHADERS -----*/
-	Shader basicShader("shaders/vertex.vert", "shaders/fragment.frag", SH_PROGRAM);
+	Shader basicShader("shaders/vertex.vert", "shaders/fragment.frag", SHenum::SH_PROGRAM);
 	basicShader.Use();
 	/*
 	* Activate shader and set texture uniforms (specify which texture units we are using).
@@ -151,6 +149,12 @@ int main()
 	*/
 	basicShader.SetInt("texture1", 0);
 	basicShader.SetInt("texture2", 1);
+	
+	/*----- COLORS -----*/
+	glm::vec3 coral(1.0f, 0.5f, 0.31f);
+	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+	glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+	glm::vec3 result = lightColor * toyColor;
 
 	/*----- RENDER -----*/
 	/*
@@ -224,27 +228,27 @@ void processInput(GLFWwindow* window, Camera* camera, float deltaTime)
 	CAMSPDenum speed;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		speed = CAMERA_FAST;
+		speed = CAMSPDenum::CAMERA_FAST;
 	}
 	else
 	{
-		speed = CAMERA_NORMAL;
+		speed = CAMSPDenum::CAMERA_NORMAL;
 	}
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMERA_FORWARD, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::CAMERA_FORWARD, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMERA_BACKWARD, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::CAMERA_BACKWARD, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMERA_LEFT, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::CAMERA_LEFT, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMERA_RIGHT, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::CAMERA_RIGHT, speed, deltaTime);
 	}
 }
 

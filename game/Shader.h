@@ -11,10 +11,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-enum SHenum {
-	SH_VERTEX = 0,
-	SH_FRAGMENT = 1,
-	SH_PROGRAM = 2,
+enum class SHenum {
+	SH_VERTEX,
+	SH_FRAGMENT,
+	SH_PROGRAM
 };
 
 class Shader

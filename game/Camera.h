@@ -10,14 +10,14 @@
 
 #include "Window.h"
 
-enum CAMMOVenum {
+enum class CAMMOVenum {
 	CAMERA_FORWARD,
 	CAMERA_BACKWARD,
 	CAMERA_LEFT,
 	CAMERA_RIGHT
 };
 
-enum CAMSPDenum {
+enum class CAMSPDenum {
 	CAMERA_NORMAL,
 	CAMERA_FAST
 };

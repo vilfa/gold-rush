@@ -6,7 +6,7 @@
 #include <stb/stb_image.h>
 #include <glad/glad.h>
 
-enum TXenum {
+enum class TXenum {
 	TEXTURE_JPG,
 	TEXTURE_PNG,
 };
