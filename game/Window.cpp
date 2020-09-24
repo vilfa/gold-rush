@@ -81,6 +81,17 @@ void Window::SetInputMode(int mode, int value)
 	glfwSetInputMode(window, mode, value);
 }
 
+void Window::SetWindowTitle(std::string title)
+{
+	//name = title;
+	glfwSetWindowTitle(window, title.c_str());
+}
+
+std::string Window::GetWindowTitle()
+{
+	return name;
+}
+
 void Window::SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback)
 {
 	glfwSetFramebufferSizeCallback(window, callback);

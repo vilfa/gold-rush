@@ -26,6 +26,8 @@ public:
     int GetWindowShouldClose() const;
     void SetWindowShouldClose(bool shouldClose);
     void SetInputMode(int mode, int value);
+    void SetWindowTitle(std::string title);
+    std::string GetWindowTitle();
     void SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback);
     void SetMouseMoveCallback(MouseCallbackFunction callback);
     void SetMouseScrollCallback(MouseCallbackFunction callback);
