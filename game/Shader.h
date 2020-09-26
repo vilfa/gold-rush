@@ -22,7 +22,7 @@ class Shader
 public:
 	unsigned int ID;
 
-	Shader(const char* vertexPath, const char* fragmentPath, SHenum type);
+	Shader(const char* vertexPath, const char* fragmentPath);
 	
 	void Use() const; // use/activate shader
 

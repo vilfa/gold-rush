@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath, SHenum type)
+Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
 	std::string vertexSource, fragmentSource;
 	std::ifstream vShaderFile, fShaderFile;

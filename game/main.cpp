@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -42,6 +43,13 @@ float lastY = SCR_HEIGHT / 2;
 * Light source setup
 */
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
+/*
+* Random
+*/
+std::random_device randomDevice;
+std::mt19937 randomEngine(randomDevice());
+std::uniform_real_distribution<float> randomDistribution(0.0f, 1.0f);
 
 int main() 
 {
@@ -126,8 +134,8 @@ int main()
 	glEnableVertexAttribArray(0);
 
 	/*----- SHADERS -----*/
-	Shader lightSourceShader("shaders/vertex_light_source.vert", "shaders/fragment_light_source.frag", SHenum::SH_PROGRAM);
-	Shader objectShader("shaders/vertex_light.vert", "shaders/fragment_light.frag", SHenum::SH_PROGRAM);
+	Shader lightSourceShader("shaders/vertex_light_source.vert", "shaders/fragment_light_source.frag");
+	Shader objectShader("shaders/vertex_light.vert", "shaders/fragment_light.frag");
 	
 	/*----- TEXTURES -----*/
 	//Texture woodTexture("textures/wooden-container.jpg", TXenum::TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
@@ -140,44 +148,47 @@ int main()
 	//basicShader.SetInt("texture1", 0);
 	//basicShader.SetInt("texture2", 1);
 	
-	/*----- COLORS -----*/
-	glm::vec3 lightSourceColor(1.0f, 1.0f, 1.0f);
-	glm::vec3 cubeColor(1.0f, 0.5f, 0.31f);
-
 	/*----- RENDER -----*/
-
-	/*----- RENDER LOOP -----*/
 	while (!window.GetWindowShouldClose())
 	{
-		// Frame time logic
+		/*--- Frame time logic ---*/
 		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-		// Input
+		/*--- Input ---*/
 		processInput(window.GetWindow(), &camera, (float)deltaTime);
 
-		// Rendering commands
+		/*--- Render commands ---*/
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffer
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-		// View / projection transformations
+		/*--- View and projection transformations ---*/
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov),
 			(float)window.GetWidth() / (float)window.GetHeight(),
 			0.1f, 200.0f);
-		glm::mat4 view = camera.GetViewMatrix();
 
-		// Draw
+		/*--- Draw ---*/
+		// CUBE
 		objectShader.Use();
-		objectShader.SetVec3("lightColor", lightSourceColor);
-		objectShader.SetVec3("objectColor", cubeColor);
 
-		lightPos = glm::vec3(2.5f * cos(glfwGetTime()), 2.5f * sin(glfwGetTime() / 2), 2.5f * sin(glfwGetTime()));
-		objectShader.SetVec3("lightPos", lightPos);
+		// Light properties
+		lightPos = glm::vec3(2.5f * cos(glfwGetTime()), 0.0f, 2.5f * sin(glfwGetTime()));
+		objectShader.SetVec3("light.position", lightPos);
+		objectShader.SetVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		objectShader.SetVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+		objectShader.SetVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		
+		// Material properties
+		objectShader.SetVec3("material.ambient", glm::vec3(0.1745, 0.01175, 0.01175));
+		objectShader.SetVec3("material.diffuse", glm::vec3(0.61424, 0.04136, 0.04136));
+		objectShader.SetVec3("material.specular", glm::vec3(0.727811, 0.626959, 0.626959));
+		objectShader.SetFloat("material.shininess", 0.6f);
+		
+		// Camera properties
 		objectShader.SetVec3("viewPos", camera.Position);
-
 		objectShader.SetMat4("projection", projection, false);
-		objectShader.SetMat4("view", view, false);
+		objectShader.SetMat4("view", camera.GetViewMatrix(), false);
 
 		// World transformations
 		glm::mat4 model = glm::mat4(1.0f);
@@ -187,9 +198,16 @@ int main()
 		// Render cube
 		glBindVertexArray(objectVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// !CUBE
 
-		// Draw light source object
+		// LIGHT CUBE
 		lightSourceShader.Use();
+
+		glm::vec3 lightSourceColor = glm::vec3();
+		lightSourceColor.x = randomDistribution(randomEngine);
+		lightSourceColor.y = randomDistribution(randomEngine);
+		lightSourceColor.z = randomDistribution(randomEngine);
+		lightSourceShader.SetVec3("lightSourceColor", lightSourceColor);
 		lightSourceShader.SetMat4("projection", projection, false);
 		lightSourceShader.SetMat4("view", camera.GetViewMatrix(), false);
 		model = glm::mat4(1.0f);
@@ -199,8 +217,9 @@ int main()
 		
 		glBindVertexArray(lightSourceVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// !LIGHT CUBE
 
-		// Check and call events and swap the buffers
+		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
