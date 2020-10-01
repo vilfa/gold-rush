@@ -51,4 +51,32 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\fragment.frag" />
+    <None Include="resources\shaders\fragment_light.frag" />
+    <None Include="resources\shaders\fragment_light_source.frag" />
+    <None Include="resources\shaders\vertex.vert" />
+    <None Include="resources\shaders\vertex_light.vert" />
+    <None Include="resources\shaders\vertex_light_source.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\awesomeface.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\textures\container2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\textures\container2_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\textures\crazycat.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\textures\wall.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\textures\wooden-container.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

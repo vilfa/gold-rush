@@ -1,18 +1,13 @@
 #version 330 core
 
-struct Light
+struct DirectionalLight
 {
-	/*
-	* Point light imitates a light bulb.
-	*/
-	vec3 position;
-
 	/*
 	* Directional light imitates the sun. The sun is so 
 	* far away that it is omnipresent from a specific
 	* direction. 
 	*/
-//	vec3 direction;
+	vec3 direction;
 
 	/*
 	* The three light components of the Phong lighting model
@@ -20,6 +15,19 @@ struct Light
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+};
+
+struct PointLight
+{
+	/*
+	* Point light imitates a light bulb.
+	*/
+	vec3 position;
+
+	/*
+	* Point light cutoff angle in radians.
+	*/
+	float cutoff;
 
 	/*
 	* Attenuation implementation. Properties: lower distance/higher intensity ->
@@ -31,6 +39,13 @@ struct Light
 	float constant;
 	float linear;
 	float quadratic;
+
+	/*
+	* The three light components of the Phong lighting model
+	*/
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
 };
 
 struct Material 
@@ -40,42 +55,78 @@ struct Material
 	float shininess;
 };
 
-in vec3 FragPos;
-in vec3 Normal;
-in vec2 TexCoords;
+in vec3 FragmentPosition;
+in vec3 FragmentNormal;
+in vec2 TextureCoordinates;
 
-out vec4 FragColor;
+out vec4 FragmentColor;
 
-uniform Light light;
+#define N_POINT_LIGHTS 4
+
+uniform DirectionalLight directionalLight;
+uniform PointLight pointLights[N_POINT_LIGHTS];
 uniform Material material;
-uniform vec3 viewPos;
+uniform vec3 viewPosition;
+
+vec3 CalculateDirectionalLight(DirectionalLight directionalLight, vec3 normal, vec3 viewDirection);
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection);
 
 void main()
 {
 	// Normalize fragment normal
-	vec3 fragNormal = normalize(Normal);
+	vec3 fragmentNormal = normalize(FragmentNormal);
 
 	// Calculate direction vectors
-	vec3 lightDirection = normalize(light.position - FragPos);
-//	vec3 lightDirection = normalize(-light.direction); // We need the direction fragment -> light in our calculations, instead of light -> fragment
-	vec3 viewDirection = normalize(viewPos - FragPos);
-	vec3 reflectDirection = reflect(-lightDirection, fragNormal);
+	vec3 viewDirection = normalize(viewPosition - FragmentPosition);
+
+	vec3 outColor;
+	/*--- Lighting ---*/
+	// Phase 1: Directional lighting
+	outColor = CalculateDirectionalLight(directionalLight, fragmentNormal, viewDirection);
+	// Phase 2: Point lights
+	for (int i = 0; i < N_POINT_LIGHTS; i++)
+	{
+		outColor += CalculatePointLight(pointLights[i], fragmentNormal, FragmentPosition, viewDirection);
+	}
+	// Phase 3: Spot light
+	//TODO
+
+	FragmentColor = vec4(outColor, 1.0);
+}
+
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDirection)
+{
+	vec3 lightDirection = normalize(-light.direction); // We need the direction fragment -> light in our calculations, instead of light -> fragment
+	float diffuseFactor = max(dot(normal, lightDirection), 0.0); // Calculate diffuse factor, make sure the dot product is never negative
+	
+	vec3 reflectDirection = reflect(-lightDirection, normal); // Reflect the negative light direction vector over the fragment normal
+	float specularFactor  = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess); // Calculate "correlation" between view and reflect direction -> higher = stronger reflection; to the pow of shininess
+
+	// Calculate the three Phong components
+	vec3 ambient  = light.ambient					* vec3(texture(material.diffuse, TextureCoordinates));
+	vec3 diffuse  = light.diffuse  * diffuseFactor  * vec3(texture(material.diffuse, TextureCoordinates));
+	vec3 specular = light.specular * specularFactor * vec3(texture(material.specular, TextureCoordinates));
+
+	return (ambient + diffuse + specular);
+}
+
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection)
+{
+	vec3 lightDirection = normalize(light.position - fragmentPosition); // Light direction is the difference between the light and fragment position vector (a vector pointing from light to fragment)
+	float diffuseFactor = max(dot(lightDirection, normal), 0.0); // Calculate diffuse factor, make sure the dot product is never negative
+
+	vec3 reflectDirection = reflect(-lightDirection, normal); // Reflect the negative light direction vector over the fragment normal
+	float specularFactor  = pow(max(dot(reflectDirection, viewDirection), 0.0), material.shininess); // Specular strength is the "correlation" between reflect and view direction (more direct llok = stronger refleciton)
 
 	// Calculate attenuation factors
-	float distanceFromSource = length(light.position - FragPos);
+	float distanceFromSource = length(light.position - fragmentPosition);
+	// * Implementation description inside struct definiton
 	float attenuation = 1.0 / (light.constant + light.linear * distanceFromSource + light.quadratic * distanceFromSource);
 
-	// Calculate diffuse factor
-	float diffuseFactor = max(dot(fragNormal, lightDirection), 0.0); // make sure the dot product is never negative
+	// Calculate the three Phong components
+	vec3 ambient  = attenuation * light.ambient					  * vec3(texture(material.diffuse, TextureCoordinates));
+	vec3 diffuse  = attenuation * light.diffuse  * diffuseFactor  * vec3(texture(material.diffuse, TextureCoordinates));
+	vec3 specular = attenuation * light.specular * specularFactor * vec3(texture(material.specular, TextureCoordinates));
 
-	// Calculate specular factor
-	float specularFactor = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess); // higher power = more gloss
-
-	// Calculate all of the final 3 components of the Phong lighting model
-	vec3 ambient = attenuation * light.ambient * vec3(texture(material.diffuse, TexCoords));
-	vec3 diffuse = attenuation * light.diffuse * diffuseFactor * vec3(texture(material.diffuse, TexCoords));
-	vec3 specular = attenuation * light.specular * specularFactor * vec3(texture(material.specular, TexCoords));
-
-	// Assign the final color to the fragment
-	FragColor = vec4(ambient + diffuse + specular, 1.00);
+	return (ambient + diffuse + specular);
 }
