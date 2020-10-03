@@ -87,6 +87,16 @@ void Window::SetWindowTitle(std::string title)
 	glfwSetWindowTitle(window, title.c_str());
 }
 
+void Window::SetGlobalEnable(GLenum global)
+{
+	glEnable(global);
+}
+
+void Window::SetGlobalDisable(GLenum global)
+{
+	glDisable(global);
+}
+
 std::string Window::GetWindowTitle()
 {
 	return name;

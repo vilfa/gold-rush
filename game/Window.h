@@ -27,6 +27,8 @@ public:
     void SetWindowShouldClose(bool shouldClose);
     void SetInputMode(int mode, int value);
     void SetWindowTitle(std::string title);
+    void SetGlobalEnable(GLenum global);
+    void SetGlobalDisable(GLenum global);
     std::string GetWindowTitle();
     void SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback);
     void SetMouseMoveCallback(MouseCallbackFunction callback);

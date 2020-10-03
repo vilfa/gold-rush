@@ -48,6 +48,23 @@ struct PointLight
 	vec3 specular;
 };
 
+struct SpotLight
+{
+	vec3 position;
+	vec3 direction;
+
+	float cutoff;
+	float outerCutoff;
+
+	float constant;
+	float linear;
+	float quadratic;
+
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+
 struct Material 
 {
 	sampler2D diffuse;
@@ -65,11 +82,13 @@ out vec4 FragmentColor;
 
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[N_POINT_LIGHTS];
+uniform SpotLight spotLight;
 uniform Material material;
 uniform vec3 viewPosition;
 
 vec3 CalculateDirectionalLight(DirectionalLight directionalLight, vec3 normal, vec3 viewDirection);
 vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection);
+vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection);
 
 void main()
 {
@@ -89,7 +108,7 @@ void main()
 		outColor += CalculatePointLight(pointLights[i], fragmentNormal, FragmentPosition, viewDirection);
 	}
 	// Phase 3: Spot light
-	//TODO
+	outColor += CalculateSpotLight(spotLight, fragmentNormal, FragmentPosition, viewDirection);
 
 	FragmentColor = vec4(outColor, 1.0);
 }
@@ -127,6 +146,32 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, v
 	vec3 ambient  = attenuation * light.ambient					  * vec3(texture(material.diffuse, TextureCoordinates));
 	vec3 diffuse  = attenuation * light.diffuse  * diffuseFactor  * vec3(texture(material.diffuse, TextureCoordinates));
 	vec3 specular = attenuation * light.specular * specularFactor * vec3(texture(material.specular, TextureCoordinates));
+
+	return (ambient + diffuse + specular);
+}
+
+vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection)
+{
+	vec3 lightDirection = normalize(light.position - fragmentPosition); // Light direction is the difference between the light and fragment position vector (a vector pointing from light to fragment)
+	float diffuseFactor = max(dot(lightDirection, normal), 0.0); // Calculate diffuse factor, make sure the dot product is never negative
+
+	vec3 reflectDirection = reflect(-lightDirection, normal); // Reflect the negative light direction vector over the fragment normal
+	float specularFactor  = pow(max(dot(reflectDirection, viewDirection), 0.0), material.shininess); // Specular strength is the "correlation" between reflect and view direction (more direct llok = stronger refleciton)
+
+	// Calculate attenuation factors
+	float distanceFromSource = length(light.position - fragmentPosition);
+	// * Implementation description inside struct definiton
+	float attenuation = 1.0 / (light.constant + light.linear * distanceFromSource + light.quadratic * distanceFromSource);
+
+	// Spotlight intensity
+	float theta = dot(lightDirection, normalize(-light.direction));
+	float epsilon = light.cutoff - light.outerCutoff;
+	float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+	
+	// Calculate the three Phong components
+	vec3 ambient  = intensity * attenuation * light.ambient					  * vec3(texture(material.diffuse, TextureCoordinates));
+	vec3 diffuse  = intensity * attenuation * light.diffuse  * diffuseFactor  * vec3(texture(material.diffuse, TextureCoordinates));
+	vec3 specular = intensity * attenuation * light.specular * specularFactor * vec3(texture(material.specular, TextureCoordinates));
 
 	return (ambient + diffuse + specular);
 }

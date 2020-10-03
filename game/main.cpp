@@ -59,7 +59,7 @@ int main()
 	* Enable depth buffer (depth testing). The buffer must be cleared for each frame
 	* so we don't store the information of the previous frame.
 	*/
-	glEnable(GL_DEPTH_TEST);
+	window.SetGlobalEnable(GL_DEPTH_TEST);
 
 	/*----- GEOMETRY -----*/
 	float vertices[] = {
@@ -234,7 +234,18 @@ int main()
 		objectShader.SetFloat("pointLights[3].constant", 1.0f);
 		objectShader.SetFloat("pointLights[3].linear", 0.09f);
 		objectShader.SetFloat("pointLights[3].quadratic", 0.032f);
-		
+		// 3. Spot light
+		objectShader.SetVec3("spotLight.position", camera.Position);
+		objectShader.SetVec3("spotLight.direction", camera.Front);
+		objectShader.SetVec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+		objectShader.SetVec3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+		objectShader.SetVec3("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		objectShader.SetFloat("spotLight.constant", 1.0f);
+		objectShader.SetFloat("spotLight.linear", 0.09f);
+		objectShader.SetFloat("spotLight.quadratic", 0.032f);
+		objectShader.SetFloat("spotLight.cutoff", glm::cos(glm::radians(12.5f)));
+		objectShader.SetFloat("spotLight.outerCutoff", glm::cos(glm::radians(15.0f)));
+
 		// Material properties
 		objectShader.SetInt("material.diffuse", 0);
 		objectShader.SetInt("material.specular", 1);
