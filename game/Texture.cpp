@@ -60,7 +60,7 @@ Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum
 	}
 	else
 	{
-		std::cout << "ERROR::TEXTURE::FILE_READ_ERROR" << std::endl;
+		std::cout << "ERROR::TEXTURE::TEXTURE::FILE_READ_ERROR" << std::endl;
 	}
 
 	stbi_image_free(data);

@@ -22,7 +22,7 @@ Window::Window(int width, int height, std::string windowName, int glVersionMajor
 	window = glfwCreateWindow(this->width, this->height, this->name.c_str(), monitor, share);
 	if (window == NULL)
 	{
-		std::cout << "ERROR::INIT::GLFW::WINDOW" << std::endl;
+		std::cout << "ERROR::WINDOW::WINDOW::GLFW::INIT" << std::endl;
 		glfwTerminate();
 		std::exit(EXIT_FAILURE);
 	}
@@ -32,7 +32,7 @@ Window::Window(int width, int height, std::string windowName, int glVersionMajor
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "ERROR::INIT::GLAD" << std::endl;
+		std::cout << "ERROR::WINDOW::WINDOW::GLAD::INIT" << std::endl;
 		glfwTerminate();
 		std::exit(EXIT_FAILURE);
 	}

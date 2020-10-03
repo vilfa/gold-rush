@@ -33,7 +33,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	}
 	catch (std::ifstream::failure e)
 	{
-		std::cout << "ERROR::SHADER::FILE_READ_ERROR" << std::endl;
+		std::cout << "ERROR::SHADER::SHADER::FILE_READ_ERROR" << std::endl;
 	}
 
 	const char* vShaderSource = vertexSource.c_str();
@@ -86,7 +86,8 @@ void Shader::CheckCompile(GLuint id, SHenum type) const
 		if (!success)
 		{
 			glGetShaderInfoLog(id, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::" << (int)type << "::COMPILATION_FAILED" << infoLog << std::endl;
+			std::cout << "ERROR::SHADER::CHECK_COMPILE::COMPILATION_FAILED" << std::endl;
+			std::cout << "Type:" << (int)type << "|Log:" << infoLog << std::endl;
 		}
 	}
 	else if (type == SHenum::SH_PROGRAM)
@@ -95,7 +96,8 @@ void Shader::CheckCompile(GLuint id, SHenum type) const
 		if (!success)
 		{
 			glGetProgramInfoLog(id, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED" << infoLog << std::endl;
+			std::cout << "ERROR::SHADER::CHECK_COMPILE::LINK_FAILED" << std::endl;
+			std::cout << infoLog << std::endl;
 		}
 	}
 }
@@ -105,7 +107,7 @@ GLint Shader::GetUniformLocation(const std::string& name) const
 	GLint location = glGetUniformLocation(ID, name.c_str());
 	if (location < 0)
 	{
-		std::cout << "ERROR::SHADER::UNIFORM::UNIFORM_DOESNT_EXIST"
+		std::cout << "ERROR::SHADER::GET_UNIFORM_LOCATION::UNIFORM_DOESNT_EXIST"
 			<< std::endl << "Uniform name:" << name << std::endl;
 	}
 
