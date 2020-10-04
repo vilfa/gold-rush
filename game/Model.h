@@ -2,8 +2,15 @@
 #define MODEL_H
 
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <map>
 #include <vector>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <stb/stb_image.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -26,7 +33,7 @@ private:
     bool gammaCorrection;
 
 
-    void loadModel(std::string path);
+    void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Mesh::Texture> loadMaterialTextures(aiMaterial* material,

@@ -14,7 +14,7 @@ void Model::Draw(Shader& shader)
 	}
 }
 
-void Model::loadModel(std::string path)
+void Model::loadModel(const std::string& path)
 {
 	Assimp::Importer importer;
 
@@ -86,15 +86,38 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		// The index 0 is because Assimp allows for up to 8 differrent sets of texture coordinates
 		if (mesh->mTextureCoords[0])
 		{
+			// Texture coordinates
 			glm::vec2 textureVector;
 			textureVector.x = mesh->mTextureCoords[0][i].x;
 			textureVector.y = mesh->mTextureCoords[0][i].y;
 			vertex.textureCoordinates = textureVector;
+
+			// Tangent vector to the vertex
+			if (mesh->mTangents)
+			{
+				glm::vec3 tangentVector;
+				tangentVector.x = mesh->mTangents[i].x;
+				tangentVector.y = mesh->mTangents[i].y;
+				tangentVector.z = mesh->mTangents[i].z;
+				vertex.tangent = tangentVector;
+			}
+
+			// Bitangent vector to the vertex (orthogonal to tangent and normal)
+			if (mesh->mBitangents)
+			{
+				glm::vec3 biTangentVector;
+				biTangentVector.x = mesh->mBitangents[i].x;
+				biTangentVector.y = mesh->mBitangents[i].y;
+				biTangentVector.z = mesh->mBitangents[i].z;
+				vertex.biTangent = biTangentVector;
+			}
 		}
 		else
 		{
 			vertex.textureCoordinates = glm::vec2(0.0f, 0.0f);
 		}
+
+		vertices.push_back(vertex);
 	}
 	
 	/*
@@ -118,14 +141,21 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		// Load the diffuse textures
-		std::vector<Mesh::Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, 
-			TEXTYPEenum::DIFFUSE);
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end()); // Insert the diffuse texture map to the end of textures struct
+		// 1. Load the diffuse maps
+		std::vector<Mesh::Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, TEXTYPEenum::DIFFUSE);
+		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end()); // Insert the diffuse map to the end of textures struct
 
-		// Load the specular textures
+		// 2. Load the specular maps
 		std::vector<Mesh::Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, TEXTYPEenum::SPECULAR);
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end()); // Insert the specular texture map to the end of textures struct
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end()); // Insert the specular map to the end of textures struct
+
+		// 3. Load the normal maps
+		std::vector<Mesh::Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, TEXTYPEenum::NORMAL);
+		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end()); // Insert the normal map to the end of textures struct
+
+		// 4. Load the height maps
+		std::vector<Mesh::Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, TEXTYPEenum::HEIGHT);
+		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end()); // Insert the height map to the end of textures struct
 	}
 
 	return Mesh(vertices, indices, textures);
@@ -137,13 +167,29 @@ std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial* material, aiT
 	for (std::size_t i = 0; i < material->GetTextureCount(aiType); i++)
 	{
 		aiString path;
-		material->GetTexture(aiType, i, &path);
+		material->GetTexture(aiType, (unsigned int)i, &path);
+		// Flag for checking if the texture has been loaded already
+		bool alreadyLoaded = false;
 
-		Mesh::Texture texture;
-		texture.id = Mesh::LoadMaterialTextureFromFile(path.C_Str(), directory, gammaCorrection);
-		texture.type = txType;
-		texture.path = path.C_Str();
-		textures.push_back(texture);
+		for (std::size_t j = 0; j < texturesLoaded.size(); j++)
+		{
+			if (std::strcmp(texturesLoaded.at(j).path.c_str(), path.C_Str()) == 0)
+			{
+				textures.push_back(texturesLoaded.at(j));
+				alreadyLoaded = true;
+				break;
+			}
+		}
+
+		if (!alreadyLoaded)
+		{
+			Mesh::Texture texture;
+			texture.id = Mesh::LoadMaterialTextureFromFile(std::string(path.C_Str()), directory, gammaCorrection);
+			texture.type = txType;
+			texture.path = path.C_Str();
+			textures.push_back(texture);
+			texturesLoaded.push_back(texture);
+		}
 	}
 
 	return textures;

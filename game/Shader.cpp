@@ -107,8 +107,8 @@ GLint Shader::GetUniformLocation(const std::string& name) const
 	GLint location = glGetUniformLocation(ID, name.c_str());
 	if (location < 0)
 	{
-		std::cout << "ERROR::SHADER::GET_UNIFORM_LOCATION::UNIFORM_DOESNT_EXIST"
-			<< std::endl << "Uniform name:" << name << std::endl;
+		std::cout << "ERROR::SHADER::GET_UNIFORM_LOCATION::UNIFORM_DOESNT_EXIST" << std::endl;
+		std::cout << "Uniform name:" << name << std::endl;
 	}
 
 	return location;

@@ -1,6 +1,5 @@
 #ifndef MESH_H
 #define MESH_H
-#define STB_IMAGE_IMPLEMENTATION
 
 #include <string>
 #include <vector>
@@ -10,6 +9,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include "Shader.h"
 
@@ -19,7 +21,9 @@
 enum class TEXTYPEenum
 {
     DIFFUSE,
-    SPECULAR
+    SPECULAR,
+    NORMAL,
+    HEIGHT
 };
 
 class Mesh
@@ -33,6 +37,8 @@ public:
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 textureCoordinates;
+        glm::vec3 tangent;
+        glm::vec3 biTangent;
     };
 
     /*
@@ -61,6 +67,8 @@ private:
 
     static const std::string _TEXTURE_DIFFUSE_NAME;
     static const std::string _TEXTURE_SPECULAR_NAME;
+    static const std::string _TEXTURE_NORMAL_NAME;
+    static const std::string _TEXTURE_HEIGHT_NAME;
 
     void setupMesh();
 };

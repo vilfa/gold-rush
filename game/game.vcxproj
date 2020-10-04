@@ -126,7 +126,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;glfw3dll.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc142-mtd.lib;glfw3.lib;glfw3dll.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,7 +152,6 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,13 +160,14 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\fragment.frag" />
     <None Include="resources\shaders\fragment_light.frag" />
     <None Include="resources\shaders\fragment_light_source.frag" />
+    <None Include="resources\shaders\model_loading.frag" />
+    <None Include="resources\shaders\model_loading.vert" />
     <None Include="resources\shaders\vertex.vert" />
     <None Include="resources\shaders\vertex_light.vert" />
     <None Include="resources\shaders\vertex_light_source.vert" />

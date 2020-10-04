@@ -24,9 +24,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
@@ -70,6 +64,8 @@
     <None Include="resources\shaders\vertex.vert" />
     <None Include="resources\shaders\vertex_light.vert" />
     <None Include="resources\shaders\vertex_light_source.vert" />
+    <None Include="resources\shaders\model_loading.frag" />
+    <None Include="resources\shaders\model_loading.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">

@@ -1,7 +1,10 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "Mesh.h"
 
 const std::string Mesh::_TEXTURE_DIFFUSE_NAME = "texture_diffuse_";
 const std::string Mesh::_TEXTURE_SPECULAR_NAME = "texture_specular_";
+const std::string Mesh::_TEXTURE_NORMAL_NAME = "texture_normal_";
+const std::string Mesh::_TEXTURE_HEIGHT_NAME = "texture_height_";
 
 Mesh::Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Mesh::Texture>& textures) :
     Vertices(vertices),
@@ -14,6 +17,8 @@ Mesh::Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indic
 unsigned int Mesh::LoadMaterialTextureFromFile(std::string path, const std::string directory, bool gamma, bool flipVertical,
     GLenum textureWrapping, GLenum mipmapFilteringMin, GLenum mipmapFilteringMax)
 {
+    std::string fullPath = directory + "/" + path;
+
     unsigned int textureId;
 
     glGenTextures(1, &textureId);
@@ -28,7 +33,7 @@ unsigned int Mesh::LoadMaterialTextureFromFile(std::string path, const std::stri
     }
 
     int width, height, nChannels;
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nChannels, 0);
+    unsigned char* data = stbi_load(fullPath.c_str(), &width, &height, &nChannels, 0);
     if (data)
     {
         GLenum format = GL_RGB;
@@ -61,6 +66,8 @@ unsigned int Mesh::LoadMaterialTextureFromFile(std::string path, const std::stri
     else
     {
         std::cout << "ERROR::MESH::LOAD_TEXTURE_FROM_FILE::FILE_READ_ERROR" << std::endl;
+        std::cout << "Path:" << path << std::endl;
+        stbi_image_free(data);
     }
 
     return textureId;
@@ -70,6 +77,8 @@ void Mesh::Draw(Shader& shader)
 {
     unsigned int diffuseCount = 1;
     unsigned int specularCount = 1;
+    unsigned int normalCount = 1;
+    unsigned int heightCount = 1;
 
     for (std::size_t i = 0; i < Textures.size(); i++)
     {
@@ -97,20 +106,31 @@ void Mesh::Draw(Shader& shader)
         else if (textureType == TEXTYPEenum::SPECULAR)
         {
             textureName = _TEXTURE_SPECULAR_NAME;
-            textureNumber = std::to_string(diffuseCount++);
+            textureNumber = std::to_string(specularCount++);
+        }
+        else if (textureType == TEXTYPEenum::NORMAL)
+        {
+            textureName = _TEXTURE_NORMAL_NAME;
+            textureNumber = std::to_string(normalCount++);
+        }
+        else if (textureType == TEXTYPEenum::HEIGHT)
+        {
+            textureName = _TEXTURE_HEIGHT_NAME;
+            textureNumber = std::to_string(heightCount++);
         }
 
-        shader.SetInt(("material." + textureName + textureNumber), (int)i);
+        shader.SetInt((textureName + textureNumber), (int)i);
         glBindTexture(GL_TEXTURE_2D, Textures.at(i).id);
     }
-    glActiveTexture(GL_TEXTURE0);
 
     // Draw the mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, (GLsizei)Indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
 
     // Unbind the VAO
     glBindVertexArray(0);
+
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::setupMesh()
