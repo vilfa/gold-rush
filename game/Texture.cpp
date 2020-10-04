@@ -7,8 +7,8 @@ unsigned int Texture::_textureCount = 0;
 Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum textureWrapping,
 	GLenum mipmapFiltering)
 {
-	glGenTextures(1, &ID);
-	glBindTexture(GL_TEXTURE_2D, ID);
+	glGenTextures(1, &Id);
+	glBindTexture(GL_TEXTURE_2D, Id);
 
 	/*
 	* Set the wrapping and filtering options (on currently bound texture object).
@@ -69,5 +69,5 @@ Texture::Texture(const char* texturePath, TXenum type, bool flipVertical, GLenum
 void Texture::Use(GLenum textureUnit) const
 {
 	glActiveTexture(textureUnit);
-	glBindTexture(GL_TEXTURE_2D, ID);
+	glBindTexture(GL_TEXTURE_2D, Id);
 }

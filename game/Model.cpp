@@ -1,6 +1,12 @@
 #include "Model.h"
 
-void Model::Draw(Shader* shader)
+Model::Model(const std::string& path, bool gamma) :
+	gammaCorrection(gamma)
+{
+	loadModel(path);
+}
+
+void Model::Draw(Shader& shader)
 {
 	for (size_t i = 0; i < meshes.size(); i++)
 	{
@@ -50,9 +56,9 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-	std::vector<Vertex> vertices;
+	std::vector<Mesh::Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	std::vector<Mesh::Texture> textures;
 
 	/*
 	* Process the vertices.
@@ -60,7 +66,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	*/
 	for (std::size_t i = 0; i < mesh->mNumVertices; i++)
 	{
-		Vertex vertex;
+		Mesh::Vertex vertex;
 
 		// Construct the position vector for this vertex
 		glm::vec3 positionVector;
@@ -107,4 +113,38 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			indices.push_back(face.mIndices[j]);
 		}
 	}
+
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+		// Load the diffuse textures
+		std::vector<Mesh::Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, 
+			TEXTYPEenum::DIFFUSE);
+		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end()); // Insert the diffuse texture map to the end of textures struct
+
+		// Load the specular textures
+		std::vector<Mesh::Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, TEXTYPEenum::SPECULAR);
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end()); // Insert the specular texture map to the end of textures struct
+	}
+
+	return Mesh(vertices, indices, textures);
+}
+
+std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial* material, aiTextureType aiType, TEXTYPEenum txType)
+{
+	std::vector<Mesh::Texture> textures;
+	for (std::size_t i = 0; i < material->GetTextureCount(aiType); i++)
+	{
+		aiString path;
+		material->GetTexture(aiType, i, &path);
+
+		Mesh::Texture texture;
+		texture.id = Mesh::LoadMaterialTextureFromFile(path.C_Str(), directory, gammaCorrection);
+		texture.type = txType;
+		texture.path = path.C_Str();
+		textures.push_back(texture);
+	}
+
+	return textures;
 }

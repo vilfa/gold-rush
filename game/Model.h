@@ -15,18 +15,21 @@
 class Model
 {
 public:
-    Model(std::string path);
+    Model(const std::string& path, bool gamma = false);
 
-    void Draw(Shader* shader);
+    void Draw(Shader& shader);
 
 private:
     std::vector<Mesh> meshes;
+    std::vector<Mesh::Texture> texturesLoaded;
     std::string directory;
+    bool gammaCorrection;
+
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture> loadMaterialTextures(aiMaterial* material,
-        aiTextureType type, std::string typeName);
+    std::vector<Mesh::Texture> loadMaterialTextures(aiMaterial* material,
+        aiTextureType aiType, TEXTYPEenum txType);
 };
-#endif
+#endif // !MODEL_H

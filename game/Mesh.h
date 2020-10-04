@@ -1,9 +1,12 @@
 #ifndef MESH_H
 #define MESH_H
+#define STB_IMAGE_IMPLEMENTATION
 
 #include <string>
 #include <vector>
 
+#include <stb/stb_image.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -15,39 +18,43 @@
 */
 enum class TEXTYPEenum
 {
-    TEXTURE_DIFFUSE,
-    TEXTURE_SPECULAR
-};
-
-/*
-* Data structure representing a vertex
-*/
-struct Vertex
-{
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 textureCoordinates;
-};
-
-/*
-* Data structure representing a texture
-*/
-struct Texture
-{
-    unsigned int id;
-    TEXTYPEenum type;
+    DIFFUSE,
+    SPECULAR
 };
 
 class Mesh
 {
 public:
-    std::vector<Vertex> Vertices;
+    /*
+    * Data structure representing a vertex
+    */
+    struct Vertex
+    {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 textureCoordinates;
+    };
+
+    /*
+    * Data structure representing a texture
+    */
+    struct Texture
+    {
+        unsigned int id;
+        TEXTYPEenum type;
+        std::string path; // Store the path to optimize loading
+    };
+
+    std::vector<Mesh::Vertex> Vertices;
     std::vector<unsigned int> Indices; // Indices (indexes) of vertices, representing a mesh
-    std::vector<Texture> Textures;
+    std::vector<Mesh::Texture> Textures;
 
-    Mesh(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices, std::vector<Texture>* textures);
+    Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Mesh::Texture>& textures);
 
-    void Draw(Shader* shader);
+    static unsigned int LoadMaterialTextureFromFile(std::string path, const std::string directory, bool gamma = false,
+        bool flipVertical = true, GLenum textureWrapping = GL_REPEAT,
+        GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, GLenum mipmapFilteringMax = GL_LINEAR);
+    void Draw(Shader& shader);
 
 private:
     unsigned int VAO, VBO, EBO;
@@ -57,4 +64,4 @@ private:
 
     void setupMesh();
 };
-#endif
+#endif // !MESH_H

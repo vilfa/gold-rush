@@ -14,7 +14,7 @@ enum class TXenum {
 class Texture
 {
 public:
-	unsigned int ID;
+	unsigned int Id;
 	int Width;
 	int Height;
 	int N_Channels;

@@ -139,8 +139,8 @@ int main()
 	//Texture woodTexture("textures/wooden-container.jpg", TXenum::TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
 	//Texture awesomeFaceTexture("textures/awesomeface.png", TXenum::TEXTURE_PNG, true, GL_MIRRORED_REPEAT, GL_LINEAR);
 	//Texture crazyCatTexture("textures/crazycat.jpg", TXenum::TEXTURE_JPG, true, GL_REPEAT, GL_LINEAR);
-	Texture diffuseMap("resources/textures/container2.png", TXenum::TEXTURE_PNG, true, GL_REPEAT, GL_LINEAR);
-	Texture specularMap("resources/textures/container2_specular.png", TXenum::TEXTURE_PNG, true, GL_REPEAT, GL_LINEAR);
+	//Texture diffuseMap("resources/textures/container2.png", TXenum::TEXTURE_PNG, true, GL_REPEAT, GL_LINEAR);
+	//Texture specularMap("resources/textures/container2_specular.png", TXenum::TEXTURE_PNG, true, GL_REPEAT, GL_LINEAR);
 	/*
 	* Activate shader and set texture uniforms (specify which texture units we are using).
 	* We are using GL_TEXTURE0, GL_TEXTURE1 (see render loop).
@@ -261,8 +261,8 @@ int main()
 		objectShader.SetMat4("model", model, false);
 
 		// Bind diffuse map
-		diffuseMap.Use(GL_TEXTURE0);
-		specularMap.Use(GL_TEXTURE1);
+		//diffuseMap.Use(GL_TEXTURE0);
+		//specularMap.Use(GL_TEXTURE1);
 		
 		// Render cube
 		glBindVertexArray(objectVAO);
