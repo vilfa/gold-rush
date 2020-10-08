@@ -1,1 +1,2 @@
-# unnamed-g
+# idea
+a simple game engine
