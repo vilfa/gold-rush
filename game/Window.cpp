@@ -3,13 +3,12 @@
 const int Window::_GL_VERSION_MAJOR = 3;
 const int Window::_GL_VERSION_MINOR = 3;
 
-Window::Window(int width, int height, std::string windowName, int glVersionMajor, int glVersionMinor, int glProfile, 
-	GLFWmonitor* monitor, GLFWwindow* share)
+Window::Window(const unsigned int& width, const unsigned int& height, const std::string& windowName, int glVersionMajor, int glVersionMinor, int glProfile, 
+	GLFWmonitor* monitor, GLFWwindow* share) :
+	width(width),
+	height(height),
+	name(windowName)
 {
-	this->width = width;
-	this->height = height;
-	this->name = windowName;
-
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
@@ -83,7 +82,6 @@ void Window::SetInputMode(int mode, int value)
 
 void Window::SetWindowTitle(std::string title)
 {
-	//name = title;
 	glfwSetWindowTitle(window, title.c_str());
 }
 

@@ -10,5 +10,5 @@ uniform sampler2D texture_normal_1;
 
 void main()
 {
-	FragmentColor = 1.0 * texture(texture_diffuse_1, TextureCoordinates);
+	FragmentColor = 1.0 * texture(texture_diffuse_1, TextureCoordinates) * texture(texture_specular_1, TextureCoordinates);
 }

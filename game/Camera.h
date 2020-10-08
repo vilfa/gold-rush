@@ -11,15 +11,15 @@
 #include "Window.h"
 
 enum class CAMMOVenum {
-	CAMERA_FORWARD,
-	CAMERA_BACKWARD,
-	CAMERA_LEFT,
-	CAMERA_RIGHT
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT
 };
 
 enum class CAMSPDenum {
-	CAMERA_NORMAL,
-	CAMERA_FAST
+	NORMAL,
+	FAST
 };
 
 class Camera
@@ -43,13 +43,13 @@ public:
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
 		float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR, 
 		float yaw = _YAW, float pitch = _PITCH);
-	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch, 
+	Camera(float& posX, float& posY, float& posZ, float& upX, float& upY, float& upZ, float& yaw, float& pitch, 
 		float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR);
 
 	glm::mat4 GetViewMatrix() const;
-	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime);
-	void ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrainPitch = true);
-	void ProcessMouseScroll(float yOffset);
+	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float& deltaTime);
+	void ProcessMouseMovement(float& xOffset, float& yOffset, GLboolean constrainPitch = true);
+	void ProcessMouseScroll(float& yOffset);
 
 private:
 	Window* window;

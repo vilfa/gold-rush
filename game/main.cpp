@@ -161,28 +161,28 @@ void processInput(GLFWwindow* window, Camera* camera, float deltaTime)
 	CAMSPDenum speed;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		speed = CAMSPDenum::CAMERA_FAST;
+		speed = CAMSPDenum::FAST;
 	}
 	else
 	{
-		speed = CAMSPDenum::CAMERA_NORMAL;
+		speed = CAMSPDenum::NORMAL;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMMOVenum::CAMERA_FORWARD, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::FORWARD, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMMOVenum::CAMERA_BACKWARD, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::BACKWARD, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMMOVenum::CAMERA_LEFT, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::LEFT, speed, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera->ProcessKeyboard(CAMMOVenum::CAMERA_RIGHT, speed, deltaTime);
+		camera->ProcessKeyboard(CAMMOVenum::RIGHT, speed, deltaTime);
 	}
 }
 
@@ -211,5 +211,5 @@ void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 */
 void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
-	camera.ProcessMouseScroll((float)yOffset);
+	camera.ProcessMouseScroll((float&)yOffset);
 }

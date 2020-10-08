@@ -14,7 +14,7 @@ typedef void (*MouseCallbackFunction)(GLFWwindow*, double, double);
 class Window
 {
 public:
-    Window(int width, int height, std::string windowName, 
+    Window(const unsigned int& width, const unsigned int& height, const std::string& windowName, 
         int glVersionMajor = _GL_VERSION_MAJOR, int glVersionMinor = _GL_VERSION_MINOR, 
         int glProfile = GLFW_OPENGL_CORE_PROFILE, GLFWmonitor* monitor = NULL, 
         GLFWwindow* share = NULL);
@@ -37,8 +37,8 @@ public:
 private:
     GLFWwindow* window;
     std::string name;
-    int width;
-    int height;
+    unsigned int width;
+    unsigned int height;
     static const int _GL_VERSION_MAJOR;
     static const int _GL_VERSION_MINOR;
 };

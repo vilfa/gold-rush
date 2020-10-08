@@ -14,7 +14,7 @@ Mesh::Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indic
     setupMesh();
 }
 
-unsigned int Mesh::LoadMaterialTextureFromFile(std::string path, const std::string directory, bool gamma, bool flipVertical,
+unsigned int Mesh::LoadMaterialTextureFromFile(std::string& path, const std::string& directory, bool gamma, bool flipVertical,
     GLenum textureWrapping, GLenum mipmapFilteringMin, GLenum mipmapFilteringMax)
 {
     std::string fullPath = directory + "/" + path;
@@ -119,13 +119,13 @@ void Mesh::Draw(Shader& shader)
             textureNumber = std::to_string(heightCount++);
         }
 
-        shader.SetInt((textureName + textureNumber), (int)i);
+        shader.SetInt((textureName + textureNumber), (int&)i);
         glBindTexture(GL_TEXTURE_2D, Textures.at(i).id);
     }
 
     // Draw the mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (GLsizei)Indices.size(), GL_UNSIGNED_INT, 0);
 
     // Unbind the VAO
     glBindVertexArray(0);

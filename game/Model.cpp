@@ -184,7 +184,7 @@ std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial* material, aiT
 		if (!alreadyLoaded)
 		{
 			Mesh::Texture texture;
-			texture.id = Mesh::LoadMaterialTextureFromFile(std::string(path.C_Str()), directory, gammaCorrection);
+			texture.id = Mesh::LoadMaterialTextureFromFile((std::string&)(path.C_Str()), directory, gammaCorrection);
 			texture.type = txType;
 			texture.path = path.C_Str();
 			textures.push_back(texture);

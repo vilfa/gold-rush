@@ -57,7 +57,7 @@ public:
 
     Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Mesh::Texture>& textures);
 
-    static unsigned int LoadMaterialTextureFromFile(std::string path, const std::string directory, bool gamma = false,
+    static unsigned int LoadMaterialTextureFromFile(std::string& path, const std::string& directory, bool gamma = false,
         bool flipVertical = true, GLenum textureWrapping = GL_REPEAT,
         GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, GLenum mipmapFilteringMax = GL_LINEAR);
     void Draw(Shader& shader);

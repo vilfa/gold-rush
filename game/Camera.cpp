@@ -27,8 +27,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 up,
 	updateCameraVectors();
 }
 
-Camera::Camera(float posX, float posY, float posZ, 
-	float upX, float upY, float upZ, float yaw, float pitch, 
+Camera::Camera(float& posX, float& posY, float& posZ, 
+	float& upX, float& upY, float& upZ, float& yaw, float& pitch, 
 	float frustumNear, float frustumFar) : 
 	Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
 	MovementSpeed(Camera::_SPEED), 
@@ -50,29 +50,29 @@ glm::mat4 Camera::GetViewMatrix() const
 	return glm::lookAt(Position, Position + Front, Up);
 }
 
-void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime)
+void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float& deltaTime)
 {
-	float velocity = (speed == CAMSPDenum::CAMERA_NORMAL) ? 
+	float velocity = (speed == CAMSPDenum::NORMAL) ? 
 		MovementSpeed * deltaTime : MovementSpeedFast * deltaTime;
-	if (direction == CAMMOVenum::CAMERA_FORWARD)
+	if (direction == CAMMOVenum::FORWARD)
 	{
 		Position += Front * velocity;
 	}
-	if (direction == CAMMOVenum::CAMERA_BACKWARD)
+	if (direction == CAMMOVenum::BACKWARD)
 	{
 		Position -= Front * velocity;
 	}
-	if (direction == CAMMOVenum::CAMERA_LEFT)
+	if (direction == CAMMOVenum::LEFT)
 	{
 		Position -= Right * velocity;
 	}
-	if (direction == CAMMOVenum::CAMERA_RIGHT)
+	if (direction == CAMMOVenum::RIGHT)
 	{
 		Position += Right * velocity;
 	}
 }
 
-void Camera::ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrainPitch)
+void Camera::ProcessMouseMovement(float& xOffset, float& yOffset, GLboolean constrainPitch)
 {
 	xOffset *= MouseSensitivity;
 	yOffset *= MouseSensitivity;
@@ -95,7 +95,7 @@ void Camera::ProcessMouseMovement(float xOffset, float yOffset, GLboolean constr
 	updateCameraVectors();
 }
 
-void Camera::ProcessMouseScroll(float yOffset)
+void Camera::ProcessMouseScroll(float& yOffset)
 {
 	Fov -= yOffset;
 	if (Fov < 1.0f)

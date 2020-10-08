@@ -47,12 +47,12 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vShaderSource, NULL);
 	glCompileShader(vertexShader);
-	CheckCompile(vertexShader, SHenum::SH_VERTEX);
+	CheckCompile(vertexShader, SHTYPEenum::VERTEX);
 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fShaderSource, NULL);
 	glCompileShader(fragmentShader);
-	CheckCompile(fragmentShader, SHenum::SH_FRAGMENT);
+	CheckCompile(fragmentShader, SHTYPEenum::FRAGMENT);
 
 	/*
 	* Create shader program and link.
@@ -61,7 +61,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
 	glLinkProgram(ID);
-	CheckCompile(ID, SHenum::SH_PROGRAM);
+	CheckCompile(ID, SHTYPEenum::PROGRAM);
 
 	/*
 	* Delete shader because link is successful.
@@ -75,12 +75,12 @@ void Shader::Use() const
 	glUseProgram(ID);
 }
 
-void Shader::CheckCompile(GLuint id, SHenum type) const
+void Shader::CheckCompile(GLuint& id, SHTYPEenum type) const
 {
 	int success;
 	char infoLog[512];
 
-	if (type == SHenum::SH_VERTEX || type == SHenum::SH_FRAGMENT)
+	if (type == SHTYPEenum::VERTEX || type == SHTYPEenum::FRAGMENT)
 	{
 		glGetShaderiv(id, GL_COMPILE_STATUS, &success);
 		if (!success)
@@ -90,7 +90,7 @@ void Shader::CheckCompile(GLuint id, SHenum type) const
 			std::cout << "Type:" << (int)type << "|Log:" << infoLog << std::endl;
 		}
 	}
-	else if (type == SHenum::SH_PROGRAM)
+	else if (type == SHTYPEenum::PROGRAM)
 	{
 		glGetProgramiv(id, GL_LINK_STATUS, &success);
 		if (!success)
@@ -114,47 +114,47 @@ GLint Shader::GetUniformLocation(const std::string& name) const
 	return location;
 }
 
-void Shader::SetBool(const std::string& name, bool value) const
+void Shader::SetBool(const std::string& name, bool& value) const
 {
 	glUniform1i(GetUniformLocation(name), (int)value);
 }
 
-void Shader::SetInt(const std::string& name, int value) const
+void Shader::SetInt(const std::string& name, int& value) const
 {
 	glUniform1i(GetUniformLocation(name), value);
 }
 
-void Shader::SetFloat(const std::string& name, float value) const
+void Shader::SetFloat(const std::string& name, float& value) const
 {
 	glUniform1f(GetUniformLocation(name), value);
 }
 
-void Shader::SetMat2(const std::string& name, glm::mat2 value, GLboolean transpose) const
+void Shader::SetMat2(const std::string& name, glm::mat2& value, GLboolean transpose) const
 {
 	glUniformMatrix2fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
 
-void Shader::SetMat3(const std::string& name, glm::mat3 value, GLboolean transpose) const
+void Shader::SetMat3(const std::string& name, glm::mat3& value, GLboolean transpose) const
 {
 	glUniformMatrix3fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
 
-void Shader::SetMat4(const std::string& name, glm::mat4 value, GLboolean transpose) const
+void Shader::SetMat4(const std::string& name, glm::mat4& value, GLboolean transpose) const
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
 
-void Shader::SetVec2(const std::string& name, glm::vec2 value) const
+void Shader::SetVec2(const std::string& name, glm::vec2& value) const
 {
 	glUniform2fv(GetUniformLocation(name), 1, glm::value_ptr(value));
 }
 
-void Shader::SetVec3(const std::string& name, glm::vec3 value) const
+void Shader::SetVec3(const std::string& name, glm::vec3& value) const
 {
 	glUniform3fv(GetUniformLocation(name), 1, glm::value_ptr(value));
 }
 
-void Shader::SetVec4(const std::string& name, glm::vec4 value) const
+void Shader::SetVec4(const std::string& name, glm::vec4& value) const
 {
 	glUniform4fv(GetUniformLocation(name), 1, glm::value_ptr(value));
 }
