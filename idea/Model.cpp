@@ -167,7 +167,7 @@ std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial* material, aiT
 	for (std::size_t i = 0; i < material->GetTextureCount(aiType); i++)
 	{
 		aiString path;
-		material->GetTexture(aiType, (unsigned int)i, &path);
+		material->GetTexture(aiType, (uint32_t)i, &path);
 		// Flag for checking if the texture has been loaded already
 		bool alreadyLoaded = false;
 

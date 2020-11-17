@@ -3,7 +3,7 @@
 const int Window::_GL_VERSION_MAJOR = 3;
 const int Window::_GL_VERSION_MINOR = 3;
 
-Window::Window(const unsigned int& width, const unsigned int& height, const std::string& windowName, int glVersionMajor, int glVersionMinor, int glProfile, 
+Window::Window(const uint32_t& width, const uint32_t& height, const std::string& windowName, int glVersionMajor, int glVersionMinor, int glProfile, 
 	GLFWmonitor* monitor, GLFWwindow* share) :
 	width(width),
 	height(height),
@@ -64,6 +64,11 @@ int Window::GetWindowShouldClose() const
 	return glfwWindowShouldClose(window);
 }
 
+std::string Window::GetWindowTitle() const
+{
+	return name;
+}
+
 void Window::SetWindowShouldClose(bool shouldClose)
 {
 	if (shouldClose)
@@ -80,7 +85,7 @@ void Window::SetInputMode(int mode, int value)
 	glfwSetInputMode(window, mode, value);
 }
 
-void Window::SetWindowTitle(std::string title)
+void Window::SetWindowTitle(const std::string& title)
 {
 	glfwSetWindowTitle(window, title.c_str());
 }
@@ -93,11 +98,6 @@ void Window::SetGlobalEnable(GLenum global)
 void Window::SetGlobalDisable(GLenum global)
 {
 	glDisable(global);
-}
-
-std::string Window::GetWindowTitle()
-{
-	return name;
 }
 
 void Window::SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback)

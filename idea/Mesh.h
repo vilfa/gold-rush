@@ -46,24 +46,24 @@ public:
     */
     struct Texture
     {
-        unsigned int id;
+        uint32_t id;
         TEXTYPEenum type;
         std::string path; // Store the path to optimize loading
     };
 
     std::vector<Mesh::Vertex> Vertices;
-    std::vector<unsigned int> Indices; // Indices (indexes) of vertices, representing a mesh
+    std::vector<uint32_t> Indices; // Indices (indexes) of vertices, representing a mesh
     std::vector<Mesh::Texture> Textures;
 
-    Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Mesh::Texture>& textures);
+    Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<Mesh::Texture>& textures);
 
-    static unsigned int LoadMaterialTextureFromFile(std::string path, const std::string& directory, bool gamma = false,
+    static uint32_t LoadMaterialTextureFromFile(const std::string& path, const std::string& directory, bool gamma = false,
         bool flipVertical = true, GLenum textureWrapping = GL_REPEAT,
         GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, GLenum mipmapFilteringMax = GL_LINEAR);
     void Draw(Shader& shader);
 
 private:
-    unsigned int VAO, VBO, EBO;
+    uint32_t VAO, VBO, EBO;
 
     static const std::string _TEXTURE_DIFFUSE_NAME;
     static const std::string _TEXTURE_SPECULAR_NAME;

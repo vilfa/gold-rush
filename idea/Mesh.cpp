@@ -6,7 +6,7 @@ const std::string Mesh::_TEXTURE_SPECULAR_NAME = "texture_specular_";
 const std::string Mesh::_TEXTURE_NORMAL_NAME = "texture_normal_";
 const std::string Mesh::_TEXTURE_HEIGHT_NAME = "texture_height_";
 
-Mesh::Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Mesh::Texture>& textures) :
+Mesh::Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<Mesh::Texture>& textures) :
     Vertices(vertices),
     Indices(indices),
     Textures(textures)
@@ -14,12 +14,12 @@ Mesh::Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<unsigned int>& indic
     setupMesh();
 }
 
-unsigned int Mesh::LoadMaterialTextureFromFile(std::string path, const std::string& directory, bool gamma, bool flipVertical,
+uint32_t Mesh::LoadMaterialTextureFromFile(const std::string& path, const std::string& directory, bool gamma, bool flipVertical,
     GLenum textureWrapping, GLenum mipmapFilteringMin, GLenum mipmapFilteringMax)
 {
-    std::string fullPath = directory + "/" + path;
+    const std::string fullPath = directory + "/" + path;
 
-    unsigned int textureId;
+    uint32_t textureId;
 
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
@@ -27,10 +27,7 @@ unsigned int Mesh::LoadMaterialTextureFromFile(std::string path, const std::stri
     /*
     * Load and generate texture.
     */
-    if (flipVertical)
-    {
-        stbi_set_flip_vertically_on_load(true);
-    }
+    stbi_set_flip_vertically_on_load(flipVertical);
 
     int width, height, nChannels;
     unsigned char* data = stbi_load(fullPath.c_str(), &width, &height, &nChannels, 0);
@@ -75,10 +72,10 @@ unsigned int Mesh::LoadMaterialTextureFromFile(std::string path, const std::stri
 
 void Mesh::Draw(Shader& shader)
 {
-    unsigned int diffuseCount = 1;
-    unsigned int specularCount = 1;
-    unsigned int normalCount = 1;
-    unsigned int heightCount = 1;
+    uint32_t diffuseCount = 1;
+    uint32_t specularCount = 1;
+    uint32_t normalCount = 1;
+    uint32_t heightCount = 1;
 
     for (std::size_t i = 0; i < Textures.size(); i++)
     {
@@ -155,7 +152,7 @@ void Mesh::setupMesh()
     * The indices of vertices in a mesh.
     */
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * Indices.size(), Indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * Indices.size(), Indices.data(), GL_STATIC_DRAW);
 
     /*
     * VERTEX ATTRIBUTE ARRAY

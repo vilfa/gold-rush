@@ -66,6 +66,12 @@
     <None Include="resources\shaders\vertex_light_source.vert" />
     <None Include="resources\shaders\model_loading.frag" />
     <None Include="resources\shaders\model_loading.vert" />
+    <None Include="resources\shaders\depth_testing.frag" />
+    <None Include="resources\shaders\depth_testing.vert" />
+    <None Include="resources\shaders\stencils.frag" />
+    <None Include="resources\shaders\stencils.vert" />
+    <None Include="resources\shaders\single_color.frag" />
+    <None Include="resources\shaders\single_color.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">

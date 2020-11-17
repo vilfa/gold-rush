@@ -73,16 +73,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\vilfa\OneDrive\Dokumenti\Code\idea\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\vilfa\OneDrive\Dokumenti\Code\idea\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\vilfa\Dropbox\code\idea\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\vilfa\Dropbox\code\idea\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\vilfa\OneDrive\Dokumenti\Code\idea\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\vilfa\OneDrive\Dokumenti\Code\idea\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\vilfa\Dropbox\code\idea\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\vilfa\Dropbox\code\idea\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -122,12 +122,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>assimp-vc142-mtd.lib;glfw3.lib;glfw3dll.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/verbose:lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,11 +165,17 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\depth_testing.frag" />
+    <None Include="resources\shaders\depth_testing.vert" />
     <None Include="resources\shaders\fragment.frag" />
     <None Include="resources\shaders\fragment_light.frag" />
     <None Include="resources\shaders\fragment_light_source.frag" />
     <None Include="resources\shaders\model_loading.frag" />
     <None Include="resources\shaders\model_loading.vert" />
+    <None Include="resources\shaders\single_color.frag" />
+    <None Include="resources\shaders\single_color.vert" />
+    <None Include="resources\shaders\stencils.frag" />
+    <None Include="resources\shaders\stencils.vert" />
     <None Include="resources\shaders\vertex.vert" />
     <None Include="resources\shaders\vertex_light.vert" />
     <None Include="resources\shaders\vertex_light_source.vert" />
