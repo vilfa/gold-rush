@@ -1,2 +1,2 @@
 # idea
-a simple game engine
+A *very* simple game engine.
