@@ -72,6 +72,8 @@
     <None Include="resources\shaders\stencils.vert" />
     <None Include="resources\shaders\single_color.frag" />
     <None Include="resources\shaders\single_color.vert" />
+    <None Include="resources\shaders\blending.frag" />
+    <None Include="resources\shaders\blending.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">

@@ -63,16 +63,10 @@ int main()
 	* so we don't store the information of the previous frame.
 	*/
 	window.SetGlobalEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_ALWAYS);
-	//glDepthFunc(GL_LESS);
-	//glDepthMask(GL_FALSE); // Do you want to make the depth buffer read-only? | setting this value to 1 has no real effect
 
 	/*
 	* Enable stencil testing (used for outlinining objects)
 	*/
-	window.SetGlobalEnable(GL_STENCIL_TEST);
-	// sets what actions we perform based on the acquired stencil buffer
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // function signature: glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass)
 
 	/*----- GEOMETRY -----*/
 	/*glm::vec3 cubePositions[] = {
@@ -139,6 +133,7 @@ int main()
 		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
+
 	float planeVertices[] = {
 		// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
 		 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
@@ -149,8 +144,20 @@ int main()
 		-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
 		 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
 	};
+
+	float grassVertices[] = {
+		// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+		0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+		1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+
+		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+		1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+		1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+	};
+
 	// cube VAO
-	unsigned int cubeVAO, cubeVBO;
+	uint32_t cubeVAO, cubeVBO;
 	glGenVertexArrays(1, &cubeVAO);
 	glGenBuffers(1, &cubeVBO);
 	glBindVertexArray(cubeVAO);
@@ -161,8 +168,9 @@ int main()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
+
 	// plane VAO
-	unsigned int planeVAO, planeVBO;
+	uint32_t planeVAO, planeVBO;
 	glGenVertexArrays(1, &planeVAO);
 	glGenBuffers(1, &planeVBO);
 	glBindVertexArray(planeVAO);
@@ -174,24 +182,41 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
 
-	
+	// grass & grass VAO
+	std::vector<glm::vec3> vegetation;
+	vegetation.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
+	vegetation.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
+	vegetation.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
+	vegetation.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
+	vegetation.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
+
+	uint32_t grassVAO, grassVBO;
+	glGenVertexArrays(1, &grassVAO);
+	glGenBuffers(1, &grassVBO);
+	glBindVertexArray(grassVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), &grassVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glBindVertexArray(0);
+
 	/*----- SHADERS -----*/
-	//Shader objectShader("resources/shaders/model_loading.vert", "resources/shaders/model_loading.frag");
-	Shader depthTestingShader("resources/shaders/depth_testing.vert", "resources/shaders/depth_testing.frag");
 	Shader normalShader("resources/shaders/stencils.vert", "resources/shaders/stencils.frag");
-	Shader singleColorShader("resources/shaders/single_color.vert", "resources/shaders/single_color.frag");
+	Shader blendingShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
 	
 	/*----- TEXTURES -----*/
 	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
 	uint32_t floorTexture = loadTexture("resources/textures/wall.jpg");
+	uint32_t grassTexture = loadTexture("resources/textures/grass.png");
 
 	/*----- MODELS -----*/
 	//Model survivalBackpack("resources/models/backpack/backpack.obj");
 
-	//depthTestingShader.Use();
-	//depthTestingShader.SetInt("texture1", 0);
 	normalShader.Use();
-	normalShader.SetInt("texture1", 0);
+	normalShader.SetInt("texture1", GL_TEXTURE0);
+
+	blendingShader.Use();
+	blendingShader.SetInt("texture1", GL_TEXTURE1);
 
 	/*----- RENDER -----*/
 	while (!window.GetWindowShouldClose())
@@ -208,35 +233,10 @@ int main()
 		processInput(window.GetWindow(), &camera, (float)deltaTime);
 
 		/*--- Render commands ---*/
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffer
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // Clear color and depth buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		/*--- Draw ---*/
-		////objectShader.Use();
-		//depthTestingShader.Use();
-
-		//// View and projection transformations
-		//glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 200.0f);
-		////objectShader.SetMat4("projection", projection, false);
-		//depthTestingShader.SetMat4("projection", projection, false);
-		//glm::mat4 view = camera.GetViewMatrix();
-		////objectShader.SetMat4("view", view, false);
-		//depthTestingShader.SetMat4("view", view, false);
-
-		//// World transformations
-		//glm::mat4 model = glm::mat4(1.0f);
-		//
-		//model = glm::mat4(1.0f);
-		//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		//model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		////objectShader.SetMat4("model", model, false);
-		//depthTestingShader.SetMat4("model", model, false);
-
-		////survivalBackpack.Draw(objectShader);
-
-
-		//depthTestingShader.Use();
 		normalShader.Use();
 
 		glm::mat4 model = glm::mat4(1.0f);
@@ -246,29 +246,22 @@ int main()
 		normalShader.SetMat4("view", view, GL_FALSE);
 		normalShader.SetMat4("projection", projection, GL_FALSE);
 
-		// TURN OFF STENCIL TESTING
-		glStencilMask(0x00); // DISABLE writing to stencil buffer, first draw floor
-
 		// DRAW FLOOR
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, floorTexture);
-		
 		glBindVertexArray(planeVAO);
 
 		normalShader.SetMat4("model", model, GL_FALSE);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 
-		// TURN ON STENCIL TESTING
-		glStencilFunc(GL_ALWAYS, 1, 0xFF); // function signature: glStencilFunc(GLenum func, GLint ref, GLuint mask) | ALL FRAGMENTS SHOULD PASS STENCIL TEST
-		glStencilMask(0xFF); // ENABLE writing to stencil buffer, write bits to stencil buffer as is
 
 		// DRAW CUBES
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, cubeTexture);
-
 		glBindVertexArray(cubeVAO);
 
+		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
 		normalShader.SetMat4("model", model, GL_FALSE);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -277,41 +270,44 @@ int main()
 		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
 		normalShader.SetMat4("model", model, GL_FALSE);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		
-		// TURN OFF STENCIL TESTING
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilMask(0x00);
-		glDisable(GL_DEPTH_TEST);
 
-		// DRAW CUBE OUTLINES
-		singleColorShader.Use();
+		
+		// DRAW GRASS
+		blendingShader.Use();
+
 		view = camera.GetViewMatrix();
 		projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
-		singleColorShader.SetMat4("view", view, GL_FALSE);
-		singleColorShader.SetMat4("projection", projection, GL_FALSE);
 
-		model = glm::mat4(1.0f);
-		glBindVertexArray(cubeVAO);
-		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-		model = glm::scale(model, glm::vec3(1.15f, 1.15f, 1.15f));
-		singleColorShader.SetMat4("model", model, GL_FALSE);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		blendingShader.SetMat4("view", view, GL_FALSE);
+		blendingShader.SetMat4("projection", projection, GL_FALSE);
 
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.15f, 1.15f, 1.15f));
-		singleColorShader.SetMat4("model", model, GL_FALSE);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(grassVAO);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, grassTexture);
 		
-		// TURN ON STENCIL TESTING
-		glStencilMask(0xFF); // ENABLE writing to stencil buffer, write bits to stencil buffer as is
-		glStencilFunc(GL_ALWAYS, 1, 0xFF); // function signature: glStencilFunc(GLenum func, GLint ref, GLuint mask) | ALL FRAGMENTS SHOULD PASS STENCIL TEST
-		glEnable(GL_DEPTH_TEST);
+		for (size_t i = 0; i < vegetation.size(); i++)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, vegetation[i]);
+			blendingShader.SetMat4("model", model, GL_FALSE);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
+
+	/*
+	* Clean up.
+	*/
+	glDeleteVertexArrays(1, &cubeVAO);
+	glDeleteVertexArrays(1, &planeVAO);
+	glDeleteVertexArrays(1, &grassVAO);
+	glDeleteBuffers(1, &cubeVBO);
+	glDeleteBuffers(1, &planeVBO);
+	glDeleteBuffers(1, &grassVBO);
+
 
 	/*
 	* Terminate program.
@@ -338,7 +334,6 @@ void processInput(GLFWwindow* window, Camera* camera, float deltaTime)
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	// Shift key makes camera faster.
 	CAMSPDenum speed;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{

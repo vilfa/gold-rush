@@ -165,6 +165,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\blending.frag" />
+    <None Include="resources\shaders\blending.vert" />
     <None Include="resources\shaders\depth_testing.frag" />
     <None Include="resources\shaders\depth_testing.vert" />
     <None Include="resources\shaders\fragment.frag" />
