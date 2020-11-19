@@ -63,6 +63,7 @@ int main()
 	* so we don't store the information of the previous frame.
 	*/
 	window.SetGlobalEnable(GL_DEPTH_TEST);
+	window.SetGlobalEnable(GL_BLEND); // Enable blending.
 
 	/*
 	* Enable stencil testing (used for outlinining objects)
@@ -197,35 +198,35 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), &grassVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
 
 	/*----- SHADERS -----*/
-	Shader normalShader("resources/shaders/stencils.vert", "resources/shaders/stencils.frag");
-	Shader blendingShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
+	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
 	
 	/*----- TEXTURES -----*/
 	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
 	uint32_t floorTexture = loadTexture("resources/textures/wall.jpg");
 	uint32_t grassTexture = loadTexture("resources/textures/grass.png");
+	uint32_t windowTexture = loadTexture("resources/textures/window.png");
 
 	/*----- MODELS -----*/
 	//Model survivalBackpack("resources/models/backpack/backpack.obj");
 
+	/*----- RENDER -----*/
 	normalShader.Use();
 	normalShader.SetInt("texture1", GL_TEXTURE0);
+	//glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	blendingShader.Use();
-	blendingShader.SetInt("texture1", GL_TEXTURE1);
-
-	/*----- RENDER -----*/
 	while (!window.GetWindowShouldClose())
 	{
 		/*--- Frame time logic ---*/
 		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
 
 		window.SetWindowTitle(window.GetWindowTitle() + ("[fps:" + std::to_string(1 / deltaTime) + ",frametime:" + std::to_string(deltaTime * 1000) + "]"));
 
@@ -237,12 +238,11 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		/*--- Draw ---*/
-		normalShader.Use();
-
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
 
+		normalShader.Use();
 		normalShader.SetMat4("view", view, GL_FALSE);
 		normalShader.SetMat4("projection", projection, GL_FALSE);
 
@@ -273,23 +273,28 @@ int main()
 
 		
 		// DRAW GRASS
-		blendingShader.Use();
-
 		view = camera.GetViewMatrix();
 		projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
-
-		blendingShader.SetMat4("view", view, GL_FALSE);
-		blendingShader.SetMat4("projection", projection, GL_FALSE);
-
-		glBindVertexArray(grassVAO);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, grassTexture);
+		normalShader.SetMat4("view", view, GL_FALSE);
+		normalShader.SetMat4("projection", projection, GL_FALSE);
 		
-		for (size_t i = 0; i < vegetation.size(); i++)
+		glBindVertexArray(grassVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, grassTexture);
+		for (std::size_t i = 0; i < vegetation.size(); i++)
 		{
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, vegetation[i]);
-			blendingShader.SetMat4("model", model, GL_FALSE);
+			normalShader.SetMat4("model", model, GL_FALSE);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
+		
+		glBindTexture(GL_TEXTURE_2D, windowTexture);
+		for (std::size_t i = 0; i < vegetation.size(); i++)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, vegetation[i] + glm::vec3(0.0f, 0.0f, 0.1f));
+			normalShader.SetMat4("model", model, GL_FALSE);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
 
@@ -420,8 +425,17 @@ uint32_t loadTexture(const std::string& path)
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		if (format == GL_RGBA)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		}
+		else
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		}
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
