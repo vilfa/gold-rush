@@ -59,15 +59,12 @@ int main()
 	window.SetMouseScrollCallback(mouseScrollCallback);
 
 	/*
-	* Enable depth buffer (depth testing). The buffer must be cleared for each frame
-	* so we don't store the information of the previous frame.
+	* Global enables. (glEnable function calls).
+	* Use Window::SetGlobalEnable and Window::SetGlobalDisable instead of direct calls.
 	*/
-	window.SetGlobalEnable(GL_DEPTH_TEST);
+	window.SetGlobalEnable(GL_DEPTH_TEST); // Enable depth buffer (depth testing). Don't forget to clear the buffer each frame.
 	window.SetGlobalEnable(GL_BLEND); // Enable blending.
-
-	/*
-	* Enable stencil testing (used for outlinining objects)
-	*/
+	window.SetGlobalEnable(GL_CULL_FACE);
 
 	/*----- GEOMETRY -----*/
 	/*glm::vec3 cubePositions[] = {
@@ -91,48 +88,48 @@ int main()
 	};*/
 
 	float cubeVertices[] = {
-		// positions          // texture Coords
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		// back face
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right    
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right              
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left                
+		// front face
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right        
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left        
+		// left face
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left       
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+		// right face
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right      
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right          
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+		// bottom face          
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left        
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+		// top face
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right                 
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, // bottom-left  
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f  // top-left              
 	};
 
 	float planeVertices[] = {
@@ -183,7 +180,7 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
 
-	// grass & grass VAO
+	// grass & grass VAO, also used as window positions (with offset)
 	std::vector<glm::vec3> vegetation;
 	vegetation.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
 	vegetation.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
@@ -198,9 +195,9 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), &grassVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
 
 	/*----- SHADERS -----*/
@@ -218,8 +215,12 @@ int main()
 	/*----- RENDER -----*/
 	normalShader.Use();
 	normalShader.SetInt("texture1", GL_TEXTURE0);
+
+	// Render parameters
 	//glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -290,10 +291,22 @@ int main()
 		}
 		
 		glBindTexture(GL_TEXTURE_2D, windowTexture);
+
+		// Sort the winows by distance in order to not override the previously drawn windows
+		std::map<float, glm::vec3> windowsSortedByDistance; // The map datatype automatically sorts the values by key
 		for (std::size_t i = 0; i < vegetation.size(); i++)
 		{
+			float distance = glm::length(camera.Position - vegetation[i]);
+			windowsSortedByDistance.emplace(distance, vegetation[i]); // not usually used this way, but what the hell (also, it's supposedly faster)
+			//windowsSortedByDistance.insert({ distance, vegetation[i] });
+			//windowsSortedByDistance.insert(std::map<float, glm::vec3>::value_type(distance, vegetation[i]));
+		}
+
+		for (std::map<float, glm::vec3>::reverse_iterator it = windowsSortedByDistance.rbegin();
+			it != windowsSortedByDistance.rend(); it++)
+		{
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, vegetation[i] + glm::vec3(0.0f, 0.0f, 0.1f));
+			model = glm::translate(model, it->second + glm::vec3(0.0f, 0.0f, 0.1f));
 			normalShader.SetMat4("model", model, GL_FALSE);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
