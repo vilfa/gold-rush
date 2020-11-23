@@ -64,7 +64,7 @@ int main()
 	*/
 	window.SetGlobalEnable(GL_DEPTH_TEST); // Enable depth buffer (depth testing). Don't forget to clear the buffer each frame.
 	window.SetGlobalEnable(GL_BLEND); // Enable blending.
-	window.SetGlobalEnable(GL_CULL_FACE);
+	window.SetGlobalEnable(GL_CULL_FACE); // Enable face culling.
 
 	/*----- GEOMETRY -----*/
 	/*glm::vec3 cubePositions[] = {
@@ -147,11 +147,11 @@ int main()
 		// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
 		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
 		0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-		1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+		0.0f, -0.5f,  1.0f,  1.0f,  1.0f,
 
 		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-		1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-		1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+		0.0f, -0.5f,  1.0f,  1.0f,  1.0f,
+		0.0f,  0.5f,  1.0f,  1.0f,  0.0f
 	};
 
 	// cube VAO
@@ -202,6 +202,7 @@ int main()
 
 	/*----- SHADERS -----*/
 	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
+	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
 	
 	/*----- TEXTURES -----*/
 	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
@@ -210,7 +211,7 @@ int main()
 	uint32_t windowTexture = loadTexture("resources/textures/window.png");
 
 	/*----- MODELS -----*/
-	//Model survivalBackpack("resources/models/backpack/backpack.obj");
+	Model survivalBackpack("resources/models/backpack/backpack.obj");
 
 	/*----- RENDER -----*/
 	normalShader.Use();
@@ -310,6 +311,13 @@ int main()
 			normalShader.SetMat4("model", model, GL_FALSE);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
+
+		backpackShader.Use();
+		backpackShader.SetMat4("view", view, GL_FALSE);
+		backpackShader.SetMat4("projection", projection, GL_FALSE);
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f));
+		backpackShader.SetMat4("model", model, GL_FALSE);
+		survivalBackpack.Draw(backpackShader);
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());

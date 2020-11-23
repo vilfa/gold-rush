@@ -11,7 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-enum class SHTYPEenum {
+enum class SHTYPEenum
+{
 	VERTEX,
 	FRAGMENT,
 	PROGRAM
@@ -22,7 +23,7 @@ class Shader
 public:
 	unsigned int ID;
 
-	Shader(const char* vertexPath, const char* fragmentPath);
+	Shader(const std::string& vertexPath, const std::string& fragmentPath);
 	
 	void Use() const; // use/activate shader
 

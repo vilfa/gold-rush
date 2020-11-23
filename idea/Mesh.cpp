@@ -72,6 +72,8 @@ uint32_t Mesh::LoadMaterialTextureFromFile(const std::string& path, const std::s
 
 void Mesh::Draw(Shader& shader)
 {
+    shader.Use();
+
     uint32_t diffuseCount = 1;
     uint32_t specularCount = 1;
     uint32_t normalCount = 1;
@@ -81,8 +83,8 @@ void Mesh::Draw(Shader& shader)
     {
         glActiveTexture(GL_TEXTURE0 + (GLint)i);
 
-        std::string textureNumber;
         TEXTYPEenum textureType;
+        std::string textureNumber;
         std::string textureName;
 
         try
