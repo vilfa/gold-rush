@@ -20,6 +20,7 @@ void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
 void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
 uint32_t loadTexture(const std::string& path);
+uint32_t loadCubemap(const std::vector<std::string>& paths);
 
 /*
 * Window setup
@@ -65,7 +66,7 @@ int main()
 	*/
 	window.SetGlobalEnable(GL_DEPTH_TEST); // Enable depth buffer (depth testing). Don't forget to clear the buffer each frame.
 	window.SetGlobalEnable(GL_BLEND); // Enable blending.
-	//window.SetGlobalEnable(GL_CULL_FACE); // Enable face culling.
+	window.SetGlobalEnable(GL_CULL_FACE); // Enable face culling.
 
 	/*
 	* Framebuffer, texture color buffer (the render output is stored to a texture, can easily be used in shaders) and
@@ -113,92 +114,60 @@ int main()
 	
 
 	/*----- GEOMETRY -----*/
-	/*glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
+	float skyboxVertices[] = {
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
 	};
 
-	glm::vec3 pointLightPositions[] = {
-		glm::vec3(0.7f,  0.2f,  2.0f),
-		glm::vec3(2.3f, -3.3f, -4.0f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
-		glm::vec3(0.0f,  0.0f, -3.0f)
-	};*/
-
-	float cubeVertices[] = {
-		// back face
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right    
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right              
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left                
-		// front face
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right        
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left        
-		// left face
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left       
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-		// right face
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right      
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right          
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-		// bottom face          
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left        
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-		// top face
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right                 
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, // bottom-left  
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f  // top-left              
-	};
-
-	float planeVertices[] = {
-		// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
-		 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-		-5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
-		-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
-
-		 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-		-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
-		 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
-	};
-
-	float grassVertices[] = {
-		// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-		0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-		0.0f, -0.5f,  1.0f,  1.0f,  1.0f,
-
-		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-		0.0f, -0.5f,  1.0f,  1.0f,  1.0f,
-		0.0f,  0.5f,  1.0f,  1.0f,  0.0f
-	};
+	uint32_t skyboxVAO, skyboxVBO;
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
+	glBindVertexArray(0);
 
 	float quadVertices[] = {
 		// positions   // texCoords
@@ -210,52 +179,6 @@ int main()
 		 1.0f, -1.0f,  1.0f, 0.0f,
 		 1.0f,  1.0f,  1.0f, 1.0f
 	};
-
-	// cube VAO
-	uint32_t cubeVAO, cubeVBO;
-	glGenVertexArrays(1, &cubeVAO);
-	glGenBuffers(1, &cubeVBO);
-	glBindVertexArray(cubeVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glBindVertexArray(0);
-
-	// plane VAO
-	uint32_t planeVAO, planeVBO;
-	glGenVertexArrays(1, &planeVAO);
-	glGenBuffers(1, &planeVBO);
-	glBindVertexArray(planeVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glBindVertexArray(0);
-
-	// grass & grass VAO, also used as window positions (with offset)
-	std::vector<glm::vec3> vegetation;
-	vegetation.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
-	vegetation.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
-	vegetation.push_back(glm::vec3(0.0f, 0.0f, 0.7f));
-	vegetation.push_back(glm::vec3(-0.3f, 0.0f, -2.3f));
-	vegetation.push_back(glm::vec3(0.5f, 0.0f, -0.6f));
-
-	uint32_t grassVAO, grassVBO;
-	glGenVertexArrays(1, &grassVAO);
-	glGenBuffers(1, &grassVBO);
-	glBindVertexArray(grassVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), &grassVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) (3 * sizeof(float)));
-	glBindVertexArray(0);
 
 	uint32_t quadVAO, quadVBO;
 	glGenVertexArrays(1, &quadVAO);
@@ -274,26 +197,35 @@ int main()
 	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
 	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
 	Shader framebufferShader("resources/shaders/framebuffer_shader.vert", "resources/shaders/framebuffer_shader.frag");
+	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
 	
 	/*----- TEXTURES -----*/
 	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
 	uint32_t floorTexture = loadTexture("resources/textures/wall.jpg");
 	uint32_t grassTexture = loadTexture("resources/textures/grass.png");
 	uint32_t windowTexture = loadTexture("resources/textures/window.png");
+	
+	std::vector<std::string> skyboxPaths
+	{
+		"resources/skybox/right.jpg",
+		"resources/skybox/left.jpg",
+		"resources/skybox/top.jpg",
+		"resources/skybox/bottom.jpg",
+		"resources/skybox/front.jpg",
+		"resources/skybox/back.jpg"
+	};
+	uint32_t skyboxTexture = loadCubemap(skyboxPaths);
 
 	/*----- MODELS -----*/
 	Model survivalBackpack("resources/models/backpack/backpack.obj");
 
 	/*----- RENDER -----*/
-	normalShader.Use();
-	normalShader.SetInt("texture1", GL_TEXTURE0);
 
 	// Render parameters
-	//glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
+	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	//glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
-
+	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 
 	/*
 	* So, to draw the scene to a single texture we'll have to take the following steps:
@@ -314,99 +246,42 @@ int main()
 		processInput(window.GetWindow(), &camera, (float)deltaTime);
 
 		/*--- Render commands ---*/
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		//glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Not using the stencil buffer right now.
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		/*--- Draw ---*/
 		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = camera.GetViewMatrix();
+		glm::mat4 view;
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
 
-		normalShader.Use();
-		normalShader.SetMat4("view", view, GL_FALSE);
-		normalShader.SetMat4("projection", projection, GL_FALSE);
-
-		// DRAW FLOOR
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, floorTexture);
-		glBindVertexArray(planeVAO);
-
-		normalShader.SetMat4("model", model, GL_FALSE);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
-
-
-		// DRAW CUBES
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, cubeTexture);
-		glBindVertexArray(cubeVAO);
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-		normalShader.SetMat4("model", model, GL_FALSE);
+		// Skybox
+		skyboxShader.Use();
+		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+		skyboxShader.SetMat4("view", view, GL_FALSE);
+		skyboxShader.SetMat4("projection", projection, GL_FALSE);
+		glDepthMask(GL_FALSE);
+		glBindVertexArray(skyboxVAO);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDepthMask(GL_TRUE);
 
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-		normalShader.SetMat4("model", model, GL_FALSE);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		
-		// DRAW GRASS
-		view = camera.GetViewMatrix();
-		projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
-		normalShader.SetMat4("view", view, GL_FALSE);
-		normalShader.SetMat4("projection", projection, GL_FALSE);
-		
-		glBindVertexArray(grassVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, grassTexture);
-		for (std::size_t i = 0; i < vegetation.size(); i++)
-		{
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, vegetation[i]);
-			normalShader.SetMat4("model", model, GL_FALSE);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-		}
-		
-		glBindTexture(GL_TEXTURE_2D, windowTexture);
-
-		// Sort the winows by distance in order to not override the previously drawn windows
-		std::map<float, glm::vec3> windowsSortedByDistance; // The map datatype automatically sorts the values by key
-		for (std::size_t i = 0; i < vegetation.size(); i++)
-		{
-			float distance = glm::length(camera.Position - vegetation[i]);
-			windowsSortedByDistance.emplace(distance, vegetation[i]); // not usually used this way, but what the hell (also, it's supposedly faster)
-			//windowsSortedByDistance.insert({ distance, vegetation[i] });
-			//windowsSortedByDistance.insert(std::map<float, glm::vec3>::value_type(distance, vegetation[i]));
-		}
-
-		for (std::map<float, glm::vec3>::reverse_iterator it = windowsSortedByDistance.rbegin();
-			it != windowsSortedByDistance.rend(); it++)
-		{
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, it->second + glm::vec3(0.0f, 0.0f, 0.1f));
-			normalShader.SetMat4("model", model, GL_FALSE);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-		}
-
+		// Backpack
 		backpackShader.Use();
+		view = camera.GetViewMatrix();
 		backpackShader.SetMat4("view", view, GL_FALSE);
 		backpackShader.SetMat4("projection", projection, GL_FALSE);
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f));
 		backpackShader.SetMat4("model", model, GL_FALSE);
 		survivalBackpack.Draw(backpackShader);
 
-		/*--- END DRAW ---*/
-		glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind back to the default framebuffer.
-		framebufferShader.Use();
-		glBindVertexArray(quadVAO);
-		glDisable(GL_DEPTH_TEST);
-		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		/*--- Switch to default framebuffer and draw to window ---*/
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind back to the default framebuffer.
+		//glDisable(GL_DEPTH_TEST);
+
+		//framebufferShader.Use();
+		//glBindVertexArray(quadVAO);
+		//glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
@@ -416,15 +291,9 @@ int main()
 	/*
 	* Clean up.
 	*/
-	glDeleteVertexArrays(1, &cubeVAO);
-	glDeleteVertexArrays(1, &planeVAO);
-	glDeleteVertexArrays(1, &grassVAO);
-	glDeleteVertexArrays(1, &quadVAO);
-	glDeleteBuffers(1, &cubeVBO);
-	glDeleteBuffers(1, &planeVBO);
-	glDeleteBuffers(1, &grassVBO);
-	glDeleteBuffers(1, &quadVBO);
 	glDeleteFramebuffers(1, &framebuffer);
+	glDeleteVertexArrays(1, &quadVAO);
+	glDeleteBuffers(1, &quadVBO);
 
 
 	/*
@@ -561,5 +430,44 @@ uint32_t loadTexture(const std::string& path)
 		stbi_image_free(data);
 	}
 	
+	return textureID;
+}
+
+/*
+* Utility cubemap loading function.
+*/
+uint32_t loadCubemap(const std::vector<std::string>& paths)
+{
+	uint32_t textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nComp;
+	unsigned char* data;
+	for (std::size_t i = 0; i < paths.size(); i++)
+	{
+		data = stbi_load(paths[i].c_str(), &width, &height, &nComp, 0);
+		if (data)
+		{
+			glTexImage2D(
+				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+			);
+			
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "ERROR::MAIN::LOAD_CUBEMAP::CUBEMAP_LOAD_ERROR" << std::endl;
+			std::cout << "Cubemap load failed at path: " << paths[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+
 	return textureID;
 }
