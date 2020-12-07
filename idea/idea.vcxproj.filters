@@ -76,6 +76,8 @@
     <None Include="resources\shaders\blending.vert" />
     <None Include="resources\shaders\backpack_shader.frag" />
     <None Include="resources\shaders\backpack_shader.vert" />
+    <None Include="resources\shaders\framebuffer_shader.frag" />
+    <None Include="resources\shaders\framebuffer_shader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">

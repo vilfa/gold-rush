@@ -24,8 +24,8 @@ uint32_t loadTexture(const std::string& path);
 /*
 * Window setup
 */
-const uint32_t SCR_WIDTH = 1280;
-const uint32_t SCR_HEIGHT = 720;
+const uint32_t SCR_WIDTH = 1600;
+const uint32_t SCR_HEIGHT = 900;
 const std::string WINDOW_NAME = "big pp";
 
 /*
@@ -61,10 +61,56 @@ int main()
 	/*
 	* Global enables. (glEnable function calls).
 	* Use Window::SetGlobalEnable and Window::SetGlobalDisable instead of direct calls.
+	* Makes the code more readable (will probably move this to a e.g. Renderer class).
 	*/
 	window.SetGlobalEnable(GL_DEPTH_TEST); // Enable depth buffer (depth testing). Don't forget to clear the buffer each frame.
 	window.SetGlobalEnable(GL_BLEND); // Enable blending.
-	window.SetGlobalEnable(GL_CULL_FACE); // Enable face culling.
+	//window.SetGlobalEnable(GL_CULL_FACE); // Enable face culling.
+
+	/*
+	* Framebuffer, texture color buffer (the render output is stored to a texture, can easily be used in shaders) and
+	* render buffer objects (can not be directly read from, which gives them a performance edge over using textures as
+	* buffer objects).
+	*/
+	uint32_t framebuffer;
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); // Bind framebuffer.
+
+	// The framebuffer must be complete (at least one buffer - color, depth or stencil; at least on color attachment;
+	// all atachments should be complete - allocated memory; each buffer must have the same number of samples).
+
+	uint32_t textureColorBuffer;
+	glGenTextures(1, &textureColorBuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorBuffer); // Bind texture color buffer.
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL); // Allocate memory - buffer completeness.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Texture parameters don't really matter here.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Texture parameters don't really matter here.
+
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind the texture.
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0); // Attach it to the currently bound framebuffer as a color buffer.
+
+
+	// Render buffer object.
+	uint32_t rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo); // Bind.
+
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // Allocate memory.
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0); // Unbind.
+
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // Attach it to the currently bound framebuffer as a depth and stencil buffer.
+
+
+	// Check that the frambuffer is complete.
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "ERROR::MAIN::FRAMEBUFFER::FRAMEBUFFER_INCOMPLETE" << std::endl;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Unbind the framebuffer, we're not using it yet.
+	
 
 	/*----- GEOMETRY -----*/
 	/*glm::vec3 cubePositions[] = {
@@ -154,6 +200,17 @@ int main()
 		0.0f,  0.5f,  1.0f,  1.0f,  0.0f
 	};
 
+	float quadVertices[] = {
+		// positions   // texCoords
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f
+	};
+
 	// cube VAO
 	uint32_t cubeVAO, cubeVBO;
 	glGenVertexArrays(1, &cubeVAO);
@@ -195,14 +252,28 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), &grassVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) (3 * sizeof(float)));
 	glBindVertexArray(0);
+
+	uint32_t quadVAO, quadVBO;
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*) 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*) (2 * sizeof(float)));
+	glBindVertexArray(0);
+
 
 	/*----- SHADERS -----*/
 	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
 	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
+	Shader framebufferShader("resources/shaders/framebuffer_shader.vert", "resources/shaders/framebuffer_shader.frag");
 	
 	/*----- TEXTURES -----*/
 	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
@@ -220,9 +291,16 @@ int main()
 	// Render parameters
 	//glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
+	//glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	//glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 
+
+	/*
+	* So, to draw the scene to a single texture we'll have to take the following steps:
+	*	Render the scene as usual with the new framebuffer bound as the active framebuffer.
+	*	Bind to the default framebuffer.
+	*	Draw a quad that spans the entire screen with the new framebuffer's color buffer as its texture.
+	*/
 	while (!window.GetWindowShouldClose())
 	{
 		/*--- Frame time logic ---*/
@@ -236,8 +314,11 @@ int main()
 		processInput(window.GetWindow(), &camera, (float)deltaTime);
 
 		/*--- Render commands ---*/
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Not using the stencil buffer right now.
 
 		/*--- Draw ---*/
 		glm::mat4 model = glm::mat4(1.0f);
@@ -319,6 +400,14 @@ int main()
 		backpackShader.SetMat4("model", model, GL_FALSE);
 		survivalBackpack.Draw(backpackShader);
 
+		/*--- END DRAW ---*/
+		glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind back to the default framebuffer.
+		framebufferShader.Use();
+		glBindVertexArray(quadVAO);
+		glDisable(GL_DEPTH_TEST);
+		glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -330,9 +419,12 @@ int main()
 	glDeleteVertexArrays(1, &cubeVAO);
 	glDeleteVertexArrays(1, &planeVAO);
 	glDeleteVertexArrays(1, &grassVAO);
+	glDeleteVertexArrays(1, &quadVAO);
 	glDeleteBuffers(1, &cubeVBO);
 	glDeleteBuffers(1, &planeVBO);
 	glDeleteBuffers(1, &grassVBO);
+	glDeleteBuffers(1, &quadVBO);
+	glDeleteFramebuffers(1, &framebuffer);
 
 
 	/*

@@ -6,7 +6,7 @@ in vec2 TextureCoordinates;
 
 uniform sampler2D texture_diffuse_1;
 uniform sampler2D texture_specular_1;
-//uniform sampler2D texture_normal_1;
+uniform sampler2D texture_normal_1;
 
 void main()
 {
