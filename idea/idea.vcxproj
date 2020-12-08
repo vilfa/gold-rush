@@ -165,6 +165,10 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\backpack_reflective_shader.frag" />
+    <None Include="resources\shaders\backpack_reflective_shader.vert" />
+    <None Include="resources\shaders\backpack_refractive_shader.frag" />
+    <None Include="resources\shaders\backpack_refractive_shader.vert" />
     <None Include="resources\shaders\backpack_shader.frag" />
     <None Include="resources\shaders\backpack_shader.vert" />
     <None Include="resources\shaders\blending.frag" />

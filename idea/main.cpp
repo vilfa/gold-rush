@@ -197,6 +197,7 @@ int main()
 	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
 	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
 	Shader backpackReflectiveShader("resources/shaders/backpack_reflective_shader.vert", "resources/shaders/backpack_reflective_shader.frag");
+	Shader backpackRefractiveShader("resources/shaders/backpack_refractive_shader.vert", "resources/shaders/backpack_refractive_shader.frag");
 	Shader framebufferShader("resources/shaders/framebuffer_shader.vert", "resources/shaders/framebuffer_shader.frag");
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
 	
@@ -250,6 +251,8 @@ int main()
 	skyboxShader.SetInt("skybox", 0); // Init skybox.
 	backpackReflectiveShader.Use();
 	backpackReflectiveShader.SetInt("skybox", 0);
+	backpackRefractiveShader.Use();
+	backpackRefractiveShader.SetInt("skybox", 0);
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -274,13 +277,13 @@ int main()
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
 
 		// Backpack
-		backpackReflectiveShader.Use();
+		backpackRefractiveShader.Use();
 		view = camera.GetViewMatrix();
-		backpackReflectiveShader.SetVec3("cameraPos", camera.Position);
-		backpackReflectiveShader.SetMat4("view", view, GL_FALSE);
-		backpackReflectiveShader.SetMat4("projection", projection, GL_FALSE);
-		backpackReflectiveShader.SetMat4("model", model, GL_FALSE);
-		survivalBackpack.Draw(backpackReflectiveShader);
+		backpackRefractiveShader.SetVec3("cameraPos", camera.Position);
+		backpackRefractiveShader.SetMat4("view", view, GL_FALSE);
+		backpackRefractiveShader.SetMat4("projection", projection, GL_FALSE);
+		backpackRefractiveShader.SetMat4("model", model, GL_FALSE);
+		survivalBackpack.Draw(backpackRefractiveShader);
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);

@@ -80,6 +80,10 @@
     <None Include="resources\shaders\framebuffer_shader.vert" />
     <None Include="resources\shaders\skybox_shader.frag" />
     <None Include="resources\shaders\skybox_shader.vert" />
+    <None Include="resources\shaders\backpack_reflective_shader.frag" />
+    <None Include="resources\shaders\backpack_reflective_shader.vert" />
+    <None Include="resources\shaders\backpack_refractive_shader.vert" />
+    <None Include="resources\shaders\backpack_refractive_shader.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">
