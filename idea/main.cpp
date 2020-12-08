@@ -53,7 +53,7 @@ std::uniform_real_distribution<float> randomDistribution(0.0f, 1.0f);
 int main()
 {
 	/*----- WINDOW & GLOBAL ATTRIBUTES -----*/
-	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME);
+	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 4, 0);
 	window.SetFramebufferSizeCallback(framebufferSizeCallback);
 	window.SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	window.SetMouseMoveCallback(mouseMoveCallback);
@@ -114,6 +114,51 @@ int main()
 	
 
 	/*----- GEOMETRY -----*/
+	float cubeVertices[] = {
+		// back face
+		-0.5f, -0.5f, -0.5f, // bottom-left
+		 0.5f, -0.5f, -0.5f, // bottom-right    
+		 0.5f,  0.5f, -0.5f, // top-right              
+		 0.5f,  0.5f, -0.5f, // top-right
+		-0.5f,  0.5f, -0.5f, // top-left
+		-0.5f, -0.5f, -0.5f, // bottom-left                
+		// front face		 
+		-0.5f, -0.5f,  0.5f, // bottom-left
+		 0.5f,  0.5f,  0.5f, // top-right
+		 0.5f, -0.5f,  0.5f, // bottom-right        
+		 0.5f,  0.5f,  0.5f, // top-right
+		-0.5f, -0.5f,  0.5f, // bottom-left
+		-0.5f,  0.5f,  0.5f, // top-left        
+		// left face		 
+		-0.5f,  0.5f,  0.5f, // top-right
+		-0.5f, -0.5f, -0.5f, // bottom-left
+		-0.5f,  0.5f, -0.5f, // top-left       
+		-0.5f, -0.5f, -0.5f, // bottom-left
+		-0.5f,  0.5f,  0.5f, // top-right
+		-0.5f, -0.5f,  0.5f, // bottom-right
+		// right face		 
+		 0.5f,  0.5f,  0.5f, // top-left
+		 0.5f,  0.5f, -0.5f, // top-right      
+		 0.5f, -0.5f, -0.5f, // bottom-right          
+		 0.5f, -0.5f, -0.5f, // bottom-right
+		 0.5f, -0.5f,  0.5f, // bottom-left
+		 0.5f,  0.5f,  0.5f, // top-left
+		// bottom face       
+		-0.5f, -0.5f, -0.5f, // top-right
+		 0.5f, -0.5f,  0.5f, // bottom-left
+		 0.5f, -0.5f, -0.5f, // top-left        
+		 0.5f, -0.5f,  0.5f, // bottom-left
+		-0.5f, -0.5f, -0.5f, // top-right
+		-0.5f, -0.5f,  0.5f, // bottom-right
+		// top face			 
+		-0.5f,  0.5f, -0.5f, // top-left
+		 0.5f,  0.5f, -0.5f, // top-right
+		 0.5f,  0.5f,  0.5f, // bottom-right                 
+		 0.5f,  0.5f,  0.5f, // bottom-right
+		-0.5f,  0.5f,  0.5f, // bottom-left  
+		-0.5f,  0.5f, -0.5f, // top-left              
+	};
+
 	float skyboxVertices[] = {
 		// positions          
 		-1.0f,  1.0f, -1.0f,
@@ -159,16 +204,6 @@ int main()
 		 1.0f, -1.0f,  1.0f
 	};
 
-	uint32_t skyboxVAO, skyboxVBO;
-	glGenVertexArrays(1, &skyboxVAO);
-	glGenBuffers(1, &skyboxVBO);
-	glBindVertexArray(skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
-	glBindVertexArray(0);
-
 	float quadVertices[] = {
 		// positions   // texCoords
 		-1.0f,  1.0f,  0.0f, 1.0f,
@@ -179,6 +214,26 @@ int main()
 		 1.0f, -1.0f,  1.0f, 0.0f,
 		 1.0f,  1.0f,  1.0f, 1.0f
 	};
+
+	uint32_t cubeVAO, cubeVBO;
+	glGenVertexArrays(1, &cubeVAO);
+	glGenBuffers(1, &cubeVBO);
+	glBindVertexArray(cubeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
+	glBindVertexArray(0);
+
+	uint32_t skyboxVAO, skyboxVBO;
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
+	glBindVertexArray(0);
 
 	uint32_t quadVAO, quadVBO;
 	glGenVertexArrays(1, &quadVAO);
@@ -192,7 +247,6 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*) (2 * sizeof(float)));
 	glBindVertexArray(0);
 
-
 	/*----- SHADERS -----*/
 	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
 	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
@@ -200,6 +254,34 @@ int main()
 	Shader backpackRefractiveShader("resources/shaders/backpack_refractive_shader.vert", "resources/shaders/backpack_refractive_shader.frag");
 	Shader framebufferShader("resources/shaders/framebuffer_shader.vert", "resources/shaders/framebuffer_shader.frag");
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
+
+	Shader redShader("resources/shaders/colors.vert", "resources/shaders/red.frag");
+	Shader greenShader("resources/shaders/colors.vert", "resources/shaders/green.frag");
+	Shader blueShader("resources/shaders/colors.vert", "resources/shaders/blue.frag");
+	Shader yellowShader("resources/shaders/colors.vert", "resources/shaders/yellow.frag");
+
+	/*----- UNIFORM BLOCKS ------*/
+	uint32_t uboMatrices;
+	glGenBuffers(1, &uboMatrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices); // The target is GL_UNIFORM_BUFFER.
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW); // We'll use this for the view and projection matrix so 2 * sizeof(glm::mat4)
+	glBindBuffer(GL_UNIFORM_BUFFER, 0); // Unbind.
+
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4)); // Bind the entire buffer to binding point 0.
+
+	// Get all the uniform block indices inside already created shader programs.
+	uint32_t uboIdxRed = glGetUniformBlockIndex(redShader.ID, "Matrices");
+	uint32_t uboIdxGreen = glGetUniformBlockIndex(greenShader.ID, "Matrices");
+	uint32_t uboIdxBlue = glGetUniformBlockIndex(blueShader.ID, "Matrices");
+	uint32_t uboIdxYellow = glGetUniformBlockIndex(yellowShader.ID, "Matrices");
+	//uint32_t uboIdxSkybox = glGetUniformBlockIndex(skyboxShader.ID, "Matrices");
+
+	// Bind all the uniform blocks to binding point 0.
+	glUniformBlockBinding(redShader.ID, uboIdxRed, 0);
+	glUniformBlockBinding(greenShader.ID, uboIdxGreen, 0);
+	glUniformBlockBinding(blueShader.ID, uboIdxBlue, 0);
+	glUniformBlockBinding(yellowShader.ID, uboIdxYellow, 0);
+	//glUniformBlockBinding(skyboxShader.ID, uboIdxSkybox, 0);
 	
 	/*----- TEXTURES -----*/
 	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
@@ -230,10 +312,9 @@ int main()
 	uint32_t skyboxCityTexture = loadCubemap(skyboxCityPaths);
 
 	/*----- MODELS -----*/
-	Model survivalBackpack("resources/models/backpack/backpack.obj");
+	//Model survivalBackpack("resources/models/backpack/backpack.obj");
 
 	/*----- RENDER -----*/
-
 	// Render parameters
 	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -249,10 +330,10 @@ int main()
 
 	skyboxShader.Use();
 	skyboxShader.SetInt("skybox", 0); // Init skybox.
-	backpackReflectiveShader.Use();
+	/*backpackReflectiveShader.Use();
 	backpackReflectiveShader.SetInt("skybox", 0);
 	backpackRefractiveShader.Use();
-	backpackRefractiveShader.SetInt("skybox", 0);
+	backpackRefractiveShader.SetInt("skybox", 0);*/
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -272,25 +353,58 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		/*--- Draw ---*/
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view;
+		glm::mat4 model;
+		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
 
+		// Bind view and projection matrix to the uniform buffer.
+		glBindBuffer(GL_UNIFORM_BUFFER,	uboMatrices);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glBindVertexArray(cubeVAO); // Use the same VAO for all 4 cubes.
+
+		redShader.Use();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));
+		redShader.SetMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		
+		greenShader.Use();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
+		greenShader.SetMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		blueShader.Use();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f));
+		blueShader.SetMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		yellowShader.Use();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f));
+		yellowShader.SetMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glBindVertexArray(0);
+
 		// Backpack
-		backpackRefractiveShader.Use();
-		view = camera.GetViewMatrix();
+		/*backpackRefractiveShader.Use();
 		backpackRefractiveShader.SetVec3("cameraPos", camera.Position);
 		backpackRefractiveShader.SetMat4("view", view, GL_FALSE);
 		backpackRefractiveShader.SetMat4("projection", projection, GL_FALSE);
 		backpackRefractiveShader.SetMat4("model", model, GL_FALSE);
-		survivalBackpack.Draw(backpackRefractiveShader);
+		survivalBackpack.Draw(backpackRefractiveShader);*/
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);
 		skyboxShader.Use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-		skyboxShader.SetMat4("view", view, GL_FALSE);
-		skyboxShader.SetMat4("projection", projection, GL_FALSE);
+		skyboxShader.SetMat4("view", view);
+		skyboxShader.SetMat4("projection", projection);
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxCityTexture);

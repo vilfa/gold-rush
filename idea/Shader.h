@@ -37,9 +37,9 @@ public:
 	void SetInt(const std::string& name, const int& value) const;
 	void SetFloat(const std::string& name, const float& value) const;
 
-	void SetMat2(const std::string& name, const glm::mat2& value, GLboolean transpose) const;
-	void SetMat3(const std::string& name, const glm::mat3& value, GLboolean transpose) const;
-	void SetMat4(const std::string& name, const glm::mat4& value, GLboolean transpose) const;
+	void SetMat2(const std::string& name, const glm::mat2& value, GLboolean transpose = GL_FALSE) const;
+	void SetMat3(const std::string& name, const glm::mat3& value, GLboolean transpose = GL_FALSE) const;
+	void SetMat4(const std::string& name, const glm::mat4& value, GLboolean transpose = GL_FALSE) const;
 	void SetVec2(const std::string& name, const glm::vec2& value) const;
 	void SetVec3(const std::string& name, const glm::vec3& value) const;
 	void SetVec4(const std::string& name, const glm::vec4& value) const;

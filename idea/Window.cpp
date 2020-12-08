@@ -37,6 +37,10 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
 	}
 
 	glViewport(0, 0, this->width, this->height);
+
+	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::INIT" << std::endl;
+	std::cout << "Using GL version major: " << glVersionMajor << std::endl;
+	std::cout << "Using GL version minor: " << glVersionMinor << std::endl;
 }
 
 GLFWwindow* Window::GetWindow() const
