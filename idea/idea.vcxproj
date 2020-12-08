@@ -180,6 +180,8 @@
     <None Include="resources\shaders\model_loading.vert" />
     <None Include="resources\shaders\single_color.frag" />
     <None Include="resources\shaders\single_color.vert" />
+    <None Include="resources\shaders\skybox_shader.frag" />
+    <None Include="resources\shaders\skybox_shader.vert" />
     <None Include="resources\shaders\stencils.frag" />
     <None Include="resources\shaders\stencils.vert" />
     <None Include="resources\shaders\vertex.vert" />

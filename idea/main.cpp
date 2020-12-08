@@ -196,6 +196,7 @@ int main()
 	/*----- SHADERS -----*/
 	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
 	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
+	Shader backpackReflectiveShader("resources/shaders/backpack_reflective_shader.vert", "resources/shaders/backpack_reflective_shader.frag");
 	Shader framebufferShader("resources/shaders/framebuffer_shader.vert", "resources/shaders/framebuffer_shader.frag");
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
 	
@@ -205,16 +206,27 @@ int main()
 	uint32_t grassTexture = loadTexture("resources/textures/grass.png");
 	uint32_t windowTexture = loadTexture("resources/textures/window.png");
 	
-	std::vector<std::string> skyboxPaths
+	std::vector<std::string> skyboxSeaPaths
 	{
-		"resources/skybox/right.jpg",
-		"resources/skybox/left.jpg",
-		"resources/skybox/top.jpg",
-		"resources/skybox/bottom.jpg",
-		"resources/skybox/front.jpg",
-		"resources/skybox/back.jpg"
+		"resources/skybox/sea/right.jpg",
+		"resources/skybox/sea/left.jpg",
+		"resources/skybox/sea/top.jpg",
+		"resources/skybox/sea/bottom.jpg",
+		"resources/skybox/sea/front.jpg",
+		"resources/skybox/sea/back.jpg"
 	};
-	uint32_t skyboxTexture = loadCubemap(skyboxPaths);
+	std::vector<std::string> skyboxCityPaths
+	{
+		"resources/skybox/Yokohama3/posx.jpg",
+		"resources/skybox/Yokohama3/negx.jpg",
+		"resources/skybox/Yokohama3/posy.jpg",
+		"resources/skybox/Yokohama3/negy.jpg",
+		"resources/skybox/Yokohama3/posz.jpg",
+		"resources/skybox/Yokohama3/negz.jpg"
+	};
+
+	uint32_t skyboxSeaTexture = loadCubemap(skyboxSeaPaths);
+	uint32_t skyboxCityTexture = loadCubemap(skyboxCityPaths);
 
 	/*----- MODELS -----*/
 	Model survivalBackpack("resources/models/backpack/backpack.obj");
@@ -233,6 +245,12 @@ int main()
 	*	Bind to the default framebuffer.
 	*	Draw a quad that spans the entire screen with the new framebuffer's color buffer as its texture.
 	*/
+
+	skyboxShader.Use();
+	skyboxShader.SetInt("skybox", 0); // Init skybox.
+	backpackReflectiveShader.Use();
+	backpackReflectiveShader.SetInt("skybox", 0);
+
 	while (!window.GetWindowShouldClose())
 	{
 		/*--- Frame time logic ---*/
@@ -255,24 +273,27 @@ int main()
 		glm::mat4 view;
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
 
+		// Backpack
+		backpackReflectiveShader.Use();
+		view = camera.GetViewMatrix();
+		backpackReflectiveShader.SetVec3("cameraPos", camera.Position);
+		backpackReflectiveShader.SetMat4("view", view, GL_FALSE);
+		backpackReflectiveShader.SetMat4("projection", projection, GL_FALSE);
+		backpackReflectiveShader.SetMat4("model", model, GL_FALSE);
+		survivalBackpack.Draw(backpackReflectiveShader);
+
 		// Skybox
+		glDepthFunc(GL_LEQUAL);
 		skyboxShader.Use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 		skyboxShader.SetMat4("view", view, GL_FALSE);
 		skyboxShader.SetMat4("projection", projection, GL_FALSE);
-		glDepthMask(GL_FALSE);
 		glBindVertexArray(skyboxVAO);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxCityTexture);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glDepthMask(GL_TRUE);
-
-		// Backpack
-		backpackShader.Use();
-		view = camera.GetViewMatrix();
-		backpackShader.SetMat4("view", view, GL_FALSE);
-		backpackShader.SetMat4("projection", projection, GL_FALSE);
-		backpackShader.SetMat4("model", model, GL_FALSE);
-		survivalBackpack.Draw(backpackShader);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS);
 
 		/*--- Switch to default framebuffer and draw to window ---*/
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind back to the default framebuffer.
@@ -293,7 +314,9 @@ int main()
 	*/
 	glDeleteFramebuffers(1, &framebuffer);
 	glDeleteVertexArrays(1, &quadVAO);
+	glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &quadVBO);
+	glDeleteBuffers(1, &skyboxVBO);
 
 
 	/*
@@ -440,6 +463,7 @@ uint32_t loadCubemap(const std::vector<std::string>& paths)
 {
 	uint32_t textureID;
 	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	int width, height, nComp;
 	unsigned char* data;
@@ -452,12 +476,6 @@ uint32_t loadCubemap(const std::vector<std::string>& paths)
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
 				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
 			);
-			
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 			stbi_image_free(data);
 		}
@@ -468,6 +486,14 @@ uint32_t loadCubemap(const std::vector<std::string>& paths)
 			stbi_image_free(data);
 		}
 	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	return textureID;
 }
