@@ -41,7 +41,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 	const char* fShaderSource = fragmentSource.c_str();
 
 	/*
-	* Create vertex and fragment shader.
+	* Create vertex and fragment shaders.
 	*/
 	uint32_t vertexShader, fragmentShader;
 	
@@ -65,9 +65,93 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 	CheckCompile(ID, SHTYPEenum::PROGRAM);
 
 	/*
-	* Delete shader because link is successful.
+	* Delete shaders because link is successful.
 	*/
 	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+}
+
+Shader::Shader(const std::string& vertexPath, const std::string& geometryPath, const std::string& fragmentPath)
+{
+	std::string vertexSource, geometrySource, fragmentSource;
+	std::ifstream vShaderFile, gShaderFile, fShaderFile;
+	std::stringstream vShaderStream, gShaderStream, fShaderStream;
+
+	/*
+	* Make sure ifstream objects can throw exceptions.
+	* Specify the state flags for which a failure exception is thrown
+	* (failbit = logical error, badbit = read/writing error).
+	*/
+	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	/*
+	* Read shader files.
+	*/
+	try
+	{
+		vShaderFile.open(vertexPath);
+		gShaderFile.open(geometryPath);
+		fShaderFile.open(fragmentPath);
+
+		vShaderStream << vShaderFile.rdbuf();
+		gShaderStream << gShaderFile.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();
+
+		vShaderFile.close();
+		gShaderFile.close();
+		fShaderFile.close();
+
+		vertexSource = vShaderStream.str();
+		geometrySource = vShaderStream.str();
+		fragmentSource = fShaderStream.str();
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cout << "ERROR::SHADER::SHADER::FILE_READ_ERROR" << std::endl;
+		std::cout << "Error:" << e.what() << std::endl;
+	}
+
+	const char* vShaderSource = vertexSource.c_str();
+	const char* gShaderSource = geometrySource.c_str();
+	const char* fShaderSource = fragmentSource.c_str();
+
+	/*
+	* Create vertex, geometry and fragment shaders.
+	*/
+	uint32_t vertexShader, geometryShader, fragmentShader;
+
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vShaderSource, NULL);
+	glCompileShader(vertexShader);
+	CheckCompile(vertexShader, SHTYPEenum::VERTEX);
+
+	geometryShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(geometryShader, 1, &gShaderSource, NULL);
+	glCompileShader(geometryShader);
+	CheckCompile(geometryShader, SHTYPEenum::GEOMETRY);
+	
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fShaderSource, NULL);
+	glCompileShader(fragmentShader);
+	CheckCompile(fragmentShader, SHTYPEenum::FRAGMENT);
+
+	/*
+	* Create shader program and link.
+	*/
+	ID = glCreateProgram();
+	glAttachShader(ID, vertexShader);
+	glAttachShader(ID, geometryShader);
+	glAttachShader(ID, fragmentShader);
+	glLinkProgram(ID);
+	CheckCompile(ID, SHTYPEenum::PROGRAM);
+
+	/*
+	* Delete shaders because link is successful.
+	*/
+	glDeleteShader(vertexShader);
+	glDeleteShader(geometryShader);
 	glDeleteShader(fragmentShader);
 }
 
@@ -76,19 +160,19 @@ void Shader::Use() const
 	glUseProgram(ID);
 }
 
-void Shader::CheckCompile(GLuint& id, SHTYPEenum type) const
+void Shader::CheckCompile(GLuint& id, const SHTYPEenum& type) const
 {
 	int success;
 	char infoLog[512];
 
-	if (type == SHTYPEenum::VERTEX || type == SHTYPEenum::FRAGMENT)
+	if (type == SHTYPEenum::VERTEX || type == SHTYPEenum::GEOMETRY || type == SHTYPEenum::FRAGMENT)
 	{
 		glGetShaderiv(id, GL_COMPILE_STATUS, &success);
 		if (!success)
 		{
 			glGetShaderInfoLog(id, 512, NULL, infoLog);
 			std::cout << "ERROR::SHADER::CHECK_COMPILE::COMPILATION_FAILED" << std::endl;
-			std::cout << "Type:" << (int)type << "|Log:" << infoLog << std::endl;
+			std::cout << "Type:" << (int) type << "|Log:" << infoLog << std::endl;
 		}
 	}
 	else if (type == SHTYPEenum::PROGRAM)

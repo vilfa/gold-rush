@@ -270,6 +270,9 @@ int main()
 	// Binding point 0 is already EXPLICITLY SET IN THE SHADER (version 420 core and up).
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4)); // Bind the entire buffer to binding point 0.
 
+	std::cout << "INFO::MAIN::GL_UNIFORM_BUFFER::GL_MAX_VERTEX_UNIFORM_COMPONENTS" << std::endl;
+	std::cout << "Max uniform components:" << (int) GL_MAX_VERTEX_UNIFORM_COMPONENTS << std::endl;
+
 	// Get all the uniform block indices inside already created shader programs.
 	//uint32_t uboIdxRed = glGetUniformBlockIndex(redShader.ID, "Matrices");
 	//uint32_t uboIdxGreen = glGetUniformBlockIndex(greenShader.ID, "Matrices");
@@ -600,7 +603,7 @@ uint32_t loadCubemap(const std::vector<std::string>& paths)
 		else
 		{
 			std::cout << "ERROR::MAIN::LOAD_CUBEMAP::CUBEMAP_LOAD_ERROR" << std::endl;
-			std::cout << "Cubemap load failed at path: " << paths[i] << std::endl;
+			std::cout << "Cubemap load failed at path:" << paths[i] << std::endl;
 			stbi_image_free(data);
 		}
 	}

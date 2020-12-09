@@ -14,6 +14,7 @@
 enum class SHTYPEenum
 {
 	VERTEX,
+	GEOMETRY,
 	FRAGMENT,
 	PROGRAM
 };
@@ -24,11 +25,12 @@ public:
 	unsigned int ID;
 
 	Shader(const std::string& vertexPath, const std::string& fragmentPath);
+	Shader(const std::string& vertexPath, const std::string& geometryPath, const std::string& fragmentPath);
 	
 	void Use() const; // use/activate shader
 
 	// compile status check functions
-	void CheckCompile(GLuint& id, SHTYPEenum type) const;
+	void CheckCompile(GLuint& id, const SHTYPEenum& type) const;
 
 	// utility uniform functions
 	GLint GetUniformLocation(const std::string& name) const;
