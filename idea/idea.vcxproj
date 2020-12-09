@@ -173,6 +173,9 @@
     <None Include="resources\shaders\backpack_shader.vert" />
     <None Include="resources\shaders\blending.frag" />
     <None Include="resources\shaders\blending.vert" />
+    <None Include="resources\shaders\blue.frag" />
+    <None Include="resources\shaders\colors.vert" />
+    <None Include="resources\shaders\colors_passthrough.geom" />
     <None Include="resources\shaders\depth_testing.frag" />
     <None Include="resources\shaders\depth_testing.vert" />
     <None Include="resources\shaders\fragment.frag" />
@@ -180,8 +183,10 @@
     <None Include="resources\shaders\fragment_light_source.frag" />
     <None Include="resources\shaders\framebuffer_shader.frag" />
     <None Include="resources\shaders\framebuffer_shader.vert" />
+    <None Include="resources\shaders\green.frag" />
     <None Include="resources\shaders\model_loading.frag" />
     <None Include="resources\shaders\model_loading.vert" />
+    <None Include="resources\shaders\red.frag" />
     <None Include="resources\shaders\single_color.frag" />
     <None Include="resources\shaders\single_color.vert" />
     <None Include="resources\shaders\skybox_shader.frag" />
@@ -191,6 +196,7 @@
     <None Include="resources\shaders\vertex.vert" />
     <None Include="resources\shaders\vertex_light.vert" />
     <None Include="resources\shaders\vertex_light_source.vert" />
+    <None Include="resources\shaders\yellow.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png" />

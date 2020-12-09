@@ -127,7 +127,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& geometryPath, c
 	glCompileShader(vertexShader);
 	CheckCompile(vertexShader, SHTYPEenum::VERTEX);
 
-	geometryShader = glCreateShader(GL_FRAGMENT_SHADER);
+	geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 	glShaderSource(geometryShader, 1, &gShaderSource, NULL);
 	glCompileShader(geometryShader);
 	CheckCompile(geometryShader, SHTYPEenum::GEOMETRY);
@@ -172,7 +172,7 @@ void Shader::CheckCompile(GLuint& id, const SHTYPEenum& type) const
 		{
 			glGetShaderInfoLog(id, 512, NULL, infoLog);
 			std::cout << "ERROR::SHADER::CHECK_COMPILE::COMPILATION_FAILED" << std::endl;
-			std::cout << "Type:" << (int) type << "|Log:" << infoLog << std::endl;
+			std::cout << "Type:" << (int) type << "|Log:" << std::endl << infoLog << std::endl;
 		}
 	}
 	else if (type == SHTYPEenum::PROGRAM)
