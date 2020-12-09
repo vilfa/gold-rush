@@ -53,7 +53,7 @@ std::uniform_real_distribution<float> randomDistribution(0.0f, 1.0f);
 int main()
 {
 	/*----- WINDOW & GLOBAL ATTRIBUTES -----*/
-	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 4, 0);
+	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 4, 2);
 	window.SetFramebufferSizeCallback(framebufferSizeCallback);
 	window.SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	window.SetMouseMoveCallback(mouseMoveCallback);
@@ -267,21 +267,22 @@ int main()
 	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW); // We'll use this for the view and projection matrix so 2 * sizeof(glm::mat4)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0); // Unbind.
 
+	// Binding point 0 is already EXPLICITLY SET IN THE SHADER (version 420 core and up).
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4)); // Bind the entire buffer to binding point 0.
 
 	// Get all the uniform block indices inside already created shader programs.
-	uint32_t uboIdxRed = glGetUniformBlockIndex(redShader.ID, "Matrices");
-	uint32_t uboIdxGreen = glGetUniformBlockIndex(greenShader.ID, "Matrices");
-	uint32_t uboIdxBlue = glGetUniformBlockIndex(blueShader.ID, "Matrices");
-	uint32_t uboIdxYellow = glGetUniformBlockIndex(yellowShader.ID, "Matrices");
-	//uint32_t uboIdxSkybox = glGetUniformBlockIndex(skyboxShader.ID, "Matrices");
+	//uint32_t uboIdxRed = glGetUniformBlockIndex(redShader.ID, "Matrices");
+	//uint32_t uboIdxGreen = glGetUniformBlockIndex(greenShader.ID, "Matrices");
+	//uint32_t uboIdxBlue = glGetUniformBlockIndex(blueShader.ID, "Matrices");
+	//uint32_t uboIdxYellow = glGetUniformBlockIndex(yellowShader.ID, "Matrices");
+	////uint32_t uboIdxSkybox = glGetUniformBlockIndex(skyboxShader.ID, "Matrices");
 
 	// Bind all the uniform blocks to binding point 0.
-	glUniformBlockBinding(redShader.ID, uboIdxRed, 0);
-	glUniformBlockBinding(greenShader.ID, uboIdxGreen, 0);
-	glUniformBlockBinding(blueShader.ID, uboIdxBlue, 0);
-	glUniformBlockBinding(yellowShader.ID, uboIdxYellow, 0);
-	//glUniformBlockBinding(skyboxShader.ID, uboIdxSkybox, 0);
+	//glUniformBlockBinding(redShader.ID, uboIdxRed, 0);
+	//glUniformBlockBinding(greenShader.ID, uboIdxGreen, 0);
+	//glUniformBlockBinding(blueShader.ID, uboIdxBlue, 0);
+	//glUniformBlockBinding(yellowShader.ID, uboIdxYellow, 0);
+	////glUniformBlockBinding(skyboxShader.ID, uboIdxSkybox, 0);
 	
 	/*----- TEXTURES -----*/
 	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
