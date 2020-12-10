@@ -86,10 +86,10 @@
     <None Include="resources\shaders\backpack_refractive_shader.frag" />
     <None Include="resources\shaders\blue.frag" />
     <None Include="resources\shaders\colors.vert" />
-    <None Include="resources\shaders\colors_passthrough.geom" />
     <None Include="resources\shaders\green.frag" />
     <None Include="resources\shaders\red.frag" />
     <None Include="resources\shaders\yellow.frag" />
+    <None Include="resources\shaders\explode_object.geom" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">

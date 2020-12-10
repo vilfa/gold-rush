@@ -255,10 +255,14 @@ int main()
 	Shader framebufferShader("resources/shaders/framebuffer_shader.vert", "resources/shaders/framebuffer_shader.frag");
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
 
-	Shader redShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/red.frag");
+	/*Shader redShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/red.frag");
 	Shader greenShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/green.frag");
 	Shader blueShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/blue.frag");
-	Shader yellowShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/yellow.frag");
+	Shader yellowShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/yellow.frag");*/
+	Shader redShader("resources/shaders/colors.vert", "resources/shaders/red.frag");
+	Shader greenShader("resources/shaders/colors.vert", "resources/shaders/green.frag");
+	Shader blueShader("resources/shaders/colors.vert", "resources/shaders/blue.frag");
+	Shader yellowShader("resources/shaders/colors.vert", "resources/shaders/yellow.frag");
 
 	/*----- UNIFORM BLOCKS ------*/
 	uint32_t uboMatrices;

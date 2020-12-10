@@ -175,7 +175,7 @@
     <None Include="resources\shaders\blending.vert" />
     <None Include="resources\shaders\blue.frag" />
     <None Include="resources\shaders\colors.vert" />
-    <None Include="resources\shaders\colors_passthrough.geom" />
+    <None Include="resources\shaders\explode_object.geom" />
     <None Include="resources\shaders\depth_testing.frag" />
     <None Include="resources\shaders\depth_testing.vert" />
     <None Include="resources\shaders\fragment.frag" />
