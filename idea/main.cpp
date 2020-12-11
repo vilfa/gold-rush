@@ -63,102 +63,20 @@ int main()
 	* Global enables. (glEnable function calls).
 	* Use Window::SetGlobalEnable and Window::SetGlobalDisable instead of direct calls.
 	* Makes the code more readable (will probably move this to a e.g. Renderer class).
+	* Update: not using the Window methods anymore, will use standard glEnable until I implement
+	* the Renderer class.
 	*/
-	window.SetGlobalEnable(GL_DEPTH_TEST); // Enable depth buffer (depth testing). Don't forget to clear the buffer each frame.
-	window.SetGlobalEnable(GL_BLEND); // Enable blending.
-	window.SetGlobalEnable(GL_CULL_FACE); // Enable face culling.
-
-	/*
-	* Framebuffer, texture color buffer (the render output is stored to a texture, can easily be used in shaders) and
-	* render buffer objects (can not be directly read from, which gives them a performance edge over using textures as
-	* buffer objects).
-	*/
-	uint32_t framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); // Bind framebuffer.
-
-	// The framebuffer must be complete (at least one buffer - color, depth or stencil; at least on color attachment;
-	// all atachments should be complete - allocated memory; each buffer must have the same number of samples).
-
-	uint32_t textureColorBuffer;
-	glGenTextures(1, &textureColorBuffer);
-	glBindTexture(GL_TEXTURE_2D, textureColorBuffer); // Bind texture color buffer.
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL); // Allocate memory - buffer completeness.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Texture parameters don't really matter here.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Texture parameters don't really matter here.
-
-	glBindTexture(GL_TEXTURE_2D, 0); // Unbind the texture.
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0); // Attach it to the currently bound framebuffer as a color buffer.
-
-
-	// Render buffer object.
-	uint32_t rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo); // Bind.
-
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // Allocate memory.
-
-	glBindRenderbuffer(GL_RENDERBUFFER, 0); // Unbind.
-
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // Attach it to the currently bound framebuffer as a depth and stencil buffer.
-
-
-	// Check that the frambuffer is complete.
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		std::cout << "ERROR::MAIN::FRAMEBUFFER::FRAMEBUFFER_INCOMPLETE" << std::endl;
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Unbind the framebuffer, we're not using it yet.
+	glEnable(GL_DEPTH_TEST);
 	
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
+	
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	/*----- GEOMETRY -----*/
-	float cubeVertices[] = {
-		// back face
-		-0.5f, -0.5f, -0.5f, // bottom-left
-		 0.5f, -0.5f, -0.5f, // bottom-right    
-		 0.5f,  0.5f, -0.5f, // top-right              
-		 0.5f,  0.5f, -0.5f, // top-right
-		-0.5f,  0.5f, -0.5f, // top-left
-		-0.5f, -0.5f, -0.5f, // bottom-left                
-		// front face		 
-		-0.5f, -0.5f,  0.5f, // bottom-left
-		 0.5f,  0.5f,  0.5f, // top-right
-		 0.5f, -0.5f,  0.5f, // bottom-right        
-		 0.5f,  0.5f,  0.5f, // top-right
-		-0.5f, -0.5f,  0.5f, // bottom-left
-		-0.5f,  0.5f,  0.5f, // top-left        
-		// left face		 
-		-0.5f,  0.5f,  0.5f, // top-right
-		-0.5f, -0.5f, -0.5f, // bottom-left
-		-0.5f,  0.5f, -0.5f, // top-left       
-		-0.5f, -0.5f, -0.5f, // bottom-left
-		-0.5f,  0.5f,  0.5f, // top-right
-		-0.5f, -0.5f,  0.5f, // bottom-right
-		// right face		 
-		 0.5f,  0.5f,  0.5f, // top-left
-		 0.5f,  0.5f, -0.5f, // top-right      
-		 0.5f, -0.5f, -0.5f, // bottom-right          
-		 0.5f, -0.5f, -0.5f, // bottom-right
-		 0.5f, -0.5f,  0.5f, // bottom-left
-		 0.5f,  0.5f,  0.5f, // top-left
-		// bottom face       
-		-0.5f, -0.5f, -0.5f, // top-right
-		 0.5f, -0.5f,  0.5f, // bottom-left
-		 0.5f, -0.5f, -0.5f, // top-left        
-		 0.5f, -0.5f,  0.5f, // bottom-left
-		-0.5f, -0.5f, -0.5f, // top-right
-		-0.5f, -0.5f,  0.5f, // bottom-right
-		// top face			 
-		-0.5f,  0.5f, -0.5f, // top-left
-		 0.5f,  0.5f, -0.5f, // top-right
-		 0.5f,  0.5f,  0.5f, // bottom-right                 
-		 0.5f,  0.5f,  0.5f, // bottom-right
-		-0.5f,  0.5f,  0.5f, // bottom-left  
-		-0.5f,  0.5f, -0.5f, // top-left              
-	};
-
 	float skyboxVertices[] = {
 		// positions          
 		-1.0f,  1.0f, -1.0f,
@@ -204,27 +122,6 @@ int main()
 		 1.0f, -1.0f,  1.0f
 	};
 
-	float quadVertices[] = {
-		// positions   // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
-	};
-
-	uint32_t cubeVAO, cubeVBO;
-	glGenVertexArrays(1, &cubeVAO);
-	glGenBuffers(1, &cubeVBO);
-	glBindVertexArray(cubeVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
-	glBindVertexArray(0);
-
 	uint32_t skyboxVAO, skyboxVBO;
 	glGenVertexArrays(1, &skyboxVAO);
 	glGenBuffers(1, &skyboxVBO);
@@ -235,34 +132,9 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
 	glBindVertexArray(0);
 
-	uint32_t quadVAO, quadVBO;
-	glGenVertexArrays(1, &quadVAO);
-	glGenBuffers(1, &quadVBO);
-	glBindVertexArray(quadVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*) 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*) (2 * sizeof(float)));
-	glBindVertexArray(0);
-
 	/*----- SHADERS -----*/
-	Shader normalShader("resources/shaders/blending.vert", "resources/shaders/blending.frag");
-	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
-	Shader backpackReflectiveShader("resources/shaders/backpack_reflective_shader.vert", "resources/shaders/backpack_reflective_shader.frag");
-	Shader backpackRefractiveShader("resources/shaders/backpack_refractive_shader.vert", "resources/shaders/backpack_refractive_shader.frag");
-	Shader framebufferShader("resources/shaders/framebuffer_shader.vert", "resources/shaders/framebuffer_shader.frag");
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
-
-	/*Shader redShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/red.frag");
-	Shader greenShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/green.frag");
-	Shader blueShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/blue.frag");
-	Shader yellowShader("resources/shaders/colors.vert", "resources/shaders/colors_passthrough.geom", "resources/shaders/yellow.frag");*/
-	Shader redShader("resources/shaders/colors.vert", "resources/shaders/red.frag");
-	Shader greenShader("resources/shaders/colors.vert", "resources/shaders/green.frag");
-	Shader blueShader("resources/shaders/colors.vert", "resources/shaders/blue.frag");
-	Shader yellowShader("resources/shaders/colors.vert", "resources/shaders/yellow.frag");
+	Shader explodingBackpackShader("resources/shaders/backpack_shader_ubo.vert", "resources/shaders/explode_object.geom", "resources/shaders/backpack_shader_ubo.frag");
 
 	/*----- UNIFORM BLOCKS ------*/
 	uint32_t uboMatrices;
@@ -273,30 +145,10 @@ int main()
 
 	// Binding point 0 is already EXPLICITLY SET IN THE SHADER (version 420 core and up).
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4)); // Bind the entire buffer to binding point 0.
-
 	std::cout << "INFO::MAIN::GL_UNIFORM_BUFFER::GL_MAX_VERTEX_UNIFORM_COMPONENTS" << std::endl;
 	std::cout << "Max uniform components:" << (int) GL_MAX_VERTEX_UNIFORM_COMPONENTS << std::endl;
-
-	// Get all the uniform block indices inside already created shader programs.
-	//uint32_t uboIdxRed = glGetUniformBlockIndex(redShader.ID, "Matrices");
-	//uint32_t uboIdxGreen = glGetUniformBlockIndex(greenShader.ID, "Matrices");
-	//uint32_t uboIdxBlue = glGetUniformBlockIndex(blueShader.ID, "Matrices");
-	//uint32_t uboIdxYellow = glGetUniformBlockIndex(yellowShader.ID, "Matrices");
-	////uint32_t uboIdxSkybox = glGetUniformBlockIndex(skyboxShader.ID, "Matrices");
-
-	// Bind all the uniform blocks to binding point 0.
-	//glUniformBlockBinding(redShader.ID, uboIdxRed, 0);
-	//glUniformBlockBinding(greenShader.ID, uboIdxGreen, 0);
-	//glUniformBlockBinding(blueShader.ID, uboIdxBlue, 0);
-	//glUniformBlockBinding(yellowShader.ID, uboIdxYellow, 0);
-	////glUniformBlockBinding(skyboxShader.ID, uboIdxSkybox, 0);
 	
 	/*----- TEXTURES -----*/
-	uint32_t cubeTexture = loadTexture("resources/textures/container2.png");
-	uint32_t floorTexture = loadTexture("resources/textures/wall.jpg");
-	uint32_t grassTexture = loadTexture("resources/textures/grass.png");
-	uint32_t windowTexture = loadTexture("resources/textures/window.png");
-	
 	std::vector<std::string> skyboxSeaPaths
 	{
 		"resources/skybox/sea/right.jpg",
@@ -320,28 +172,11 @@ int main()
 	uint32_t skyboxCityTexture = loadCubemap(skyboxCityPaths);
 
 	/*----- MODELS -----*/
-	//Model survivalBackpack("resources/models/backpack/backpack.obj");
+	Model survivalBackpack("resources/models/backpack/backpack.obj");
 
 	/*----- RENDER -----*/
-	// Render parameters
-	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
-
-	/*
-	* So, to draw the scene to a single texture we'll have to take the following steps:
-	*	Render the scene as usual with the new framebuffer bound as the active framebuffer.
-	*	Bind to the default framebuffer.
-	*	Draw a quad that spans the entire screen with the new framebuffer's color buffer as its texture.
-	*/
-
 	skyboxShader.Use();
 	skyboxShader.SetInt("skybox", 0); // Init skybox.
-	/*backpackReflectiveShader.Use();
-	backpackReflectiveShader.SetInt("skybox", 0);
-	backpackRefractiveShader.Use();
-	backpackRefractiveShader.SetInt("skybox", 0);*/
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -356,12 +191,11 @@ int main()
 		processInput(window.GetWindow(), &camera, (float)deltaTime);
 
 		/*--- Render commands ---*/
-		//glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Not using the stencil buffer right now.
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		/*--- Draw ---*/
-		glm::mat4 model;
+		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 200.0f);
 
@@ -371,63 +205,28 @@ int main()
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindVertexArray(cubeVAO); // Use the same VAO for all 4 cubes.
-
-		redShader.Use();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));
-		redShader.SetMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		
-		greenShader.Use();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
-		greenShader.SetMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		blueShader.Use();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f));
-		blueShader.SetMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		yellowShader.Use();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f));
-		yellowShader.SetMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		glBindVertexArray(0);
-
 		// Backpack
-		/*backpackRefractiveShader.Use();
-		backpackRefractiveShader.SetVec3("cameraPos", camera.Position);
-		backpackRefractiveShader.SetMat4("view", view, GL_FALSE);
-		backpackRefractiveShader.SetMat4("projection", projection, GL_FALSE);
-		backpackRefractiveShader.SetMat4("model", model, GL_FALSE);
-		survivalBackpack.Draw(backpackRefractiveShader);*/
+		explodingBackpackShader.Use();
+		explodingBackpackShader.SetFloat("time", glfwGetTime());
+		explodingBackpackShader.SetMat4("projection", projection);
+		explodingBackpackShader.SetMat4("view", view);
+		explodingBackpackShader.SetMat4("model", model);
+		survivalBackpack.Draw(explodingBackpackShader);
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxCityTexture);
+
 		skyboxShader.Use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 		skyboxShader.SetMat4("view", view);
 		skyboxShader.SetMat4("projection", projection);
-		glBindVertexArray(skyboxVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxCityTexture);
+		
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
-
-		/*--- Switch to default framebuffer and draw to window ---*/
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind back to the default framebuffer.
-		//glDisable(GL_DEPTH_TEST);
-
-		//framebufferShader.Use();
-		//glBindVertexArray(quadVAO);
-		//glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
@@ -437,11 +236,9 @@ int main()
 	/*
 	* Clean up.
 	*/
-	glDeleteFramebuffers(1, &framebuffer);
-	glDeleteVertexArrays(1, &quadVAO);
 	glDeleteVertexArrays(1, &skyboxVAO);
-	glDeleteBuffers(1, &quadVBO);
 	glDeleteBuffers(1, &skyboxVBO);
+	glDeleteBuffers(1, &uboMatrices);
 
 
 	/*
@@ -504,15 +301,15 @@ void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 {
 	if (firstMouse)
 	{
-		lastX = (float)xPos;
-		lastY = (float)yPos;
+		lastX = (float) xPos;
+		lastY = (float) yPos;
 		firstMouse = false;
 	}
 
-	float xOffset = (float)xPos - lastX;
-	float yOffset = lastY - (float)yPos; // Reversed since y-coordinates range from bottom to top.
-	lastX = (float)xPos;
-	lastY = (float)yPos;
+	float xOffset = (float) xPos - lastX;
+	float yOffset = lastY - (float) yPos; // Reversed since y-coordinates range from bottom to top.
+	lastX = (float) xPos;
+	lastY = (float) yPos;
 
 	camera.ProcessMouseMovement(xOffset, yOffset);
 }
@@ -522,7 +319,7 @@ void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 */
 void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
-	camera.ProcessMouseScroll((float&)yOffset);
+	camera.ProcessMouseScroll((float&) yOffset);
 }
 
 /*

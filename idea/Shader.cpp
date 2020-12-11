@@ -104,7 +104,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& geometryPath, c
 		fShaderFile.close();
 
 		vertexSource = vShaderStream.str();
-		geometrySource = vShaderStream.str();
+		geometrySource = gShaderStream.str();
 		fragmentSource = fShaderStream.str();
 	}
 	catch (std::ifstream::failure e)
