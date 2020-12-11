@@ -171,6 +171,8 @@
     <None Include="resources\shaders\backpack_refractive_shader.vert" />
     <None Include="resources\shaders\backpack_shader.frag" />
     <None Include="resources\shaders\backpack_shader.vert" />
+    <None Include="resources\shaders\backpack_shader_ubo.frag" />
+    <None Include="resources\shaders\backpack_shader_ubo.vert" />
     <None Include="resources\shaders\blending.frag" />
     <None Include="resources\shaders\blending.vert" />
     <None Include="resources\shaders\blue.frag" />

@@ -135,6 +135,7 @@ int main()
 	/*----- SHADERS -----*/
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
 	Shader explodingBackpackShader("resources/shaders/backpack_shader_ubo.vert", "resources/shaders/explode_object.geom", "resources/shaders/backpack_shader_ubo.frag");
+	Shader normalsBackpackShader("resources/shaders/backpack_with_normals.vert", "resources/shaders/backpack_with_normals.geom", "resources/shaders/backpack_with_normals.frag");
 
 	/*----- UNIFORM BLOCKS ------*/
 	uint32_t uboMatrices;
@@ -206,12 +207,18 @@ int main()
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// Backpack
-		explodingBackpackShader.Use();
+		/*explodingBackpackShader.Use();
 		explodingBackpackShader.SetFloat("time", glfwGetTime());
 		explodingBackpackShader.SetMat4("projection", projection);
 		explodingBackpackShader.SetMat4("view", view);
 		explodingBackpackShader.SetMat4("model", model);
-		survivalBackpack.Draw(explodingBackpackShader);
+		survivalBackpack.Draw(explodingBackpackShader);*/
+		
+		normalsBackpackShader.Use();
+		normalsBackpackShader.SetMat4("projection", projection);
+		normalsBackpackShader.SetMat4("view", view);
+		normalsBackpackShader.SetMat4("model", model);
+		survivalBackpack.Draw(normalsBackpackShader);
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);

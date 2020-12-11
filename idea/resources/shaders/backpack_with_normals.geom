@@ -1,14 +1,13 @@
 #version 420 core
 
 layout (triangles) in;
-layout (triangle_strip, max_vertices = 3) out;
+layout (line_strip, max_vertices = 2) out;
 
 uniform float time;
 out vec2 TexCoords;
 
 in VS_OUT
 {
-    vec2 texCoords;
     vec3 normal;
 } gs_in[];
 
@@ -27,14 +26,17 @@ vec4 Explode(vec4 position, vec3 normal)
     return position + vec4(direction, 0.0);
 }
 
+const float MAGNITUDE = 0.4;
+
 void main()
 {
     vec3 normal = GetNormal();
 
     for (int i = 0; i < gl_in.length(); i++)
     {
-        gl_Position = Explode(gl_in[i].gl_Position, normal);
-        TexCoords = gs_in[i].texCoords;
+        gl_Position = gl_in[i].gl_Position;
+        EmitVertex();
+        gl_Position = gl_in[i].gl_Position + vec4(gs_in[i].normal, 0.0) * MAGNITUDE;
         EmitVertex();
     }
 

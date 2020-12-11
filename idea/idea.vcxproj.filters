@@ -90,6 +90,8 @@
     <None Include="resources\shaders\red.frag" />
     <None Include="resources\shaders\yellow.frag" />
     <None Include="resources\shaders\explode_object.geom" />
+    <None Include="resources\shaders\backpack_shader_ubo.frag" />
+    <None Include="resources\shaders\backpack_shader_ubo.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">
