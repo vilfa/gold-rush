@@ -173,6 +173,9 @@
     <None Include="resources\shaders\backpack_shader.vert" />
     <None Include="resources\shaders\backpack_shader_ubo.frag" />
     <None Include="resources\shaders\backpack_shader_ubo.vert" />
+    <None Include="resources\shaders\backpack_with_normals.frag" />
+    <None Include="resources\shaders\backpack_with_normals.geom" />
+    <None Include="resources\shaders\backpack_with_normals.vert" />
     <None Include="resources\shaders\blending.frag" />
     <None Include="resources\shaders\blending.vert" />
     <None Include="resources\shaders\blue.frag" />
@@ -186,6 +189,8 @@
     <None Include="resources\shaders\framebuffer_shader.frag" />
     <None Include="resources\shaders\framebuffer_shader.vert" />
     <None Include="resources\shaders\green.frag" />
+    <None Include="resources\shaders\instanced_quads.frag" />
+    <None Include="resources\shaders\instanced_quads.vert" />
     <None Include="resources\shaders\model_loading.frag" />
     <None Include="resources\shaders\model_loading.vert" />
     <None Include="resources\shaders\red.frag" />

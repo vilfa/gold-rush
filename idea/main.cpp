@@ -129,13 +129,38 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*) 0);
+	glBindVertexArray(0);
+
+	float quadVertices[] = {
+		// positions     // colors
+		-0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+		 0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+		-0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
+
+		-0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+		 0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+		 0.05f,  0.05f,  0.0f, 1.0f, 1.0f
+	};
+
+	uint32_t quadVAO, quadVBO;
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) (2 * sizeof(float)));
 	glBindVertexArray(0);
 
 	/*----- SHADERS -----*/
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
+	Shader backpackShader("resources/shaders/backpack_shader.vert", "resources/shaders/backpack_shader.frag");
 	Shader explodingBackpackShader("resources/shaders/backpack_shader_ubo.vert", "resources/shaders/explode_object.geom", "resources/shaders/backpack_shader_ubo.frag");
 	Shader normalsBackpackShader("resources/shaders/backpack_with_normals.vert", "resources/shaders/backpack_with_normals.geom", "resources/shaders/backpack_with_normals.frag");
+	Shader instancedQuadsShader("resources/shaders/instanced_quads.vert", "resources/shaders/instanced_quads.frag");
 
 	/*----- UNIFORM BLOCKS ------*/
 	uint32_t uboMatrices;
@@ -173,9 +198,29 @@ int main()
 	uint32_t skyboxCityTexture = loadCubemap(skyboxCityPaths);
 
 	/*----- MODELS -----*/
-	Model survivalBackpack("resources/models/backpack/backpack.obj");
+	//Model survivalBackpack("resources/models/backpack/backpack.obj");
 
 	/*----- RENDER -----*/
+	glm::vec2 translations[100];
+	int index = 0;
+	float offset = 0.1f;
+	for (int i = -10; i < 10; i+=2)
+	{
+		for (int j = -10; j < 10; j+=2)
+		{
+			glm::vec2 translation;
+			translation.x = (float)j / 10.0f + offset;
+			translation.y = (float)i / 10.0f + offset;
+			translations[index++] = translation;
+		}
+	}
+
+	instancedQuadsShader.Use();
+	for (std::size_t i = 0; i < 100; i++)
+	{
+		instancedQuadsShader.SetVec2("offsets[" + std::to_string(i) + "]", translations[i]);
+	}
+
 	skyboxShader.Use();
 	skyboxShader.SetInt("skybox", 0); // Init skybox.
 
@@ -207,18 +252,27 @@ int main()
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// Backpack
-		/*explodingBackpackShader.Use();
-		explodingBackpackShader.SetFloat("time", glfwGetTime());
-		explodingBackpackShader.SetMat4("projection", projection);
-		explodingBackpackShader.SetMat4("view", view);
-		explodingBackpackShader.SetMat4("model", model);
-		survivalBackpack.Draw(explodingBackpackShader);*/
-		
-		normalsBackpackShader.Use();
-		normalsBackpackShader.SetMat4("projection", projection);
-		normalsBackpackShader.SetMat4("view", view);
-		normalsBackpackShader.SetMat4("model", model);
-		survivalBackpack.Draw(normalsBackpackShader);
+		///*explodingBackpackShader.Use();
+		//explodingBackpackShader.SetFloat("time", glfwGetTime());
+		//explodingBackpackShader.SetMat4("projection", projection);
+		//explodingBackpackShader.SetMat4("view", view);
+		//explodingBackpackShader.SetMat4("model", model);
+		//survivalBackpack.Draw(explodingBackpackShader);*/
+		//
+		//backpackShader.Use();
+		//backpackShader.SetMat4("projection", projection);
+		//backpackShader.SetMat4("view", view);
+		//backpackShader.SetMat4("model", model);
+		//survivalBackpack.Draw(backpackShader);
+		//
+		//normalsBackpackShader.Use();
+		//normalsBackpackShader.SetMat4("projection", projection);
+		//normalsBackpackShader.SetMat4("view", view);
+		//normalsBackpackShader.SetMat4("model", model);
+		//survivalBackpack.Draw(normalsBackpackShader);
+		instancedQuadsShader.Use();
+		glBindVertexArray(quadVAO);
+		glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);

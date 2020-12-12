@@ -92,6 +92,11 @@
     <None Include="resources\shaders\explode_object.geom" />
     <None Include="resources\shaders\backpack_shader_ubo.frag" />
     <None Include="resources\shaders\backpack_shader_ubo.vert" />
+    <None Include="resources\shaders\backpack_with_normals.frag" />
+    <None Include="resources\shaders\backpack_with_normals.geom" />
+    <None Include="resources\shaders\backpack_with_normals.vert" />
+    <None Include="resources\shaders\instanced_quads.vert" />
+    <None Include="resources\shaders\instanced_quads.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">
