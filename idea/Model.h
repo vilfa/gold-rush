@@ -14,6 +14,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/DefaultLogger.hpp>
 
 #include "Shader.h"
 #include "Mesh.h"
@@ -25,9 +26,9 @@ public:
 
     void Draw(Shader& shader);
 
-private:
     std::vector<Mesh> meshes;
     std::vector<Mesh::Texture> texturesLoaded;
+private:
     std::string directory;
     bool gammaCorrection;
 

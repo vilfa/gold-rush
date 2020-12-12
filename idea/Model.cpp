@@ -16,6 +16,16 @@ void Model::Draw(Shader& shader)
 
 void Model::loadModel(const std::string& path)
 {
+	/*
+	* Create logger and attach it to the default output stream.
+	*/
+	
+	std::cout << "INFO::MODEL::LOAD_MODEL::ASSIMP_LOG" << std::endl;
+	Assimp::DefaultLogger::create(NULL, Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
+
+	/*
+	* Create the importer.
+	*/
 	Assimp::Importer importer;
 
 	/*

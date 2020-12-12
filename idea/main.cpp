@@ -43,13 +43,6 @@ bool firstMouse = true;
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 
-/*
-* Random
-*/
-std::random_device randomDevice;
-std::mt19937 randomEngine(randomDevice());
-std::uniform_real_distribution<float> randomDistribution(0.0f, 1.0f);
-
 int main()
 {
 	/*----- WINDOW & GLOBAL ATTRIBUTES -----*/
@@ -68,9 +61,9 @@ int main()
 	*/
 	glEnable(GL_DEPTH_TEST);
 	
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	//glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 	
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
@@ -132,53 +125,34 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
 	glBindVertexArray(0);
 
-	float quadVertices[] = {
-		// positions     // colors
-		-0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
-		 0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
-		-0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
-
-		-0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
-		 0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
-		 0.05f,  0.05f,  0.0f, 1.0f, 1.0f
-	};
-
-	glm::vec2 translations[100];
-	int index = 0;
-	float offset = 0.1f;
-	for (int i = -10; i < 10; i += 2)
+	uint32_t nAsteroids = 50000;
+	glm::mat4* instanceModelMatrices = new glm::mat4[nAsteroids];
+	srand(glfwGetTime());
+	float radius = 75.0f;
+	float offset = 25.0f;
+	for (std::size_t i = 0; i < nAsteroids; i++)
 	{
-		for (int j = -10; j < 10; j += 2)
-		{
-			glm::vec2 translation;
-			translation.x = (float)j / 10.0f + offset;
-			translation.y = (float)i / 10.0f + offset;
-			translations[index++] = translation;
-		}
+		glm::mat4 model = glm::mat4(1.0f);
+		// 1. translation: displace along circle with 'radius' in range [-offset, offset]
+		float angle = (float)i / (float)nAsteroids * 360.0f;
+		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float x = sin(angle) * radius + displacement;
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float z = cos(angle) * radius + displacement;
+		model = glm::translate(model, glm::vec3(x, y, z));
+
+		// 2. scale: scale between 0.05 and 0.25f
+		float scale = (rand() % 20) / 100.0f + 0.05f;
+		model = glm::scale(model, glm::vec3(scale));
+
+		// 3. rotation: add random rotation around a (semi) randomly picked rotation axis vector
+		float rotAngle = (rand() % 360);
+		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+		
+		instanceModelMatrices[i] = model;
 	}
-
-	uint32_t quadVAO, quadVBO, offsetInstancedVBO;
-	glGenVertexArrays(1, &quadVAO);
-	glBindVertexArray(quadVAO);
-	
-	glGenBuffers(1, &quadVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)(2 * sizeof(float)));
-
-	glGenBuffers(1, &offsetInstancedVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, offsetInstancedVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(translations), &translations, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (const void*)0);
-	glVertexAttribDivisor(2, 1);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glBindVertexArray(0);
-
 
 	/*----- SHADERS -----*/
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
@@ -186,6 +160,8 @@ int main()
 	Shader explodingBackpackShader("resources/shaders/backpack_shader_ubo.vert", "resources/shaders/explode_object.geom", "resources/shaders/backpack_shader_ubo.frag");
 	Shader normalsBackpackShader("resources/shaders/backpack_with_normals.vert", "resources/shaders/backpack_with_normals.geom", "resources/shaders/backpack_with_normals.frag");
 	Shader instancedQuadsShader("resources/shaders/instanced_quads.vert", "resources/shaders/instanced_quads.frag");
+	Shader marsShader("resources/shaders/mars.vert", "resources/shaders/mars.frag"); 
+	Shader asteroidShader("resources/shaders/asteroid.vert", "resources/shaders/asteroid.frag");
 
 	/*----- UNIFORM BLOCKS ------*/
 	uint32_t uboMatrices;
@@ -218,12 +194,53 @@ int main()
 		"resources/skybox/Yokohama3/posz.jpg",
 		"resources/skybox/Yokohama3/negz.jpg"
 	};
+	std::vector<std::string> skyboxSpacePaths
+	{
+		"resources/skybox/space/right.png",
+		"resources/skybox/space/left.png",
+		"resources/skybox/space/top.png",
+		"resources/skybox/space/bottom.png",
+		"resources/skybox/space/front.png",
+		"resources/skybox/space/back.png"
+	};
 
 	uint32_t skyboxSeaTexture = loadCubemap(skyboxSeaPaths);
 	uint32_t skyboxCityTexture = loadCubemap(skyboxCityPaths);
+	uint32_t skyboxSpaceTexture = loadCubemap(skyboxSpacePaths);
 
 	/*----- MODELS -----*/
 	//Model survivalBackpack("resources/models/backpack/backpack.obj");
+	Model mars("resources/models/mars/mars.obj");
+	Model asteroid("resources/models/rock/rock.obj");
+
+	uint32_t instanceModelMatVBO;
+	glGenBuffers(1, &instanceModelMatVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, instanceModelMatVBO);
+	glBufferData(GL_ARRAY_BUFFER, nAsteroids * sizeof(glm::mat4), instanceModelMatrices, GL_STATIC_DRAW);
+
+	for (std::size_t i = 0; i < asteroid.meshes.size(); i++)
+	{
+		uint32_t VAO = asteroid.meshes.at(i).VAO;
+		glBindVertexArray(VAO);
+
+		std::size_t vec4Size = sizeof(glm::vec4);
+
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (const void*)0);
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (const void*)(1 * vec4Size));
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (const void*)(2 * vec4Size));
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (const void*)(3 * vec4Size));
+
+		glVertexAttribDivisor(3, 1);
+		glVertexAttribDivisor(4, 1);
+		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
+
+		glBindVertexArray(0);
+	}
 
 	/*----- RENDER -----*/
 	skyboxShader.Use();
@@ -256,34 +273,30 @@ int main()
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		// Backpack
-		///*explodingBackpackShader.Use();
-		//explodingBackpackShader.SetFloat("time", glfwGetTime());
-		//explodingBackpackShader.SetMat4("projection", projection);
-		//explodingBackpackShader.SetMat4("view", view);
-		//explodingBackpackShader.SetMat4("model", model);
-		//survivalBackpack.Draw(explodingBackpackShader);*/
-		//
-		//backpackShader.Use();
-		//backpackShader.SetMat4("projection", projection);
-		//backpackShader.SetMat4("view", view);
-		//backpackShader.SetMat4("model", model);
-		//survivalBackpack.Draw(backpackShader);
-		//
-		//normalsBackpackShader.Use();
-		//normalsBackpackShader.SetMat4("projection", projection);
-		//normalsBackpackShader.SetMat4("view", view);
-		//normalsBackpackShader.SetMat4("model", model);
-		//survivalBackpack.Draw(normalsBackpackShader);
-		instancedQuadsShader.Use();
-		glBindVertexArray(quadVAO);
-		glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
+		// Mars
+		marsShader.Use();
+		marsShader.SetMat4("model", model);
+		mars.Draw(marsShader);
+
+		// Asteroids
+		asteroidShader.Use();
+		asteroidShader.SetInt("texture_diffuse_1", 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, asteroid.texturesLoaded.at(0).id);
+		for (std::size_t i = 0; i < asteroid.meshes.size(); i++)
+		{
+			glBindVertexArray(asteroid.meshes.at(i).VAO);
+			glDrawElementsInstanced(
+				GL_TRIANGLES, asteroid.meshes.at(i).Indices.size(), GL_UNSIGNED_INT, (const void*)0, nAsteroids
+			);
+			glBindVertexArray(0);
+		}
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxCityTexture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxSpaceTexture);
 
 		skyboxShader.Use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
@@ -305,7 +318,7 @@ int main()
 	glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &skyboxVBO);
 	glDeleteBuffers(1, &uboMatrices);
-
+	glDeleteBuffers(1, &instanceModelMatVBO);
 
 	/*
 	* Terminate program.
@@ -460,9 +473,23 @@ uint32_t loadCubemap(const std::vector<std::string>& paths)
 		data = stbi_load(paths[i].c_str(), &width, &height, &nComp, 0);
 		if (data)
 		{
+			GLenum format = GL_RGB;
+			if (nComp == 1)
+			{
+				format = GL_RED;
+			}
+			else if (nComp == 3)
+			{
+				format = GL_RGB;
+			}
+			else if (nComp == 4)
+			{
+				format = GL_RGBA;
+			}
+
 			glTexImage2D(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+				0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data
 			);
 
 			stbi_image_free(data);

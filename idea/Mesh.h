@@ -62,8 +62,8 @@ public:
         GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, GLenum mipmapFilteringMax = GL_LINEAR);
     void Draw(Shader& shader);
 
-private:
     uint32_t VAO, VBO, EBO;
+private:
 
     static const std::string _TEXTURE_DIFFUSE_NAME;
     static const std::string _TEXTURE_SPECULAR_NAME;

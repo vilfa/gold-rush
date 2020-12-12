@@ -15,5 +15,6 @@ out vec3 vsout_fColor;
 void main()
 {
     vsout_fColor = aColor;
-    gl_Position = projection * view * vec4(aPos + aOffset, 0.0, 1.0);
+    vec2 pos = aPos * (gl_InstanceID / 100.0);
+    gl_Position = projection * view * vec4(pos + aOffset, 0.0, 1.0);
 }
