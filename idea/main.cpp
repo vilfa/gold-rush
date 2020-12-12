@@ -68,9 +68,9 @@ int main()
 	*/
 	glEnable(GL_DEPTH_TEST);
 	
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	//glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 	
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
@@ -129,7 +129,7 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*) 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
 	glBindVertexArray(0);
 
 	float quadVertices[] = {
@@ -143,17 +143,42 @@ int main()
 		 0.05f,  0.05f,  0.0f, 1.0f, 1.0f
 	};
 
-	uint32_t quadVAO, quadVBO;
+	glm::vec2 translations[100];
+	int index = 0;
+	float offset = 0.1f;
+	for (int i = -10; i < 10; i += 2)
+	{
+		for (int j = -10; j < 10; j += 2)
+		{
+			glm::vec2 translation;
+			translation.x = (float)j / 10.0f + offset;
+			translation.y = (float)i / 10.0f + offset;
+			translations[index++] = translation;
+		}
+	}
+
+	uint32_t quadVAO, quadVBO, offsetInstancedVBO;
 	glGenVertexArrays(1, &quadVAO);
-	glGenBuffers(1, &quadVBO);
 	glBindVertexArray(quadVAO);
+	
+	glGenBuffers(1, &quadVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*) (2 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (const void*)(2 * sizeof(float)));
+
+	glGenBuffers(1, &offsetInstancedVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, offsetInstancedVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(translations), &translations, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (const void*)0);
+	glVertexAttribDivisor(2, 1);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
 	glBindVertexArray(0);
+
 
 	/*----- SHADERS -----*/
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
@@ -201,26 +226,6 @@ int main()
 	//Model survivalBackpack("resources/models/backpack/backpack.obj");
 
 	/*----- RENDER -----*/
-	glm::vec2 translations[100];
-	int index = 0;
-	float offset = 0.1f;
-	for (int i = -10; i < 10; i+=2)
-	{
-		for (int j = -10; j < 10; j+=2)
-		{
-			glm::vec2 translation;
-			translation.x = (float)j / 10.0f + offset;
-			translation.y = (float)i / 10.0f + offset;
-			translations[index++] = translation;
-		}
-	}
-
-	instancedQuadsShader.Use();
-	for (std::size_t i = 0; i < 100; i++)
-	{
-		instancedQuadsShader.SetVec2("offsets[" + std::to_string(i) + "]", translations[i]);
-	}
-
 	skyboxShader.Use();
 	skyboxShader.SetInt("skybox", 0); // Init skybox.
 

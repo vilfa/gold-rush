@@ -2,6 +2,7 @@
 
 layout (location = 0) in vec2 aPos;
 layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aOffset;
 
 layout (std140, binding = 0) uniform Matrices
 {
@@ -11,11 +12,8 @@ layout (std140, binding = 0) uniform Matrices
 
 out vec3 vsout_fColor;
 
-uniform vec2 offsets[100];
-
 void main()
 {
     vsout_fColor = aColor;
-    vec2 offset = offsets[gl_InstanceID];
-    gl_Position = projection * view * vec4(aPos + offset, 0.0, 1.0);
+    gl_Position = projection * view * vec4(aPos + aOffset, 0.0, 1.0);
 }
