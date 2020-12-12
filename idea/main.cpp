@@ -46,7 +46,7 @@ float lastY = SCR_HEIGHT / 2;
 int main()
 {
 	/*----- WINDOW & GLOBAL ATTRIBUTES -----*/
-	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 4, 2);
+	Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 4, 2, true, 4); // Use OpenGL 4.2, and enable 4xMSAA.
 	window.SetFramebufferSizeCallback(framebufferSizeCallback);
 	window.SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	window.SetMouseMoveCallback(mouseMoveCallback);
@@ -68,6 +68,8 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_MULTISAMPLE); // Enable anti-aliasing. The technique used is MSAA (Multi Sample Anti-Aliasing).
 
 	/*----- GEOMETRY -----*/
 	float skyboxVertices[] = {
@@ -125,34 +127,34 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);
 	glBindVertexArray(0);
 
-	uint32_t nAsteroids = 50000;
-	glm::mat4* instanceModelMatrices = new glm::mat4[nAsteroids];
-	srand(glfwGetTime());
-	float radius = 75.0f;
-	float offset = 25.0f;
-	for (std::size_t i = 0; i < nAsteroids; i++)
-	{
-		glm::mat4 model = glm::mat4(1.0f);
-		// 1. translation: displace along circle with 'radius' in range [-offset, offset]
-		float angle = (float)i / (float)nAsteroids * 360.0f;
-		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-		float x = sin(angle) * radius + displacement;
-		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-		float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
-		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-		float z = cos(angle) * radius + displacement;
-		model = glm::translate(model, glm::vec3(x, y, z));
+	//uint32_t nAsteroids = 50000;
+	//glm::mat4* instanceModelMatrices = new glm::mat4[nAsteroids];
+	//srand(glfwGetTime());
+	//float radius = 75.0f;
+	//float offset = 25.0f;
+	//for (std::size_t i = 0; i < nAsteroids; i++)
+	//{
+	//	glm::mat4 model = glm::mat4(1.0f);
+	//	// 1. translation: displace along circle with 'radius' in range [-offset, offset]
+	//	float angle = (float)i / (float)nAsteroids * 360.0f;
+	//	float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+	//	float x = sin(angle) * radius + displacement;
+	//	displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+	//	float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+	//	displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+	//	float z = cos(angle) * radius + displacement;
+	//	model = glm::translate(model, glm::vec3(x, y, z));
 
-		// 2. scale: scale between 0.05 and 0.25f
-		float scale = (rand() % 20) / 100.0f + 0.05f;
-		model = glm::scale(model, glm::vec3(scale));
+	//	// 2. scale: scale between 0.05 and 0.25f
+	//	float scale = (rand() % 20) / 100.0f + 0.05f;
+	//	model = glm::scale(model, glm::vec3(scale));
 
-		// 3. rotation: add random rotation around a (semi) randomly picked rotation axis vector
-		float rotAngle = (rand() % 360);
-		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
-		
-		instanceModelMatrices[i] = model;
-	}
+	//	// 3. rotation: add random rotation around a (semi) randomly picked rotation axis vector
+	//	float rotAngle = (rand() % 360);
+	//	model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+	//	
+	//	instanceModelMatrices[i] = model;
+	//}
 
 	/*----- SHADERS -----*/
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
@@ -211,14 +213,14 @@ int main()
 	/*----- MODELS -----*/
 	//Model survivalBackpack("resources/models/backpack/backpack.obj");
 	Model mars("resources/models/mars/mars.obj");
-	Model asteroid("resources/models/rock/rock.obj");
+	//Model asteroid("resources/models/rock/rock.obj");
 
-	uint32_t instanceModelMatVBO;
+	/*uint32_t instanceModelMatVBO;
 	glGenBuffers(1, &instanceModelMatVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, instanceModelMatVBO);
-	glBufferData(GL_ARRAY_BUFFER, nAsteroids * sizeof(glm::mat4), instanceModelMatrices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, nAsteroids * sizeof(glm::mat4), instanceModelMatrices, GL_STATIC_DRAW);*/
 
-	for (std::size_t i = 0; i < asteroid.meshes.size(); i++)
+	/*for (std::size_t i = 0; i < asteroid.meshes.size(); i++)
 	{
 		uint32_t VAO = asteroid.meshes.at(i).VAO;
 		glBindVertexArray(VAO);
@@ -240,7 +242,7 @@ int main()
 		glVertexAttribDivisor(6, 1);
 
 		glBindVertexArray(0);
-	}
+	}*/
 
 	/*----- RENDER -----*/
 	skyboxShader.Use();
@@ -279,7 +281,7 @@ int main()
 		mars.Draw(marsShader);
 
 		// Asteroids
-		asteroidShader.Use();
+		/*asteroidShader.Use();
 		asteroidShader.SetInt("texture_diffuse_1", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, asteroid.texturesLoaded.at(0).id);
@@ -290,7 +292,7 @@ int main()
 				GL_TRIANGLES, asteroid.meshes.at(i).Indices.size(), GL_UNSIGNED_INT, (const void*)0, nAsteroids
 			);
 			glBindVertexArray(0);
-		}
+		}*/
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);
@@ -318,7 +320,7 @@ int main()
 	glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &skyboxVBO);
 	glDeleteBuffers(1, &uboMatrices);
-	glDeleteBuffers(1, &instanceModelMatVBO);
+	//glDeleteBuffers(1, &instanceModelMatVBO);
 
 	/*
 	* Terminate program.

@@ -15,7 +15,8 @@ class Window
 {
 public:
     Window(const uint32_t& width, const uint32_t& height, const std::string& windowName, 
-        int glVersionMajor = _GL_VERSION_MAJOR, int glVersionMinor = _GL_VERSION_MINOR, 
+        const int glVersionMajor = _GL_VERSION_MAJOR, const int glVersionMinor = _GL_VERSION_MINOR,
+        const bool glUseMultisampling = false, const int glNumberOfSamples = 2,
         int glProfile = GLFW_OPENGL_CORE_PROFILE, GLFWmonitor* monitor = NULL, 
         GLFWwindow* share = NULL);
 

@@ -3,8 +3,10 @@
 const int Window::_GL_VERSION_MAJOR = 3;
 const int Window::_GL_VERSION_MINOR = 3;
 
-Window::Window(const uint32_t& width, const uint32_t& height, const std::string& windowName, int glVersionMajor, int glVersionMinor, int glProfile, 
-	GLFWmonitor* monitor, GLFWwindow* share) :
+Window::Window(const uint32_t& width, const uint32_t& height, const std::string& windowName, 
+	const int glVersionMajor, const int glVersionMinor,
+	const bool glUseMultisampling, const int glNumberOfSamples,
+	int glProfile, GLFWmonitor* monitor, GLFWwindow* share) :
 	width(width),
 	height(height),
 	name(windowName)
@@ -13,6 +15,11 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_PROFILE, glProfile);
+
+	if (glUseMultisampling)
+	{
+		glfwWindowHint(GLFW_SAMPLES, glNumberOfSamples);
+	}
 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
