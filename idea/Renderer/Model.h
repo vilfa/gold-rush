@@ -16,8 +16,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 
-#include "Shader.h"
-#include "Mesh.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Mesh.h"
 
 class Model
 {

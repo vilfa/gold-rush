@@ -13,7 +13,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Shader.h"
+#include "Renderer/Shader.h"
 
 /*
 * Texture types

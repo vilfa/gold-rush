@@ -1,22 +1,5 @@
 #version 420 core
 
-struct DirectionalLight
-{
-	/*
-	* Directional light imitates the sun. The sun is so 
-	* far away that it is omnipresent from a specific
-	* direction. 
-	*/
-	vec3 direction;
-
-	/*
-	* The three light components of the Phong lighting model
-	*/
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-};
-
 struct PointLight
 {
 	/*
@@ -43,23 +26,6 @@ struct PointLight
 	/*
 	* The three light components of the Phong lighting model
 	*/
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-};
-
-struct SpotLight
-{
-	vec3 position;
-	vec3 direction;
-
-	float cutoff;
-	float outerCutoff;
-
-	float constant;
-	float linear;
-	float quadratic;
-
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;

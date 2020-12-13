@@ -1,5 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "Mesh.h"
+#include "Renderer/Mesh.h"
 
 const std::string Mesh::_TEXTURE_DIFFUSE_NAME = "texture_diffuse_";
 const std::string Mesh::_TEXTURE_SPECULAR_NAME = "texture_specular_";

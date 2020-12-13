@@ -1,4 +1,4 @@
-#include "Window.h"
+#include "Application/Window.h"
 
 const int Window::_GL_VERSION_MAJOR = 3;
 const int Window::_GL_VERSION_MINOR = 3;

@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "Renderer/Camera.h"
 
 const float Camera::_FRUSTUM_NEAR = 0.1f;
 const float Camera::_FRUSTUM_FAR = 200.0f;

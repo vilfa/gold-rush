@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "Renderer/Model.h"
 
 Model::Model(const std::string& path, bool gamma) :
 	gammaCorrection(gamma)

@@ -8,10 +8,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Window.h"
-#include "Shader.h"
-#include "Camera.h"
-#include "Model.h"
+#include "Application/Window.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Camera.h"
+#include "Renderer/Model.h"
 
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -70,6 +70,7 @@ int main()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_MULTISAMPLE); // Enable anti-aliasing. The technique used is MSAA (Multi Sample Anti-Aliasing).
+	glEnable(GL_FRAMEBUFFER_SRGB); // Enable gamma correction. On most displays this means applying the exponent 1/2.2 to a fragment output color. This is called sRGB color space.
 
 	/*----- FRAMEBUFFERS -----*/
 	//uint32_t framebuffer, textureFbfAtt;
@@ -174,34 +175,34 @@ int main()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (const void*)(6 * sizeof(float)));
 	glBindVertexArray(0);
 
-	//uint32_t nAsteroids = 10000;
-	//std::vector<glm::mat4> instanceModelMatrices;
-	//srand(glfwGetTime());
-	//float radius = 75.0f;
-	//float offset = 25.0f;
-	//for (std::size_t i = 0; i < nAsteroids; i++)
-	//{
-	//	glm::mat4 model = glm::mat4(1.0f);
-	//	// 1. translation: displace along circle with 'radius' in range [-offset, offset]
-	//	float angle = (float)i / (float)nAsteroids * 360.0f;
-	//	float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-	//	float x = sin(angle) * radius + displacement;
-	//	displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-	//	float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
-	//	displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-	//	float z = cos(angle) * radius + displacement;
-	//	model = glm::translate(model, glm::vec3(x, y, z));
+	uint32_t nAsteroids = 10000;
+	std::vector<glm::mat4> instanceModelMatrices;
+	srand(glfwGetTime());
+	float radius = 75.0f;
+	float offset = 25.0f;
+	for (std::size_t i = 0; i < nAsteroids; i++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		// 1. translation: displace along circle with 'radius' in range [-offset, offset]
+		float angle = (float)i / (float)nAsteroids * 360.0f;
+		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float x = sin(angle) * radius + displacement;
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float z = cos(angle) * radius + displacement;
+		model = glm::translate(model, glm::vec3(x, y, z));
 
-	//	// 2. scale: scale between 0.05 and 0.25f
-	//	float scale = (rand() % 20) / 100.0f + 0.05f;
-	//	model = glm::scale(model, glm::vec3(scale));
+		// 2. scale: scale between 0.05 and 0.25f
+		float scale = (rand() % 20) / 100.0f + 0.05f;
+		model = glm::scale(model, glm::vec3(scale));
 
-	//	// 3. rotation: add random rotation around a (semi) randomly picked rotation axis vector
-	//	float rotAngle = (rand() % 360);
-	//	model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
-	//	
-	//	instanceModelMatrices.push_back(model);
-	//}
+		// 3. rotation: add random rotation around a (semi) randomly picked rotation axis vector
+		float rotAngle = (rand() % 360);
+		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+		
+		instanceModelMatrices.push_back(model);
+	}
 
 	/*----- SHADERS -----*/
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
@@ -260,24 +261,20 @@ int main()
 	uint32_t skyboxCityTexture = loadCubemap(skyboxCityPaths);
 	uint32_t skyboxSpaceTexture = loadCubemap(skyboxSpacePaths);
 
-	uint32_t floorDiffuseTexture = loadTexture("resources/textures/wood_floor/wood_floor_diffuse.png");
-	uint32_t floorSpecularTexture = loadTexture("resources/textures/wood_floor/wood_floor_specular.png");
-
 	/*----- MODELS -----*/
-	//Model survivalBackpack("resources/models/backpack/backpack.obj");
-	/*Model mars("resources/models/mars/mars.obj");
-	Model asteroid("resources/models/rock/rock.obj");*/
+	Model mars("resources/models/mars/mars.obj");
+	Model asteroid("resources/models/rock/rock.obj");
 
 	/*----- RENDER -----*/
-	//skyboxShader.Use();
-	//skyboxShader.SetInt("skybox", 0); // Init skybox.
+	skyboxShader.Use();
+	skyboxShader.SetInt("skybox", 0); // Init skybox.
 	
 	glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 
-	lightShader.Use();
-	lightShader.SetInt("material.diffuse", floorDiffuseTexture);
-	lightShader.SetInt("material.specular", floorSpecularTexture);
-	lightShader.SetFloat("material.shininess", 0.21794872f * 128.0f);
+	/*lightShader.Use();
+	lightShader.SetInt("material.diffuse", 0);
+	lightShader.SetInt("material.specular", 0);
+	lightShader.SetFloat("material.shininess", 0.21794872f * 128.0f);*/
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -310,43 +307,29 @@ int main()
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(camera.Position));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		/*lightShader.Use();
-		lightShader.SetVec3("pointLight.position", lightPos);
-		lightShader.SetVec3("pointLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
-		lightShader.SetVec3("pointLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-		lightShader.SetVec3("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-		lightShader.SetFloat("pointLight.constant", 1.0f);
-		lightShader.SetFloat("pointLight.linear", 0.09f);
-		lightShader.SetFloat("pointLight.quadratic", 0.032f);
+		//// Mars
+		marsShader.Use();
+		marsShader.SetMat4("model", model);
+		mars.Draw(marsShader);
 
-		glBindVertexArray(planeVAO);
+		//// Asteroids
+		asteroidShader.Use();
+		asteroid.DrawInstanced(asteroidShader, instanceModelMatrices);
+
+		//// Skybox
+		glDepthFunc(GL_LEQUAL);
+		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, floorDiffuseTexture);
-		glDrawArrays(GL_TRIANGLES, 0, 6);*/
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxSpaceTexture);
 
-		////// Mars
-		//marsShader.Use();
-		//marsShader.SetMat4("model", model);
-		//mars.Draw(marsShader);
-
-		////// Asteroids
-		//asteroidShader.Use();
-		//asteroid.DrawInstanced(asteroidShader, instanceModelMatrices);
-
-		////// Skybox
-		//glDepthFunc(GL_LEQUAL);
-		//glBindVertexArray(skyboxVAO);
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxSpaceTexture);
-
-		//skyboxShader.Use();
-		//view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-		//skyboxShader.SetMat4("view", view);
-		//skyboxShader.SetMat4("projection", projection);
-		//
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-		//glBindVertexArray(0);
-		//glDepthFunc(GL_LESS);
+		skyboxShader.Use();
+		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+		skyboxShader.SetMat4("view", view);
+		skyboxShader.SetMat4("projection", projection);
+		
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS);
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
