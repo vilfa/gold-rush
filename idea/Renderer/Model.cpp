@@ -3,7 +3,21 @@
 Model::Model(const std::string& path, bool gamma) :
 	gammaCorrection(gamma)
 {
+	double time = glfwGetTime();
+	std::cout << "INFO::MODEL::MODEL::BEGIN_LOAD" << std::endl;
+	
+	/*
+	* Create logger and attach it to the default output stream.
+	*/
+
+	std::cout << "INFO::MODEL::LOAD_MODEL::ASSIMP_LOG" << std::endl;
+	Assimp::DefaultLogger::create(NULL, Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
+	
 	loadModel(path);
+
+	double deltaTime = glfwGetTime() - time;
+	std::cout << "INFO::MODEL::MODEL::END_LOAD" << std::endl;
+	std::cout << "Load took:" << deltaTime * 1000 << "ms" << std::endl;
 }
 
 void Model::Draw(Shader& shader)
@@ -31,13 +45,6 @@ void Model::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instancedModel
 
 void Model::loadModel(const std::string& path)
 {
-	/*
-	* Create logger and attach it to the default output stream.
-	*/
-	
-	std::cout << "INFO::MODEL::LOAD_MODEL::ASSIMP_LOG" << std::endl;
-	Assimp::DefaultLogger::create(NULL, Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
-
 	/*
 	* Create the importer.
 	*/

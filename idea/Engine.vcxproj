@@ -153,18 +153,21 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer\Mesh.cpp" />
     <ClCompile Include="Renderer\Model.cpp" />
+    <ClCompile Include="Renderer\Skybox.cpp" />
     <ClCompile Include="Terrain\TerrainGenerator.cpp" />
-    <ClCompile Include="Terrain\PerlinNoise.cpp" />
+    <ClCompile Include="Terrain\NoiseGenerator.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Renderer\Shader.cpp" />
     <ClCompile Include="Application\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\Callbacks.h" />
     <ClInclude Include="Renderer\Camera.h" />
     <ClInclude Include="Renderer\Mesh.h" />
     <ClInclude Include="Renderer\Model.h" />
+    <ClInclude Include="Renderer\Skybox.h" />
     <ClInclude Include="Terrain\TerrainGenerator.h" />
-    <ClInclude Include="Terrain\PerlinNoise.h" />
+    <ClInclude Include="Terrain\NoiseGenerator.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Renderer\Shader.h" />

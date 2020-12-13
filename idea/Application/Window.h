@@ -8,8 +8,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-typedef void (*FramebufferSizeCallbackFunction)(GLFWwindow*, int, int);
-typedef void (*MouseCallbackFunction)(GLFWwindow*, double, double);
+#include "Application/Callbacks.h"
 
 class Window
 {
@@ -21,16 +20,16 @@ public:
         GLFWwindow* share = NULL);
 
     GLFWwindow* GetWindow() const;
-    std::string GetName() const;
+    std::string GetWindowTitle() const;
     int GetWidth() const;
     int GetHeight() const;
     int GetWindowShouldClose() const;
-    std::string GetWindowTitle() const;
-    void SetWindowShouldClose(bool shouldClose);
+    bool GetMultisamplingEnabled() const;
+    
     void SetInputMode(int mode, int value);
     void SetWindowTitle(const std::string& title);
-    void SetGlobalEnable(GLenum global);
-    void SetGlobalDisable(GLenum global);
+    void SetWindowShouldClose(bool shouldClose);
+
     void SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback);
     void SetMouseMoveCallback(MouseCallbackFunction callback);
     void SetMouseScrollCallback(MouseCallbackFunction callback);
@@ -40,6 +39,10 @@ private:
     std::string name;
     uint32_t width;
     uint32_t height;
+
+    const bool glUseMultisampling;
+    const bool glMultisampleCount;
+
     static const int _GL_VERSION_MAJOR;
     static const int _GL_VERSION_MINOR;
 };

@@ -5,8 +5,7 @@ const float Camera::_FRUSTUM_FAR = 200.0f;
 const float Camera::_YAW = -90.0f;
 const float Camera::_PITCH = 0.0f;
 const float Camera::_SPEED = 3.5f;
-//const float Camera::_SPEED_FAST = 7.0f;
-const float Camera::_SPEED_FAST = 15.0f;
+const float Camera::_SPEED_FAST = 7.0f;
 const float Camera::_SENSITIVITY = 0.08f;
 const float Camera::_FOV = 45.0f;
 
@@ -51,7 +50,7 @@ glm::mat4 Camera::GetViewMatrix() const
 	return glm::lookAt(Position, Position + Front, Up);
 }
 
-void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float& deltaTime)
+void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime)
 {
 	float velocity = (speed == CAMSPDenum::NORMAL) ? 
 		MovementSpeed * deltaTime : MovementSpeedFast * deltaTime;

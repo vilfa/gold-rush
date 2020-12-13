@@ -49,7 +49,7 @@ public:
 		float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR);
 
 	glm::mat4 GetViewMatrix() const;
-	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float& deltaTime);
+	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime);
 	void ProcessMouseMovement(float& xOffset, float& yOffset, GLboolean constrainPitch = true);
 	void ProcessMouseScroll(float& yOffset);
 

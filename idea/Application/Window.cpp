@@ -9,7 +9,9 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
 	int glProfile, GLFWmonitor* monitor, GLFWwindow* share) :
 	width(width),
 	height(height),
-	name(windowName)
+	name(windowName),
+	glUseMultisampling(glUseMultisampling),
+	glMultisampleCount(glNumberOfSamples)
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
@@ -19,6 +21,8 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
 	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::VERSION" << std::endl;
 	std::cout << "Using GL version major:" << glVersionMajor << std::endl;
 	std::cout << "Using GL version minor:" << glVersionMinor << std::endl;
+	std::cout << "INFO::MAIN::GL_UNIFORM_BUFFER::GL_MAX_VERTEX_UNIFORM_COMPONENTS" << std::endl;
+	std::cout << "Max uniform components:" << GL_MAX_VERTEX_UNIFORM_COMPONENTS << std::endl;
 	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::ANTI_ALIASING" << std::endl;
 	std::cout << "Using multisampling:" << glUseMultisampling << std::endl;
 
@@ -58,11 +62,6 @@ GLFWwindow* Window::GetWindow() const
 	return window;
 }
 
-std::string Window::GetName() const
-{
-	return name;
-}
-
 int Window::GetWidth() const
 {
 	return width;
@@ -81,6 +80,11 @@ int Window::GetWindowShouldClose() const
 std::string Window::GetWindowTitle() const
 {
 	return name;
+}
+
+bool Window::GetMultisamplingEnabled() const
+{
+	return glUseMultisampling;
 }
 
 void Window::SetWindowShouldClose(bool shouldClose)
@@ -102,16 +106,6 @@ void Window::SetInputMode(int mode, int value)
 void Window::SetWindowTitle(const std::string& title)
 {
 	glfwSetWindowTitle(window, title.c_str());
-}
-
-void Window::SetGlobalEnable(GLenum global)
-{
-	glEnable(global);
-}
-
-void Window::SetGlobalDisable(GLenum global)
-{
-	glDisable(global);
 }
 
 void Window::SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback)
