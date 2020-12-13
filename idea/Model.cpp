@@ -14,6 +14,21 @@ void Model::Draw(Shader& shader)
 	}
 }
 
+void Model::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instancedModelMatrices)
+{
+	size_t instanceSize = instancedModelMatrices.size();
+
+	uint32_t matricesVBO;
+	glGenBuffers(1, &matricesVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, matricesVBO);
+	glBufferData(GL_ARRAY_BUFFER, instanceSize * sizeof(glm::mat4), &instancedModelMatrices[0], GL_STATIC_DRAW);
+
+	for (size_t i = 0; i < meshes.size(); i++)
+	{
+		meshes[i].DrawInstanced(shader, instanceSize);
+	}
+}
+
 void Model::loadModel(const std::string& path)
 {
 	/*

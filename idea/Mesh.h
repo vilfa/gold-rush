@@ -61,9 +61,10 @@ public:
         bool flipVertical = true, GLenum textureWrapping = GL_REPEAT,
         GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, GLenum mipmapFilteringMax = GL_LINEAR);
     void Draw(Shader& shader);
+    void DrawInstanced(Shader& shader, const std::size_t instanceSize);
 
-    uint32_t VAO, VBO, EBO;
 private:
+    uint32_t VAO, VBO, EBO;
 
     static const std::string _TEXTURE_DIFFUSE_NAME;
     static const std::string _TEXTURE_SPECULAR_NAME;

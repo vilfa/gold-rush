@@ -124,9 +124,88 @@ void Mesh::Draw(Shader& shader)
 
     // Draw the mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, (GLsizei)Indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (GLsizei)Indices.size(), GL_UNSIGNED_INT, (const void*)0);
 
     // Unbind the VAO
+    glBindVertexArray(0);
+
+    glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::DrawInstanced(Shader& shader, const std::size_t instanceSize)
+{
+    shader.Use();
+
+    uint32_t diffuseCount = 1;
+    uint32_t specularCount = 1;
+    uint32_t normalCount = 1;
+    uint32_t heightCount = 1;
+
+    for (std::size_t i = 0; i < Textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + (GLint)i);
+
+        TEXTYPEenum textureType;
+        std::string textureNumber;
+        std::string textureName;
+
+        try
+        {
+            textureType = Textures.at(i).type;
+        }
+        catch (const std::out_of_range& e)
+        {
+            std::cout << "ERROR::MESH::DRAW::OUT_OF_RANGE_EXCEPTION" << std::endl;
+            std::cout << e.what() << std::endl;
+        }
+
+        if (textureType == TEXTYPEenum::DIFFUSE)
+        {
+            textureName = _TEXTURE_DIFFUSE_NAME;
+            textureNumber = std::to_string(diffuseCount++);
+        }
+        else if (textureType == TEXTYPEenum::SPECULAR)
+        {
+            textureName = _TEXTURE_SPECULAR_NAME;
+            textureNumber = std::to_string(specularCount++);
+        }
+        else if (textureType == TEXTYPEenum::NORMAL)
+        {
+            textureName = _TEXTURE_NORMAL_NAME;
+            textureNumber = std::to_string(normalCount++);
+        }
+        else if (textureType == TEXTYPEenum::HEIGHT)
+        {
+            textureName = _TEXTURE_HEIGHT_NAME;
+            textureNumber = std::to_string(heightCount++);
+        }
+
+        shader.SetInt((textureName + textureNumber), (int&)i);
+        glBindTexture(GL_TEXTURE_2D, Textures.at(i).id);
+    }
+    
+    glBindVertexArray(VAO);
+
+    std::size_t sizeOfVec4 = sizeof(glm::vec4);
+
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeOfVec4, (const void*)0);
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeOfVec4, (const void*)(1 * sizeOfVec4));
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * sizeOfVec4, (const void*)(2 * sizeOfVec4));
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * sizeOfVec4, (const void*)(3 * sizeOfVec4));
+
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+    glVertexAttribDivisor(5, 1);
+    glVertexAttribDivisor(6, 1);
+
+    glDrawElementsInstanced(
+        GL_TRIANGLES, (GLsizei)Indices.size(), GL_UNSIGNED_INT, (const void*)0, (GLsizei)instanceSize
+    );
+
     glBindVertexArray(0);
 
     glActiveTexture(GL_TEXTURE0);
@@ -162,15 +241,15 @@ void Mesh::setupMesh()
     // Position vectors of a vertex
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), 
-        (void*)offsetof(Mesh::Vertex, Mesh::Vertex::position));
+        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::position));
     // Normal vectors of a vertex
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), 
-        (void*)offsetof(Mesh::Vertex, Mesh::Vertex::normal));
+        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::normal));
     // Texture coordinates of a vertex
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), 
-        (void*)offsetof(Mesh::Vertex, Mesh::Vertex::textureCoordinates));
+        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::textureCoordinates));
 
     /*
     * Unbind the vertex attribute array

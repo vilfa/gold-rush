@@ -16,9 +16,16 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_PROFILE, glProfile);
 
+	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::VERSION" << std::endl;
+	std::cout << "Using GL version major:" << glVersionMajor << std::endl;
+	std::cout << "Using GL version minor:" << glVersionMinor << std::endl;
+	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::ANTI_ALIASING" << std::endl;
+	std::cout << "Using multisampling:" << glUseMultisampling << std::endl;
+
 	if (glUseMultisampling)
 	{
 		glfwWindowHint(GLFW_SAMPLES, glNumberOfSamples);
+		std::cout << "Number of samples:" << glNumberOfSamples << std::endl;
 	}
 
 #ifdef __APPLE__
@@ -44,10 +51,6 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
 	}
 
 	glViewport(0, 0, this->width, this->height);
-
-	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::INIT" << std::endl;
-	std::cout << "Using GL version major:" << glVersionMajor << std::endl;
-	std::cout << "Using GL version minor:" << glVersionMinor << std::endl;
 }
 
 GLFWwindow* Window::GetWindow() const

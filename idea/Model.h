@@ -25,13 +25,13 @@ public:
     Model(const std::string& path, bool gamma = false);
 
     void Draw(Shader& shader);
+    void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instancedModelMatrices);
 
+private:
     std::vector<Mesh> meshes;
     std::vector<Mesh::Texture> texturesLoaded;
-private:
     std::string directory;
     bool gammaCorrection;
-
 
     void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
