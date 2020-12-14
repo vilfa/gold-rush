@@ -14,7 +14,11 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
 	glMultisampleCount(glNumberOfSamples)
 {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
+
+	double time = glfwGetTime();
+	std::cout << "INFO::WINDOW::WINDOW::GLFW::INIT_START" << std::endl;
+    
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_PROFILE, glProfile);
 
@@ -46,6 +50,10 @@ Window::Window(const uint32_t& width, const uint32_t& height, const std::string&
 
 	glfwSetWindowUserPointer(window, this);
 	glfwMakeContextCurrent(window);
+
+	double deltaTime = glfwGetTime() - time;
+	std::cout << "INFO::WINDOW::WINDOW::GLFW::INIT_END" << std::endl;
+	std::cout << "Window init took:" << deltaTime * 1000 << "ms" << std::endl;
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{

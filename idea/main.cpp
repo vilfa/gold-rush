@@ -13,6 +13,7 @@
 #include "Renderer/Camera.h"
 #include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
+#include "Terrain/NoiseGenerator.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
@@ -35,6 +36,9 @@ int main()
 	window.SetFramebufferSizeCallback(framebufferSizeCallback);
 	window.SetMouseMoveCallback(mouseMoveCallback);
 	window.SetMouseScrollCallback(mouseScrollCallback);
+
+	NoiseGenerator ng;
+	ng.PerlinNoise2D(10, 10, 2);
 
 	renderer.Render();
 	return 0;

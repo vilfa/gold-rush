@@ -131,9 +131,9 @@ void Renderer::setupGlobalEnables()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	//glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
