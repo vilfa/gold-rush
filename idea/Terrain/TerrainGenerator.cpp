@@ -1,17 +1,33 @@
 #include "Terrain/TerrainGenerator.h"
 
 TerrainGenerator::TerrainGenerator(const int gridSize) :
-    ng(NoiseGenerator()),
+    noiseGenerator(NoiseGenerator()),
     gridSize(gridSize),
     heightMap(nullptr)
 {
     generateHeightMap();
-    constructVertexPositions();
+    generateVertexPositions();
+    generateVertexColors();
+}
+
+std::vector<glm::vec3> TerrainGenerator::GetPositions()
+{
+    return positions;
+}
+
+std::vector<glm::vec3> TerrainGenerator::GetNormals()
+{
+    return normals;
+}
+
+std::vector<glm::vec3> TerrainGenerator::GetColors()
+{
+    return colors;
 }
 
 void TerrainGenerator::generateHeightMap()
 {
-    heightMap = ng.PerlinNoise2D(gridSize, gridSize, 4);
+    heightMap = noiseGenerator.PerlinNoise2D(gridSize, gridSize, 4);
 }
 
 std::vector<glm::vec3> TerrainGenerator::generateGrid()
@@ -32,7 +48,7 @@ std::vector<glm::vec3> TerrainGenerator::generateGrid()
     return positionsUnique;
 }
 
-void TerrainGenerator::constructVertexPositions()
+void TerrainGenerator::generateVertexPositions()
 {
     // Construct quad from unique vertices first, then duplicate vertices.
     // Why do this:
@@ -80,12 +96,20 @@ void TerrainGenerator::constructVertexPositions()
     }
 }
 
+void TerrainGenerator::generateVertexColors()
+{
+    for (std::size_t i = 0; i < positions.size(); i++)
+    {
+        colors.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
+    }
+}
+
 glm::vec3 TerrainGenerator::calculateTriangleNormals(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2)
 {
     // Calculate triangle vectors.
-    glm::vec3 v1 = v1 - v0;
-    glm::vec3 v2 = v2 - v1;
+    glm::vec3 t1 = v1 - v0;
+    glm::vec3 t2 = v2 - v1;
     // Calculate triangle normal. We wan't all three normals to be 
     // the same, so we get the low-poly shading effect.
-    return glm::cross(v1, v2);
+    return glm::cross(t1, t2);
 }

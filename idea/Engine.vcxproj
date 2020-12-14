@@ -154,6 +154,7 @@
     <ClCompile Include="Renderer\Mesh.cpp" />
     <ClCompile Include="Renderer\Model.cpp" />
     <ClCompile Include="Renderer\Skybox.cpp" />
+    <ClCompile Include="Terrain\Terrain.cpp" />
     <ClCompile Include="Terrain\TerrainGenerator.cpp" />
     <ClCompile Include="Terrain\NoiseGenerator.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Renderer\Mesh.h" />
     <ClInclude Include="Renderer\Model.h" />
     <ClInclude Include="Renderer\Skybox.h" />
+    <ClInclude Include="Terrain\Terrain.h" />
     <ClInclude Include="Terrain\TerrainGenerator.h" />
     <ClInclude Include="Terrain\NoiseGenerator.h" />
     <ClInclude Include="Renderer\Renderer.h" />

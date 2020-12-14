@@ -17,22 +17,25 @@ class TerrainGenerator
 public:
     TerrainGenerator(const int gridSize = 256);
 
-    Mesh GenerateTerrain();
+    std::vector<glm::vec3> GetPositions();
+    std::vector<glm::vec3> GetNormals();
+    std::vector<glm::vec3> GetColors();
 
 private:
-    NoiseGenerator ng;
+    NoiseGenerator noiseGenerator;
     int gridSize;
 
     float* heightMap;
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
-    std::vector<uint32_t> indices;
+    std::vector<glm::vec3> colors;
 
     void generateHeightMap();
     std::vector<glm::vec3> generateGrid();
 
-    void constructVertexPositions();
+    void generateVertexPositions();
+    void generateVertexColors();
     glm::vec3 calculateTriangleNormals(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
 };
 

@@ -51,17 +51,6 @@ float* NoiseGenerator::PerlinNoise2D(const int width, const int height, const in
         }
     }
 
-
-    std::cout << "NOISE_GENERATOR::PERLIN_NOISE_2D::GENERATE_NOISE" << std::endl;
-    for (int x = 0; x < width; x++)
-    {
-        for (int y = 0; y < height; y++)
-        {
-            std::cout << heightMap[y * width + x] << " ";
-        }
-        std::cout << std::endl;
-    }
-
     return heightMap;
 }
 

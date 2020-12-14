@@ -6,7 +6,6 @@
 #include <map>
 #include <random>
 #include <cmath>
-#include <functional>
 
 class NoiseGenerator
 {
