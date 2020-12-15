@@ -15,6 +15,7 @@
 #include "Renderer/Mesh.h"
 #include "Renderer/Model.h"
 #include "Renderer/Skybox.h"
+#include "Terrain/Terrain.h"
 
 class Renderer
 {

@@ -17,9 +17,9 @@ class TerrainGenerator
 public:
     TerrainGenerator(const int gridSize = 256);
 
-    std::vector<glm::vec3> GetPositions();
-    std::vector<glm::vec3> GetNormals();
-    std::vector<glm::vec3> GetColors();
+    std::vector<glm::vec3>& GetPositions();
+    std::vector<glm::vec3>& GetNormals();
+    std::vector<glm::vec3>& GetColors();
 
 private:
     NoiseGenerator noiseGenerator;

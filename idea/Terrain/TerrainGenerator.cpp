@@ -10,17 +10,17 @@ TerrainGenerator::TerrainGenerator(const int gridSize) :
     generateVertexColors();
 }
 
-std::vector<glm::vec3> TerrainGenerator::GetPositions()
+std::vector<glm::vec3>& TerrainGenerator::GetPositions()
 {
     return positions;
 }
 
-std::vector<glm::vec3> TerrainGenerator::GetNormals()
+std::vector<glm::vec3>& TerrainGenerator::GetNormals()
 {
     return normals;
 }
 
-std::vector<glm::vec3> TerrainGenerator::GetColors()
+std::vector<glm::vec3>& TerrainGenerator::GetColors()
 {
     return colors;
 }
@@ -59,9 +59,9 @@ void TerrainGenerator::generateVertexPositions()
     int q0, q1, q2, q3;
     std::vector<glm::vec3> grid = generateGrid();
 
-    for (int x = 0; x < gridSize; x++)
+    for (int x = 0; x < gridSize - 1; x++)
     {
-        for (int y = 0; y < gridSize; y++)
+        for (int y = 0; y < gridSize - 1; y++)
         {
             q0 = x * gridSize + y;
             q1 = x * gridSize + (y + 1);

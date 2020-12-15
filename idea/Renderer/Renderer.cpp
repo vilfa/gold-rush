@@ -21,7 +21,7 @@ void Renderer::Render()
 	uint32_t uboMatrices, uboCamera;
 	glGenBuffers(1, &uboMatrices);
 	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices); // The target is GL_UNIFORM_BUFFER.
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW); // We'll use this for the view and projection matrix so 2 * sizeof(glm::mat4)
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW); // Allocate for view and projection matrix.
 	glBindBuffer(GL_UNIFORM_BUFFER, 0); // Unbind.
 
 	glGenBuffers(1, &uboCamera);
@@ -32,18 +32,23 @@ void Renderer::Render()
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4)); // Bind the entire buffer to binding point 0.
 	glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboCamera, 0, sizeof(glm::vec3));
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	/*----- RESOURCES -----*/
 	Shader marsShader("resources/shaders/mars.vert", "resources/shaders/mars.frag");
 	Shader asteroidShader("resources/shaders/asteroid.vert", "resources/shaders/asteroid.frag");
 	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
 	Shader lightShader("resources/shaders/light_ubo.vert", "resources/shaders/light_ubo.frag");
+	Shader terrainShader("resources/shaders/terrain/lowPolyTerrain.vert", "resources/shaders/terrain/lowPolyTerrain.frag");
 
 	Skybox skyboxSea("resources/skybox/sea/", SKYBFORMATenum::JPG);
 	Skybox skyboxCity("resources/skybox/Yokohama3/", SKYBFORMATenum::JPG);
 	Skybox skyboxSpace("resources/skybox/space/", SKYBFORMATenum::PNG);
 
-	Model mars("resources/models/mars/mars.obj");
-	Model asteroid("resources/models/rock/rock.obj");
+	Terrain lowPolyTerrain(512);
+
+	//Model mars("resources/models/mars/mars.obj");
+	//Model asteroid("resources/models/rock/rock.obj");
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -75,17 +80,23 @@ void Renderer::Render()
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(camera.Position));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		//// Mars
-		marsShader.Use();
-		marsShader.SetMat4("model", model);
-		mars.Draw(marsShader);
+		terrainShader.Use();
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
+		terrainShader.SetMat4("model", model);
+		lowPolyTerrain.Draw(terrainShader);
 
-		//// Skybox
-		skyboxShader.Use();
-		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-		skyboxShader.SetMat4("projection", projection);
-		skyboxShader.SetMat4("view", view);
-		skyboxSpace.Draw(skyboxShader);
+		////// Mars
+		//marsShader.Use();
+		//marsShader.SetMat4("model", model);
+		//mars.Draw(marsShader);
+
+		////// Skybox
+		//skyboxShader.Use();
+		//view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+		//skyboxShader.SetMat4("projection", projection);
+		//skyboxShader.SetMat4("view", view);
+		//skyboxSpace.Draw(skyboxShader);
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
@@ -131,9 +142,9 @@ void Renderer::setupGlobalEnables()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	//glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.

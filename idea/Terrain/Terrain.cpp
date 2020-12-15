@@ -1,8 +1,8 @@
 #include "Terrain.h"
 
-Terrain::Terrain(const int gridSize) :
-    tg(TerrainGenerator(gridSize))
+Terrain::Terrain(const int gridSize)
 {
+    TerrainGenerator tg(gridSize);
     setupVertices(tg.GetPositions(), tg.GetNormals(), tg.GetColors());
     setupTerrain();
 }
@@ -16,7 +16,7 @@ void Terrain::Draw(Shader& shader)
     glBindVertexArray(0);
 }
 
-void Terrain::setupVertices(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec3> colors)
+void Terrain::setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, std::vector<glm::vec3>& colors)
 {
     for (std::size_t i = 0; i < positions.size(); i++)
     {

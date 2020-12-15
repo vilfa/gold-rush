@@ -37,9 +37,6 @@ int main()
 	window.SetMouseMoveCallback(mouseMoveCallback);
 	window.SetMouseScrollCallback(mouseScrollCallback);
 
-	NoiseGenerator ng;
-	ng.PerlinNoise2D(10, 10, 2);
-
 	renderer.Render();
 	return 0;
 }
