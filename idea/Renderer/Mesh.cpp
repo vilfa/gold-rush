@@ -6,16 +6,31 @@ const std::string Mesh::_TEXTURE_SPECULAR_NAME = "texture_specular_";
 const std::string Mesh::_TEXTURE_NORMAL_NAME = "texture_normal_";
 const std::string Mesh::_TEXTURE_HEIGHT_NAME = "texture_height_";
 
-Mesh::Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<Mesh::Texture>& textures) :
+Mesh::Mesh
+(
+    std::vector<Mesh::Vertex>& vertices, 
+    std::vector<uint32_t>& indices, 
+    std::vector<Mesh::Texture>& textures,
+    bool embedded
+) :
     Vertices(vertices),
     Indices(indices),
-    Textures(textures)
+    Textures(textures),
+    embedded(embedded)
 {
     setupMesh();
 }
 
-uint32_t Mesh::LoadMaterialTextureFromFile(const std::string& path, const std::string& directory, bool gamma, bool flipVertical,
-    GLenum textureWrapping, GLenum mipmapFilteringMin, GLenum mipmapFilteringMax)
+uint32_t Mesh::LoadMaterialTextureFromFile
+(
+    const std::string& path, 
+    const std::string& directory, 
+    bool gamma, 
+    bool flipVertical,
+    GLenum textureWrapping, 
+    GLenum mipmapFilteringMin, 
+    GLenum mipmapFilteringMax
+)
 {
     const std::string fullPath = directory + "/" + path;
 
@@ -73,6 +88,8 @@ uint32_t Mesh::LoadMaterialTextureFromFile(const std::string& path, const std::s
 void Mesh::Draw(Shader& shader)
 {
     shader.Use();
+
+
 
     uint32_t diffuseCount = 1;
     uint32_t specularCount = 1;
@@ -255,4 +272,12 @@ void Mesh::setupMesh()
     * Unbind the vertex attribute array
     */
     glBindVertexArray(0);
+}
+
+void Mesh::setupTextures()
+{
+}
+
+void Mesh::setupTexturesEmbedded()
+{
 }

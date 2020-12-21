@@ -18,10 +18,15 @@ void Terrain::Draw(Shader& shader)
 
 void Terrain::setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, std::vector<glm::vec3>& colors)
 {
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(1000.0f, 1000.0f, 15.0f));
+
     for (std::size_t i = 0; i < positions.size(); i++)
     {
         Terrain::Vertex vertex;
-        vertex.position = positions.at(i);
+        glm::vec4 position = glm::vec4(positions.at(i), 1.0f);
+        vertex.position = glm::vec3(model * position);
         vertex.normal = normals.at(i);
         vertex.color = colors.at(i);
         Vertices.push_back(vertex);

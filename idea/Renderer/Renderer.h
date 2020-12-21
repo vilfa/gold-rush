@@ -45,4 +45,9 @@ private:
     void setupGlobalEnables();
 
     void processKeyboardInput();
+
+    void processFrametime();
+    std::string getRenderStats();
+    void setRenderStats();
+    void clearFramebuffers();
 };

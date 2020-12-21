@@ -4,7 +4,7 @@ const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION = glm::vec3(0.0f, 0.0f, 3.0f)
 
 Renderer::Renderer(Window& window, glm::vec3 cameraPosition) :
     window(window),
-	camera(Camera(cameraPosition)),
+	camera(Camera(window, cameraPosition)),
     deltaTime(0.0),
     lastFrame(0.0),
     firstMouse(true),
@@ -32,44 +32,29 @@ void Renderer::Render()
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4)); // Bind the entire buffer to binding point 0.
 	glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboCamera, 0, sizeof(glm::vec3));
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	/*----- RESOURCES -----*/
-	Shader marsShader("resources/shaders/mars.vert", "resources/shaders/mars.frag");
-	Shader asteroidShader("resources/shaders/asteroid.vert", "resources/shaders/asteroid.frag");
-	Shader skyboxShader("resources/shaders/skybox_shader.vert", "resources/shaders/skybox_shader.frag");
-	Shader lightShader("resources/shaders/light_ubo.vert", "resources/shaders/light_ubo.frag");
-	Shader terrainShader("resources/shaders/terrain/lowPolyTerrain.vert", "resources/shaders/terrain/lowPolyTerrain.frag");
+	Shader terrainShader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag");
+	Shader treeShader("Resources/Shaders/Model/lowPolyTree.vert", "Resources/Shaders/Model/lowPolyTree.frag");
 
-	Skybox skyboxSea("resources/skybox/sea/", SKYBFORMATenum::JPG);
-	Skybox skyboxCity("resources/skybox/Yokohama3/", SKYBFORMATenum::JPG);
-	Skybox skyboxSpace("resources/skybox/space/", SKYBFORMATenum::PNG);
+	Shader skyboxShader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag");
+	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy/", SKYBFORMATenum::PNG);
 
 	Terrain lowPolyTerrain(512);
 
-	//Model mars("resources/models/mars/mars.obj");
-	//Model asteroid("resources/models/rock/rock.obj");
+	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
 
 	while (!window.GetWindowShouldClose())
 	{
-		double currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
-		std::string windowTitle = window.GetWindowTitle() + (" FPS:" + std::to_string(1 / deltaTime) + "|Frametime:" + std::to_string(deltaTime * 1000));
-		window.SetWindowTitle(windowTitle);
-
+		processFrametime();
+		setRenderStats();
 		processKeyboardInput();
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		clearFramebuffers();
 
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.GetViewMatrix();
-		glm::mat4 projection = glm::perspective(
-			glm::radians(camera.Fov),
-			(float)window.GetWidth() / (float)window.GetHeight(),
-			camera.FrustumNear, camera.FrustumFar);
+		glm::mat4 projection = camera.GetProjectionMatrix();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
@@ -81,22 +66,19 @@ void Renderer::Render()
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		terrainShader.Use();
-		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
 		terrainShader.SetMat4("model", model);
 		lowPolyTerrain.Draw(terrainShader);
 
-		////// Mars
-		//marsShader.Use();
-		//marsShader.SetMat4("model", model);
-		//mars.Draw(marsShader);
+		treeShader.Use();
+		treeShader.SetMat4("model", model);
+		tree1.Draw(treeShader);
 
-		////// Skybox
-		//skyboxShader.Use();
-		//view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-		//skyboxShader.SetMat4("projection", projection);
-		//skyboxShader.SetMat4("view", view);
-		//skyboxSpace.Draw(skyboxShader);
+		// Skybox
+		skyboxShader.Use();
+		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+		skyboxShader.SetMat4("projection", projection);
+		skyboxShader.SetMat4("view", view);
+		skyboxFantasy.Draw(skyboxShader);
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
@@ -142,9 +124,9 @@ void Renderer::setupGlobalEnables()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
-	//glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK); // Tell OpenGL which faces to cull. (default = GL_BACK)
+	glFrontFace(GL_CCW); // The front faces are counter-clockwse faces. (default = GL_CCW)
 
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD); // This call can be omitted, since GL_FUNC_ADD is the default blend equation.
@@ -191,4 +173,26 @@ void Renderer::processKeyboardInput()
 	{
 		camera.ProcessKeyboard(CAMMOVenum::RIGHT, speed, (float)deltaTime);
 	}
+}
+
+void Renderer::processFrametime()
+{
+	double currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+}
+
+std::string Renderer::getRenderStats()
+{
+	return window.GetWindowTitle() + (" FPS:" + std::to_string(1 / deltaTime) + "|Frametime:" + std::to_string(deltaTime * 1000));
+}
+
+void Renderer::setRenderStats()
+{
+	window.SetWindowTitle(getRenderStats());
+}
+
+void Renderer::clearFramebuffers()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

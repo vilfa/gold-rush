@@ -1,5 +1,4 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -46,4 +45,3 @@ private:
     static const int _GL_VERSION_MAJOR;
     static const int _GL_VERSION_MINOR;
 };
-#endif // !WINDOW_H

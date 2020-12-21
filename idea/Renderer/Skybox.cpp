@@ -1,7 +1,7 @@
 #include "Skybox.h"
 
-Skybox::Skybox(const std::string directory, const SKYBFORMATenum format) :
-    directory(directory),
+Skybox::Skybox(const std::string dir, const SKYBFORMATenum format, const bool isMultipleFiles) :
+	directory(dir),
 	format(format)
 {
 	std::string fileFormat;
@@ -14,17 +14,17 @@ Skybox::Skybox(const std::string directory, const SKYBFORMATenum format) :
 		fileFormat = ".png";
 	}
 
-    std::vector<std::string> files
-    {
-        directory + "right" + fileFormat,
-        directory + "left" + fileFormat,
-        directory + "top" + fileFormat,
-        directory + "bottom" + fileFormat,
-        directory + "front" + fileFormat,
-        directory + "back" + fileFormat
-    };
+	std::vector<std::string> files
+	{
+		directory + "right" + fileFormat,
+		directory + "left" + fileFormat,
+		directory + "top" + fileFormat,
+		directory + "bottom" + fileFormat,
+		directory + "front" + fileFormat,
+		directory + "back" + fileFormat
+	};
 
-    loadCubemap(files);
+	loadCubemap(files);
 	prepare();
 }
 

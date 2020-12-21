@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include<vector>
+#include<random>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -37,5 +38,9 @@ private:
     void generateVertexPositions();
     void generateVertexColors();
     glm::vec3 calculateTriangleNormals(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
+
+    void generateTreePositions();
+    void generateRockPositions();
+    void generateGrassPositions();
 };
 

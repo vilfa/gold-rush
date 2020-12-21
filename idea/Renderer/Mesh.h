@@ -1,5 +1,4 @@
-#ifndef MESH_H
-#define MESH_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -22,8 +21,18 @@ enum class TEXTYPEenum
 {
     DIFFUSE,
     SPECULAR,
+    
     NORMAL,
-    HEIGHT
+    HEIGHT,
+    
+    AMBIENT,
+    EMISSIVE
+};
+
+enum class TEXFORMATenum
+{
+    FILE,
+    EMBEDDED
 };
 
 class Mesh
@@ -40,22 +49,26 @@ public:
         glm::vec3 tangent;
         glm::vec3 biTangent;
     };
-
     /*
     * Data structure representing a texture
     */
     struct Texture
     {
         uint32_t id;
-        TEXTYPEenum type;
+        glm::vec4 color;
         std::string path; // Store the path to optimize loading
+        TEXTYPEenum type;
+        TEXFORMATenum format;
     };
 
     std::vector<Mesh::Vertex> Vertices;
     std::vector<uint32_t> Indices; // Indices (indexes) of vertices, representing a mesh
     std::vector<Mesh::Texture> Textures;
 
-    Mesh(std::vector<Mesh::Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<Mesh::Texture>& textures);
+    Mesh(std::vector<Mesh::Vertex>& vertices, 
+        std::vector<uint32_t>& indices, 
+        std::vector<Mesh::Texture>& textures,
+        bool embedded = false);
 
     static uint32_t LoadMaterialTextureFromFile(const std::string& path, const std::string& directory, bool gamma = false,
         bool flipVertical = true, GLenum textureWrapping = GL_REPEAT,
@@ -66,11 +79,14 @@ public:
 private:
     uint32_t VAO, VBO, EBO;
 
+    bool embedded;
+
     static const std::string _TEXTURE_DIFFUSE_NAME;
     static const std::string _TEXTURE_SPECULAR_NAME;
     static const std::string _TEXTURE_NORMAL_NAME;
     static const std::string _TEXTURE_HEIGHT_NAME;
 
     void setupMesh();
+    void setupTextures();
+    void setupTexturesEmbedded();
 };
-#endif // !MESH_H

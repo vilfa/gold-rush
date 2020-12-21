@@ -1,5 +1,4 @@
-#ifndef MODEL_H
-#define MODEL_H
+#pragma once
 
 #include <string>
 #include <fstream>
@@ -24,7 +23,7 @@
 class Model
 {
 public:
-    Model(const std::string& path, bool gamma = false);
+    Model(const std::string& path, bool embedded = false, bool gamma = false);
 
     void Draw(Shader& shader);
     void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instancedModelMatrices);
@@ -34,11 +33,16 @@ private:
     std::vector<Mesh::Texture> texturesLoaded;
     std::string directory;
     bool gammaCorrection;
+    bool materialsEmbedded;
 
     void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Mesh::Texture> loadMaterialTextures(aiMaterial* material,
-        aiTextureType aiType, TEXTYPEenum txType);
+        aiTextureType aiType, 
+        TEXTYPEenum txType, 
+        TEXFORMATenum txFormat);
+    std::vector<Mesh::Texture> loadMaterialTexturesEmbedded(aiMaterial* material,
+        aiTextureType aiType,
+        TEXFORMATenum txFormat);
 };
-#endif // !MODEL_H

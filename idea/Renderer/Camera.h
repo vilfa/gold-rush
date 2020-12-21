@@ -1,5 +1,4 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma once
 
 #include <vector>
 
@@ -42,19 +41,22 @@ public:
 	float MouseSensitivity;
 	float Fov;
 
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+	Camera(Window& window, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
 		float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR, 
 		float yaw = _YAW, float pitch = _PITCH);
-	Camera(float& posX, float& posY, float& posZ, float& upX, float& upY, float& upZ, float& yaw, float& pitch, 
+	Camera(Window& window, float& posX, float& posY, float& posZ, float& upX, float& upY, float& upZ, float& yaw, float& pitch, 
 		float frustumNear = _FRUSTUM_NEAR, float frustumFar = _FRUSTUM_FAR);
 
 	glm::mat4 GetViewMatrix() const;
+	glm::mat4 GetProjectionMatrix() const;
+	glm::mat4 GetProjectionViewMatrix() const;
+
 	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime);
 	void ProcessMouseMovement(float& xOffset, float& yOffset, GLboolean constrainPitch = true);
 	void ProcessMouseScroll(float& yOffset);
 
 private:
-	Window* window;
+	Window& window;
 	static const float _FRUSTUM_NEAR;
 	static const float _FRUSTUM_FAR;
 	static const float _YAW;
@@ -66,5 +68,3 @@ private:
 
 	void updateCameraVectors();
 };
-
-#endif // !CAMERA_H

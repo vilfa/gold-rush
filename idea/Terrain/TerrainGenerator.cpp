@@ -98,9 +98,26 @@ void TerrainGenerator::generateVertexPositions()
 
 void TerrainGenerator::generateVertexColors()
 {
-    for (std::size_t i = 0; i < positions.size(); i++)
+    glm::vec3 woodlandColors[] = {
+        glm::vec3(0.71f, 0.73f, 0.49f),
+        glm::vec3(0.48f, 0.54f, 0.29f),
+        glm::vec3(0.59f, 0.65f, 0.38f),
+        glm::vec3(0.36f, 0.45f, 0.22f),
+        glm::vec3(0.32f, 0.36f, 0.21f),
+        glm::vec3(0.26f, 0.34f, 0.17f),
+    };
+
+    std::random_device device;
+    std::mt19937 engine(device());
+    std::uniform_int_distribution<int> distrib(0, 5);
+
+    int colorIndex;
+    for (std::size_t i = 0; i < positions.size(); i+=3)
     {
-        colors.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
+        colorIndex = distrib(engine);
+        colors.push_back(woodlandColors[colorIndex]);
+        colors.push_back(woodlandColors[colorIndex]);
+        colors.push_back(woodlandColors[colorIndex]);
     }
 }
 
@@ -112,4 +129,16 @@ glm::vec3 TerrainGenerator::calculateTriangleNormals(glm::vec3 v0, glm::vec3 v1,
     // Calculate triangle normal. We wan't all three normals to be 
     // the same, so we get the low-poly shading effect.
     return glm::cross(t1, t2);
+}
+
+void TerrainGenerator::generateTreePositions()
+{
+}
+
+void TerrainGenerator::generateRockPositions()
+{
+}
+
+void TerrainGenerator::generateGrassPositions()
+{
 }

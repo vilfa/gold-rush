@@ -9,9 +9,10 @@ const float Camera::_SPEED_FAST = 7.0f;
 const float Camera::_SENSITIVITY = 0.08f;
 const float Camera::_FOV = 45.0f;
 
-Camera::Camera(glm::vec3 position, glm::vec3 up,
+Camera::Camera(Window& window, glm::vec3 position, glm::vec3 up,
 	float frustumNear, float frustumFar,
 	float yaw, float pitch) :
+	window(window),
 	Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
 	MovementSpeed(Camera::_SPEED), 
 	MovementSpeedFast(Camera::_SPEED_FAST), 
@@ -27,9 +28,10 @@ Camera::Camera(glm::vec3 position, glm::vec3 up,
 	updateCameraVectors();
 }
 
-Camera::Camera(float& posX, float& posY, float& posZ, 
+Camera::Camera(Window& window, float& posX, float& posY, float& posZ, 
 	float& upX, float& upY, float& upZ, float& yaw, float& pitch, 
 	float frustumNear, float frustumFar) : 
+	window(window),
 	Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
 	MovementSpeed(Camera::_SPEED), 
 	MovementSpeedFast(Camera::_SPEED_FAST), 
@@ -48,6 +50,21 @@ Camera::Camera(float& posX, float& posY, float& posZ,
 glm::mat4 Camera::GetViewMatrix() const
 {
 	return glm::lookAt(Position, Position + Front, Up);
+}
+
+glm::mat4 Camera::GetProjectionMatrix() const
+{
+	return glm::perspective(
+		glm::radians(Fov),
+		(float)window.GetWidth() / (float)window.GetHeight(),
+		FrustumNear,
+		FrustumFar
+	);
+}
+
+glm::mat4 Camera::GetProjectionViewMatrix() const
+{
+	return GetProjectionMatrix() * GetViewMatrix();
 }
 
 void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime)

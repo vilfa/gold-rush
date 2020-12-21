@@ -18,7 +18,7 @@ enum class SKYBFORMATenum
 class Skybox
 {
 public:
-    Skybox(const std::string directory, const SKYBFORMATenum format);
+    Skybox(const std::string directory, const SKYBFORMATenum format, const bool isMultipleFiles = true);
 	void Draw(Shader& shader);
 
 private:
