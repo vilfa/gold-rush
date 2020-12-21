@@ -71,7 +71,12 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 	glDeleteShader(fragmentShader);
 }
 
-Shader::Shader(const std::string& vertexPath, const std::string& geometryPath, const std::string& fragmentPath)
+Shader::Shader
+(
+	const std::string& vertexPath, 
+	const std::string& geometryPath, 
+	const std::string& fragmentPath
+)
 {
 	std::string vertexSource, geometrySource, fragmentSource;
 	std::ifstream vShaderFile, gShaderFile, fShaderFile;

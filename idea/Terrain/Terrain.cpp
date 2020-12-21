@@ -1,6 +1,7 @@
 #include "Terrain.h"
 
-Terrain::Terrain(const int gridSize)
+Terrain::Terrain(const int gridSize) :
+    gridSize(gridSize)
 {
     TerrainGenerator tg(gridSize);
     setupVertices(tg.GetPositions(), tg.GetNormals(), tg.GetColors());
@@ -20,7 +21,8 @@ void Terrain::setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::
 {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(1000.0f, 1000.0f, 15.0f));
+    model = glm::translate(model, glm::vec3((float)(-gridSize), (float)(-gridSize), 0.0f));
+    model = glm::scale(model, glm::vec3((float)(gridSize * 2), (float)(gridSize * 2), 15.0f));
 
     for (std::size_t i = 0; i < positions.size(); i++)
     {

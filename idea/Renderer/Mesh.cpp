@@ -6,6 +6,11 @@ const std::string Mesh::_TEXTURE_SPECULAR_NAME = "texture_specular_";
 const std::string Mesh::_TEXTURE_NORMAL_NAME = "texture_normal_";
 const std::string Mesh::_TEXTURE_HEIGHT_NAME = "texture_height_";
 
+const std::string Mesh::_COLOR_DIFFUSE_NAME = "color_diffuse_";
+const std::string Mesh::_COLOR_SPECULAR_NAME = "color_specular_";
+const std::string Mesh::_COLOR_AMBIENT_NAME = "color_ambient_";
+const std::string Mesh::_COLOR_EMISSIVE_NAME = "color_emissive_";
+
 Mesh::Mesh
 (
     std::vector<Mesh::Vertex>& vertices, 
@@ -89,54 +94,13 @@ void Mesh::Draw(Shader& shader)
 {
     shader.Use();
 
-
-
-    uint32_t diffuseCount = 1;
-    uint32_t specularCount = 1;
-    uint32_t normalCount = 1;
-    uint32_t heightCount = 1;
-
-    for (std::size_t i = 0; i < Textures.size(); i++)
+    if (embedded)
     {
-        glActiveTexture(GL_TEXTURE0 + (GLint)i);
-
-        TEXTYPEenum textureType;
-        std::string textureNumber;
-        std::string textureName;
-
-        try
-        {
-            textureType = Textures.at(i).type;
-        }
-        catch (const std::out_of_range& e)
-        {
-            std::cout << "ERROR::MESH::DRAW::OUT_OF_RANGE_EXCEPTION" << std::endl;
-            std::cout << e.what() << std::endl;
-        }
-
-        if (textureType == TEXTYPEenum::DIFFUSE)
-        {
-            textureName = _TEXTURE_DIFFUSE_NAME;
-            textureNumber = std::to_string(diffuseCount++);
-        }
-        else if (textureType == TEXTYPEenum::SPECULAR)
-        {
-            textureName = _TEXTURE_SPECULAR_NAME;
-            textureNumber = std::to_string(specularCount++);
-        }
-        else if (textureType == TEXTYPEenum::NORMAL)
-        {
-            textureName = _TEXTURE_NORMAL_NAME;
-            textureNumber = std::to_string(normalCount++);
-        }
-        else if (textureType == TEXTYPEenum::HEIGHT)
-        {
-            textureName = _TEXTURE_HEIGHT_NAME;
-            textureNumber = std::to_string(heightCount++);
-        }
-
-        shader.SetInt((textureName + textureNumber), (int&)i);
-        glBindTexture(GL_TEXTURE_2D, Textures.at(i).id);
+        setupTextures(shader);
+    }
+    else
+    {
+        setupTexturesEmbedded(shader);
     }
 
     // Draw the mesh
@@ -153,53 +117,7 @@ void Mesh::DrawInstanced(Shader& shader, const std::size_t instanceSize)
 {
     shader.Use();
 
-    uint32_t diffuseCount = 1;
-    uint32_t specularCount = 1;
-    uint32_t normalCount = 1;
-    uint32_t heightCount = 1;
-
-    for (std::size_t i = 0; i < Textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + (GLint)i);
-
-        TEXTYPEenum textureType;
-        std::string textureNumber;
-        std::string textureName;
-
-        try
-        {
-            textureType = Textures.at(i).type;
-        }
-        catch (const std::out_of_range& e)
-        {
-            std::cout << "ERROR::MESH::DRAW::OUT_OF_RANGE_EXCEPTION" << std::endl;
-            std::cout << e.what() << std::endl;
-        }
-
-        if (textureType == TEXTYPEenum::DIFFUSE)
-        {
-            textureName = _TEXTURE_DIFFUSE_NAME;
-            textureNumber = std::to_string(diffuseCount++);
-        }
-        else if (textureType == TEXTYPEenum::SPECULAR)
-        {
-            textureName = _TEXTURE_SPECULAR_NAME;
-            textureNumber = std::to_string(specularCount++);
-        }
-        else if (textureType == TEXTYPEenum::NORMAL)
-        {
-            textureName = _TEXTURE_NORMAL_NAME;
-            textureNumber = std::to_string(normalCount++);
-        }
-        else if (textureType == TEXTYPEenum::HEIGHT)
-        {
-            textureName = _TEXTURE_HEIGHT_NAME;
-            textureNumber = std::to_string(heightCount++);
-        }
-
-        shader.SetInt((textureName + textureNumber), (int&)i);
-        glBindTexture(GL_TEXTURE_2D, Textures.at(i).id);
-    }
+    setupTextures(shader);
     
     glBindVertexArray(VAO);
 
@@ -274,10 +192,105 @@ void Mesh::setupMesh()
     glBindVertexArray(0);
 }
 
-void Mesh::setupTextures()
+void Mesh::setupTextures(Shader& shader)
 {
+    shader.Use();
+
+    uint32_t diffuseCount = 1;
+    uint32_t specularCount = 1;
+    uint32_t normalCount = 1;
+    uint32_t heightCount = 1;
+
+    for (std::size_t i = 0; i < Textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + (GLint)i);
+
+        TEXTYPEenum textureType;
+        std::string textureNumber;
+        std::string textureName;
+
+        try
+        {
+            textureType = Textures.at(i).type;
+        }
+        catch (const std::out_of_range& e)
+        {
+            std::cout << "ERROR::MESH::DRAW::OUT_OF_RANGE_EXCEPTION" << std::endl;
+            std::cout << e.what() << std::endl;
+        }
+
+        if (textureType == TEXTYPEenum::DIFFUSE)
+        {
+            textureName = _TEXTURE_DIFFUSE_NAME;
+            textureNumber = std::to_string(diffuseCount++);
+        }
+        else if (textureType == TEXTYPEenum::SPECULAR)
+        {
+            textureName = _TEXTURE_SPECULAR_NAME;
+            textureNumber = std::to_string(specularCount++);
+        }
+        else if (textureType == TEXTYPEenum::NORMAL)
+        {
+            textureName = _TEXTURE_NORMAL_NAME;
+            textureNumber = std::to_string(normalCount++);
+        }
+        else if (textureType == TEXTYPEenum::HEIGHT)
+        {
+            textureName = _TEXTURE_HEIGHT_NAME;
+            textureNumber = std::to_string(heightCount++);
+        }
+
+        shader.SetInt((textureName + textureNumber), (int&)i);
+        glBindTexture(GL_TEXTURE_2D, Textures.at(i).id);
+    }
 }
 
-void Mesh::setupTexturesEmbedded()
+void Mesh::setupTexturesEmbedded(Shader& shader)
 {
+    shader.Use();
+
+    uint32_t diffuseCount = 1;
+    uint32_t specularCount = 1;
+    uint32_t ambientCount = 1;
+    uint32_t emissiveCount = 1;
+
+    for (std::size_t i = 0; i < Textures.size(); i++)
+    {
+        TEXTYPEenum textureType;
+        std::string textureNumber;
+        std::string textureName;
+
+        try
+        {
+            textureType = Textures.at(i).type;
+        }
+        catch (const std::out_of_range& e)
+        {
+            std::cout << "ERROR::MESH::DRAW::OUT_OF_RANGE_EXCEPTION" << std::endl;
+            std::cout << e.what() << std::endl;
+        }
+
+        if (textureType == TEXTYPEenum::DIFFUSE)
+        {
+            textureName = _COLOR_DIFFUSE_NAME;
+            textureNumber = std::to_string(diffuseCount++);
+        }
+        else if (textureType == TEXTYPEenum::SPECULAR)
+        {
+            textureName = _COLOR_SPECULAR_NAME;
+            textureNumber = std::to_string(specularCount++);
+        }
+        else if (textureType == TEXTYPEenum::AMBIENT)
+        {
+            textureName = _COLOR_AMBIENT_NAME;
+            textureNumber = std::to_string(ambientCount++);
+        }
+        else if (textureType == TEXTYPEenum::EMISSIVE)
+        {
+            textureName = _COLOR_EMISSIVE_NAME;
+            textureNumber = std::to_string(emissiveCount++);
+        }
+
+        shader.SetVec4((textureName + textureNumber), Textures.at(i).color);
+    }
 }

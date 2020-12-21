@@ -1,6 +1,6 @@
 #include "Renderer/Renderer.h"
 
-const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION = glm::vec3(0.0f, 0.0f, 3.0f);
+const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION = glm::vec3(10.0f, 15.0f, 10.0f);
 
 Renderer::Renderer(Window& window, glm::vec3 cameraPosition) :
     window(window),
@@ -44,6 +44,9 @@ void Renderer::Render()
 	Terrain lowPolyTerrain(512);
 
 	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
+	Model tree2("Resources/Models/tree_2/tree_2.obj", true);
+	Model tree3("Resources/Models/tree_3/tree_3.obj", true);
+	Model treeTrunk("Resources/Models/tree_trunk/tree_trunk.obj", true);
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -70,8 +73,21 @@ void Renderer::Render()
 		lowPolyTerrain.Draw(terrainShader);
 
 		treeShader.Use();
+
 		treeShader.SetMat4("model", model);
 		tree1.Draw(treeShader);
+
+		model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0f));
+		treeShader.SetMat4("model", model);
+		tree2.Draw(treeShader);
+		
+		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+		treeShader.SetMat4("model", model);
+		tree3.Draw(treeShader);
+
+		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+		treeShader.SetMat4("model", model);
+		treeTrunk.Draw(treeShader);
 
 		// Skybox
 		skyboxShader.Use();

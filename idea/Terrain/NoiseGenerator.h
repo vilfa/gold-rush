@@ -25,6 +25,6 @@ private:
     void generateSeed(const int width, const int height);
 
     double fade(const double& t) const;
-    double lerp(const double& lo, const double& hi, const double& t) const; // Linear interpolation of two values.
+    double lerp(const double& lo, const double& hi, const double& t) const;
     double grad(const int hash, const double x, const double y, const double z) const;
 };

@@ -37,6 +37,7 @@ public:
     void Draw(Shader& shader);
 
 private:
+    const int gridSize;
     uint32_t VAO, VBO;
 
     void setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, std::vector<glm::vec3>& colors);

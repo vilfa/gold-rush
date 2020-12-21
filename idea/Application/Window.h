@@ -12,11 +12,18 @@
 class Window
 {
 public:
-    Window(const uint32_t& width, const uint32_t& height, const std::string& windowName, 
-        const int glVersionMajor = _GL_VERSION_MAJOR, const int glVersionMinor = _GL_VERSION_MINOR,
-        const bool glUseMultisampling = false, const int glNumberOfSamples = 2,
-        int glProfile = GLFW_OPENGL_CORE_PROFILE, GLFWmonitor* monitor = NULL, 
-        GLFWwindow* share = NULL);
+    Window(
+        const uint32_t& width, 
+        const uint32_t& height, 
+        const std::string& windowName, 
+        const int glVersionMajor = _GL_VERSION_MAJOR, 
+        const int glVersionMinor = _GL_VERSION_MINOR,
+        const bool glUseMultisampling = false, 
+        const int glNumberOfSamples = 2,
+        int glProfile = GLFW_OPENGL_CORE_PROFILE, 
+        GLFWmonitor* monitor = NULL, 
+        GLFWwindow* share = NULL
+    );
 
     GLFWwindow* GetWindow() const;
     std::string GetWindowTitle() const;
@@ -40,7 +47,7 @@ private:
     uint32_t height;
 
     const bool glUseMultisampling;
-    const bool glMultisampleCount;
+    const int glMultisampleCount;
 
     static const int _GL_VERSION_MAJOR;
     static const int _GL_VERSION_MINOR;

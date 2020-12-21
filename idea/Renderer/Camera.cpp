@@ -1,7 +1,7 @@
 #include "Renderer/Camera.h"
 
 const float Camera::_FRUSTUM_NEAR = 0.1f;
-const float Camera::_FRUSTUM_FAR = 200.0f;
+const float Camera::_FRUSTUM_FAR = 100.0f;
 const float Camera::_YAW = -90.0f;
 const float Camera::_PITCH = 0.0f;
 const float Camera::_SPEED = 3.5f;
@@ -9,41 +9,59 @@ const float Camera::_SPEED_FAST = 7.0f;
 const float Camera::_SENSITIVITY = 0.08f;
 const float Camera::_FOV = 45.0f;
 
-Camera::Camera(Window& window, glm::vec3 position, glm::vec3 up,
-	float frustumNear, float frustumFar,
-	float yaw, float pitch) :
+Camera::Camera
+(
+	Window& window, 
+	glm::vec3 position, 
+	glm::vec3 up,
+	float frustumNear, 
+	float frustumFar,
+	float yaw, 
+	float pitch
+) :
 	window(window),
+	Position(position),
+	WorldUp(up),
+	FrustumNear(frustumNear),
+	FrustumFar(frustumFar),
+	Yaw(yaw),
+	Pitch(pitch),
 	Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
 	MovementSpeed(Camera::_SPEED), 
 	MovementSpeedFast(Camera::_SPEED_FAST), 
 	MouseSensitivity(Camera::_SENSITIVITY), 
 	Fov(Camera::_FOV)
 {
-	this->Position = position;
-	this->WorldUp = up;
-	this->FrustumNear = frustumNear;
-	this->FrustumFar = frustumFar;
-	this->Yaw = yaw;
-	this->Pitch = pitch;
 	updateCameraVectors();
 }
 
-Camera::Camera(Window& window, float& posX, float& posY, float& posZ, 
-	float& upX, float& upY, float& upZ, float& yaw, float& pitch, 
-	float frustumNear, float frustumFar) : 
+Camera::Camera
+(
+	Window& window, 
+	float& posX, 
+	float& posY, 
+	float& posZ, 
+	float& upX, 
+	float& upY, 
+	float& upZ, 
+	float& yaw, 
+	float& pitch, 
+	float frustumNear, 
+	float frustumFar
+) : 
 	window(window),
-	Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
+	Position(glm::vec3(posX, posY, posZ)),
+	WorldUp(glm::vec3(upX, upY, upZ)),
+	FrustumNear(frustumNear),
+	FrustumFar(frustumFar),
+	Yaw(yaw),
+	Pitch(pitch),
+	Front(glm::vec3(0.0f, 0.0f, -1.0f)),
 	MovementSpeed(Camera::_SPEED), 
 	MovementSpeedFast(Camera::_SPEED_FAST), 
 	MouseSensitivity(Camera::_SENSITIVITY), 
 	Fov(Camera::_FOV)
 {
-	this->Position = glm::vec3(posX, posY, posZ);
-	this->WorldUp = glm::vec3(upX, upY, upZ);
-	this->Yaw = yaw;
-	this->Pitch = pitch;
-	this->FrustumNear = frustumNear;
-	this->FrustumFar = frustumFar;
 	updateCameraVectors();
 }
 
@@ -67,7 +85,12 @@ glm::mat4 Camera::GetProjectionViewMatrix() const
 	return GetProjectionMatrix() * GetViewMatrix();
 }
 
-void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime)
+void Camera::ProcessKeyboard
+(
+	CAMMOVenum direction, 
+	CAMSPDenum speed, 
+	float deltaTime
+)
 {
 	float velocity = (speed == CAMSPDenum::NORMAL) ? 
 		MovementSpeed * deltaTime : MovementSpeedFast * deltaTime;
@@ -89,7 +112,12 @@ void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float delta
 	}
 }
 
-void Camera::ProcessMouseMovement(float& xOffset, float& yOffset, GLboolean constrainPitch)
+void Camera::ProcessMouseMovement
+(
+	float& xOffset, 
+	float& yOffset, 
+	GLboolean constrainPitch
+)
 {
 	xOffset *= MouseSensitivity;
 	yOffset *= MouseSensitivity;

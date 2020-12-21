@@ -23,24 +23,22 @@ public:
     std::vector<glm::vec3>& GetColors();
 
 private:
-    NoiseGenerator noiseGenerator;
-    int gridSize;
-
+    const int gridSize;
     float* heightMap;
+    NoiseGenerator noiseGenerator;
+
+    std::vector<glm::vec3> grid;
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec3> colors;
 
     void generateHeightMap();
-    std::vector<glm::vec3> generateGrid();
-
+    void generateGrid();
     void generateVertexPositions();
     void generateVertexColors();
-    glm::vec3 calculateTriangleNormals(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
+    void generateVegetationPositions();
 
-    void generateTreePositions();
-    void generateRockPositions();
-    void generateGrassPositions();
+    glm::vec3 calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
 };
 

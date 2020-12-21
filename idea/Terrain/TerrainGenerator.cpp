@@ -8,6 +8,7 @@ TerrainGenerator::TerrainGenerator(const int gridSize) :
     generateHeightMap();
     generateVertexPositions();
     generateVertexColors();
+    generateVegetationPositions();
 }
 
 std::vector<glm::vec3>& TerrainGenerator::GetPositions()
@@ -30,9 +31,8 @@ void TerrainGenerator::generateHeightMap()
     heightMap = noiseGenerator.PerlinNoise2D(gridSize, gridSize, 4);
 }
 
-std::vector<glm::vec3> TerrainGenerator::generateGrid()
+void TerrainGenerator::generateGrid()
 {
-    std::vector<glm::vec3> positionsUnique;
     for (int x = 0; x < gridSize; x++)
     {
         for (int y = 0; y < gridSize; y++)
@@ -42,22 +42,23 @@ std::vector<glm::vec3> TerrainGenerator::generateGrid()
             float v = (float)y / (float)gridSize;
             float w = heightMap[x * gridSize + y];
 
-            positionsUnique.push_back(glm::vec3(u, v, w));
+            grid.push_back(glm::vec3(u, v, w));
         }
     }
-    return positionsUnique;
 }
 
 void TerrainGenerator::generateVertexPositions()
 {
+    // Generate grid with unique positions for every grid position.
+    // This grid is the starting point for terrain generation.
+    generateGrid();
+    
     // Construct quad from unique vertices first, then duplicate vertices.
     // Why do this:
     // a.) there is no need for an index buffer, and
     // b.) each vertex can have its own normal.
     // This does introduce a performance penalty, but I choose to ignore it for now.
-
     int q0, q1, q2, q3;
-    std::vector<glm::vec3> grid = generateGrid();
 
     for (int x = 0; x < gridSize - 1; x++)
     {
@@ -77,8 +78,8 @@ void TerrainGenerator::generateVertexPositions()
             v3 = grid.at(q3);
 
             glm::vec3 n1, n2;
-            n1 = calculateTriangleNormals(v0, v2, v1);
-            n2 = calculateTriangleNormals(v2, v3, v1);
+            n1 = calculateTriangleNormal(v0, v2, v1);
+            n2 = calculateTriangleNormal(v2, v3, v1);
 
             positions.push_back(v0);
             normals.push_back(n1);
@@ -121,24 +122,18 @@ void TerrainGenerator::generateVertexColors()
     }
 }
 
-glm::vec3 TerrainGenerator::calculateTriangleNormals(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2)
+glm::vec3 TerrainGenerator::calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2)
 {
     // Calculate triangle vectors.
     glm::vec3 t1 = v1 - v0;
-    glm::vec3 t2 = v2 - v1;
-    // Calculate triangle normal. We wan't all three normals to be 
-    // the same, so we get the low-poly shading effect.
+    glm::vec3 t2 = v2 - v0;
+    // Calculate triangle normal. We want all three normals to be 
+    // the same, so we get the low-poly shading effect
+    // when calculating lighting.
     return glm::cross(t1, t2);
 }
 
-void TerrainGenerator::generateTreePositions()
+void TerrainGenerator::generateVegetationPositions()
 {
-}
 
-void TerrainGenerator::generateRockPositions()
-{
-}
-
-void TerrainGenerator::generateGrassPositions()
-{
 }

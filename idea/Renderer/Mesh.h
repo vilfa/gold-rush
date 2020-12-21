@@ -85,8 +85,13 @@ private:
     static const std::string _TEXTURE_SPECULAR_NAME;
     static const std::string _TEXTURE_NORMAL_NAME;
     static const std::string _TEXTURE_HEIGHT_NAME;
+    
+    static const std::string _COLOR_DIFFUSE_NAME;
+    static const std::string _COLOR_SPECULAR_NAME;
+    static const std::string _COLOR_AMBIENT_NAME;
+    static const std::string _COLOR_EMISSIVE_NAME;
 
     void setupMesh();
-    void setupTextures();
-    void setupTexturesEmbedded();
+    void setupTextures(Shader& shader);
+    void setupTexturesEmbedded(Shader& shader);
 };

@@ -23,7 +23,12 @@
 class Model
 {
 public:
-    Model(const std::string& path, bool embedded = false, bool gamma = false);
+    Model
+    (
+        const std::string& path, 
+        bool embedded = false, 
+        bool gamma = false
+    );
 
     void Draw(Shader& shader);
     void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instancedModelMatrices);
@@ -38,11 +43,18 @@ private:
     void loadModel(const std::string& path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Mesh::Texture> loadMaterialTextures(aiMaterial* material,
+
+    std::vector<Mesh::Texture> loadMaterialTextures
+    (
+        aiMaterial* material,
         aiTextureType aiType, 
         TEXTYPEenum txType, 
-        TEXFORMATenum txFormat);
-    std::vector<Mesh::Texture> loadMaterialTexturesEmbedded(aiMaterial* material,
+        TEXFORMATenum txFormat
+    );
+    std::vector<Mesh::Texture> loadMaterialTexturesEmbedded
+    (
+        aiMaterial* material,
         aiTextureType aiType,
-        TEXFORMATenum txFormat);
+        TEXFORMATenum txFormat
+    );
 };
