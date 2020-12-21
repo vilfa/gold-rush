@@ -65,14 +65,24 @@ public:
     std::vector<uint32_t> Indices; // Indices (indexes) of vertices, representing a mesh
     std::vector<Mesh::Texture> Textures;
 
-    Mesh(std::vector<Mesh::Vertex>& vertices, 
+    Mesh
+    (
+        std::vector<Mesh::Vertex>& vertices, 
         std::vector<uint32_t>& indices, 
         std::vector<Mesh::Texture>& textures,
-        bool embedded = false);
+        bool embedded = false
+    );
 
-    static uint32_t LoadMaterialTextureFromFile(const std::string& path, const std::string& directory, bool gamma = false,
-        bool flipVertical = true, GLenum textureWrapping = GL_REPEAT,
-        GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, GLenum mipmapFilteringMax = GL_LINEAR);
+    static uint32_t LoadMaterialTextureFromFile
+    (
+        const std::string& path, 
+        const std::string& directory, 
+        bool gamma = false,
+        bool flipVertical = true, 
+        GLenum textureWrapping = GL_REPEAT,
+        GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, 
+        GLenum mipmapFilteringMax = GL_LINEAR
+    );
     void Draw(Shader& shader);
     void DrawInstanced(Shader& shader, const std::size_t instanceSize);
 

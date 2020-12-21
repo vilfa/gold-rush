@@ -3,6 +3,9 @@
 #include<iostream>
 #include<vector>
 #include<random>
+#include<string>
+#include<iterator>
+#include<algorithm>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -22,16 +25,25 @@ public:
     std::vector<glm::vec3>& GetNormals();
     std::vector<glm::vec3>& GetColors();
 
+    std::vector<glm::vec3>& GetTrees();
+    std::vector<glm::vec3>& GetRocks();
+    std::vector<glm::vec3>& GetGrass();
+
 private:
     const int gridSize;
-    float* heightMap;
+
     NoiseGenerator noiseGenerator;
+    float* heightMap;
 
     std::vector<glm::vec3> grid;
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec3> colors;
+
+    std::vector<glm::vec3> treePositions;
+    std::vector<glm::vec3> rockPositions;
+    std::vector<glm::vec3> grassPositions;
 
     void generateHeightMap();
     void generateGrid();

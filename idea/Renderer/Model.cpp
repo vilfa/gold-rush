@@ -29,16 +29,31 @@ void Model::Draw(Shader& shader)
 	}
 }
 
-void Model::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instancedModelMatrices)
+void Model::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMats)
 {
-	size_t instanceSize = instancedModelMatrices.size();
+	std::size_t instanceSize = instanceMats.size();
 
 	uint32_t matricesVBO;
 	glGenBuffers(1, &matricesVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, matricesVBO);
-	glBufferData(GL_ARRAY_BUFFER, instanceSize * sizeof(glm::mat4), &instancedModelMatrices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, instanceSize * sizeof(glm::mat4), &instanceMats[0], GL_STATIC_DRAW);
 
-	for (size_t i = 0; i < meshes.size(); i++)
+	for (std::size_t i = 0; i < meshes.size(); i++)
+	{
+		meshes[i].DrawInstanced(shader, instanceSize);
+	}
+}
+
+void Model::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMats)
+{
+	std::size_t instanceSize = instanceMats->size();
+
+	uint32_t matricesVBO;
+	glGenBuffers(1, &matricesVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, matricesVBO);
+	glBufferData(GL_ARRAY_BUFFER, instanceSize * sizeof(glm::mat4), instanceMats->data(), GL_STATIC_DRAW);
+
+	for (std::size_t i = 0; i < meshes.size(); i++)
 	{
 		meshes[i].DrawInstanced(shader, instanceSize);
 	}

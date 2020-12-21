@@ -117,7 +117,14 @@ void Mesh::DrawInstanced(Shader& shader, const std::size_t instanceSize)
 {
     shader.Use();
 
-    setupTextures(shader);
+    if (embedded)
+    {
+        setupTexturesEmbedded(shader);
+    }
+    else
+    {
+        setupTextures(shader);
+    }
     
     glBindVertexArray(VAO);
 

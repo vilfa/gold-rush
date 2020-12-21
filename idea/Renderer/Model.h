@@ -31,7 +31,8 @@ public:
     );
 
     void Draw(Shader& shader);
-    void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instancedModelMatrices);
+    void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMats);
+    void DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMats);
 
 private:
     std::vector<Mesh> meshes;

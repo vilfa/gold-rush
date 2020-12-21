@@ -39,7 +39,7 @@ void Renderer::Render()
 	Shader treeShader("Resources/Shaders/Model/lowPolyTree.vert", "Resources/Shaders/Model/lowPolyTree.frag");
 
 	Shader skyboxShader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag");
-	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy/", SKYBFORMATenum::PNG);
+	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG);
 
 	Terrain lowPolyTerrain(512);
 
@@ -73,8 +73,9 @@ void Renderer::Render()
 		lowPolyTerrain.Draw(terrainShader);
 
 		treeShader.Use();
+		tree1.DrawInstanced(treeShader, lowPolyTerrain.GetTreeModelMats());
 
-		treeShader.SetMat4("model", model);
+		/*treeShader.SetMat4("model", model);
 		tree1.Draw(treeShader);
 
 		model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0f));
@@ -87,7 +88,7 @@ void Renderer::Render()
 
 		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
 		treeShader.SetMat4("model", model);
-		treeTrunk.Draw(treeShader);
+		treeTrunk.Draw(treeShader);*/
 
 		// Skybox
 		skyboxShader.Use();

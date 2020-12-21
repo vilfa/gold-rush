@@ -6,6 +6,7 @@ TerrainGenerator::TerrainGenerator(const int gridSize) :
     heightMap(nullptr)
 {
     generateHeightMap();
+    generateGrid();
     generateVertexPositions();
     generateVertexColors();
     generateVegetationPositions();
@@ -24,6 +25,21 @@ std::vector<glm::vec3>& TerrainGenerator::GetNormals()
 std::vector<glm::vec3>& TerrainGenerator::GetColors()
 {
     return colors;
+}
+
+std::vector<glm::vec3>& TerrainGenerator::GetTrees()
+{
+    return treePositions;
+}
+
+std::vector<glm::vec3>& TerrainGenerator::GetRocks()
+{
+    return rockPositions;
+}
+
+std::vector<glm::vec3>& TerrainGenerator::GetGrass()
+{
+    return grassPositions;
 }
 
 void TerrainGenerator::generateHeightMap()
@@ -48,18 +64,13 @@ void TerrainGenerator::generateGrid()
 }
 
 void TerrainGenerator::generateVertexPositions()
-{
-    // Generate grid with unique positions for every grid position.
-    // This grid is the starting point for terrain generation.
-    generateGrid();
-    
+{    
     // Construct quad from unique vertices first, then duplicate vertices.
     // Why do this:
     // a.) there is no need for an index buffer, and
     // b.) each vertex can have its own normal.
     // This does introduce a performance penalty, but I choose to ignore it for now.
     int q0, q1, q2, q3;
-
     for (int x = 0; x < gridSize - 1; x++)
     {
         for (int y = 0; y < gridSize - 1; y++)
@@ -108,8 +119,7 @@ void TerrainGenerator::generateVertexColors()
         glm::vec3(0.26f, 0.34f, 0.17f),
     };
 
-    std::random_device device;
-    std::mt19937 engine(device());
+    std::mt19937 engine(std::random_device{}());
     std::uniform_int_distribution<int> distrib(0, 5);
 
     int colorIndex;
@@ -135,5 +145,38 @@ glm::vec3 TerrainGenerator::calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, 
 
 void TerrainGenerator::generateVegetationPositions()
 {
+    std::mt19937 engine(std::random_device{}());
+    std::vector<glm::vec3> sample;
 
+    std::sample(
+        grid.begin(), 
+        grid.end(), 
+        std::back_inserter(sample),
+        5000,
+        engine
+    );
+
+    std::shuffle(
+        sample.begin(),
+        sample.end(),
+        engine
+    );
+
+    // Distribute the vegetation positions with the following ratio:
+    // 50% trees, 25% rocks, 25% grass buds.
+    std::copy(
+        sample.begin(), 
+        sample.begin() + (sample.size() / 2), 
+        std::back_inserter(treePositions)
+    );
+    std::copy(
+        sample.begin() + (sample.size() / 2), 
+        sample.begin() + (sample.size() / 4) * 3, 
+        std::back_inserter(rockPositions)
+    );
+    std::copy(
+        sample.begin() + (sample.size() / 4) * 3, 
+        sample.end(), 
+        std::back_inserter(grassPositions)
+    );
 }

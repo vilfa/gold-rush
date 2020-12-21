@@ -12,8 +12,6 @@
 #include <Renderer/Shader.h>
 #include <Terrain/TerrainGenerator.h>
 
-class TerrainGenerator; // Forward declaration.
-
 /*
 * This class is basically a simpler Mesh class. The reason I did this is because
 * the Mesh class is a bit too complicated for this terrain. This is definitely not
@@ -36,11 +34,40 @@ public:
     Terrain(const int gridSize);
     void Draw(Shader& shader);
 
+    std::shared_ptr<std::vector<glm::vec3>> GetTrees();
+    std::shared_ptr<std::vector<glm::vec3>> GetRocks();
+    std::shared_ptr<std::vector<glm::vec3>> GetGrass();
+    
+    std::shared_ptr<std::vector<glm::mat4>> GetTreeModelMats();
+    std::shared_ptr<std::vector<glm::mat4>> GetRockModelMats();
+    std::shared_ptr<std::vector<glm::mat4>> GetGrassModelMats();
+
 private:
     const int gridSize;
     uint32_t VAO, VBO;
 
-    void setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, std::vector<glm::vec3>& colors);
+    std::shared_ptr<std::vector<glm::vec3>> treePositions;
+    std::shared_ptr<std::vector<glm::vec3>> rockPositions;
+    std::shared_ptr<std::vector<glm::vec3>> grassPositions;
+
+    std::shared_ptr<std::vector<glm::mat4>> treeModelMats;
+    std::shared_ptr<std::vector<glm::mat4>> rockModelMats;
+    std::shared_ptr<std::vector<glm::mat4>> grassModelMats;
+
+    void setupVertices
+    (
+        std::vector<glm::vec3>& positions, 
+        std::vector<glm::vec3>& normals, 
+        std::vector<glm::vec3>& colors
+    );
+    void setupVegetation
+    (
+        std::vector<glm::vec3>& trees,
+        std::vector<glm::vec3>& rocks,
+        std::vector<glm::vec3>& grass
+    );
     void setupTerrain();
+
+    glm::mat4 getTransform();
 };
 
