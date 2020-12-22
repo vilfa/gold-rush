@@ -9,8 +9,7 @@ const float Camera::_SPEED_FAST = 7.0f;
 const float Camera::_SENSITIVITY = 0.08f;
 const float Camera::_FOV = 45.0f;
 
-Camera::Camera
-(
+Camera::Camera(
 	Window& window, 
 	glm::vec3 position, 
 	glm::vec3 up,
@@ -35,17 +34,16 @@ Camera::Camera
 	updateCameraVectors();
 }
 
-Camera::Camera
-(
+Camera::Camera(
 	Window& window, 
-	float& posX, 
-	float& posY, 
-	float& posZ, 
-	float& upX, 
-	float& upY, 
-	float& upZ, 
-	float& yaw, 
-	float& pitch, 
+	float posX, 
+	float posY, 
+	float posZ, 
+	float upX, 
+	float upY, 
+	float upZ, 
+	float yaw, 
+	float pitch, 
 	float frustumNear, 
 	float frustumFar
 ) : 
@@ -85,8 +83,7 @@ glm::mat4 Camera::GetProjectionViewMatrix() const
 	return GetProjectionMatrix() * GetViewMatrix();
 }
 
-void Camera::ProcessKeyboard
-(
+void Camera::ProcessKeyboard(
 	CAMMOVenum direction, 
 	CAMSPDenum speed, 
 	float deltaTime
@@ -112,10 +109,9 @@ void Camera::ProcessKeyboard
 	}
 }
 
-void Camera::ProcessMouseMovement
-(
-	float& xOffset, 
-	float& yOffset, 
+void Camera::ProcessMouseMovement(
+	float xOffset, 
+	float yOffset, 
 	GLboolean constrainPitch
 )
 {
@@ -140,7 +136,7 @@ void Camera::ProcessMouseMovement
 	updateCameraVectors();
 }
 
-void Camera::ProcessMouseScroll(float& yOffset)
+void Camera::ProcessMouseScroll(float yOffset)
 {
 	Fov -= yOffset;
 	if (Fov < 1.0f)

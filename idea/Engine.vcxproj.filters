@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
@@ -91,45 +91,45 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\fragment.frag" />
-    <None Include="resources\shaders\fragment_light.frag" />
-    <None Include="resources\shaders\fragment_light_source.frag" />
-    <None Include="resources\shaders\vertex.vert" />
-    <None Include="resources\shaders\vertex_light.vert" />
-    <None Include="resources\shaders\vertex_light_source.vert" />
-    <None Include="resources\shaders\model_loading.frag" />
-    <None Include="resources\shaders\model_loading.vert" />
-    <None Include="resources\shaders\depth_testing.frag" />
-    <None Include="resources\shaders\depth_testing.vert" />
-    <None Include="resources\shaders\stencils.frag" />
-    <None Include="resources\shaders\stencils.vert" />
-    <None Include="resources\shaders\single_color.frag" />
-    <None Include="resources\shaders\single_color.vert" />
-    <None Include="resources\shaders\blending.frag" />
-    <None Include="resources\shaders\blending.vert" />
-    <None Include="resources\shaders\backpack_shader.frag" />
-    <None Include="resources\shaders\backpack_shader.vert" />
-    <None Include="resources\shaders\framebuffer_shader.frag" />
-    <None Include="resources\shaders\framebuffer_shader.vert" />
-    <None Include="resources\shaders\skybox_shader.frag" />
-    <None Include="resources\shaders\skybox_shader.vert" />
-    <None Include="resources\shaders\backpack_reflective_shader.frag" />
-    <None Include="resources\shaders\backpack_reflective_shader.vert" />
-    <None Include="resources\shaders\backpack_refractive_shader.vert" />
-    <None Include="resources\shaders\backpack_refractive_shader.frag" />
-    <None Include="resources\shaders\blue.frag" />
-    <None Include="resources\shaders\colors.vert" />
-    <None Include="resources\shaders\green.frag" />
-    <None Include="resources\shaders\red.frag" />
-    <None Include="resources\shaders\yellow.frag" />
-    <None Include="resources\shaders\explode_object.geom" />
-    <None Include="resources\shaders\backpack_shader_ubo.frag" />
-    <None Include="resources\shaders\backpack_shader_ubo.vert" />
-    <None Include="resources\shaders\backpack_with_normals.frag" />
-    <None Include="resources\shaders\backpack_with_normals.geom" />
-    <None Include="resources\shaders\backpack_with_normals.vert" />
-    <None Include="resources\shaders\instanced_quads.vert" />
-    <None Include="resources\shaders\instanced_quads.frag" />
+    <None Include="Resources\Shaders\fragment.frag" />
+    <None Include="Resources\Shaders\fragment_light.frag" />
+    <None Include="Resources\Shaders\fragment_light_source.frag" />
+    <None Include="Resources\Shaders\vertex.vert" />
+    <None Include="Resources\Shaders\vertex_light.vert" />
+    <None Include="Resources\Shaders\vertex_light_source.vert" />
+    <None Include="Resources\Shaders\model_loading.frag" />
+    <None Include="Resources\Shaders\model_loading.vert" />
+    <None Include="Resources\Shaders\depth_testing.frag" />
+    <None Include="Resources\Shaders\depth_testing.vert" />
+    <None Include="Resources\Shaders\stencils.frag" />
+    <None Include="Resources\Shaders\stencils.vert" />
+    <None Include="Resources\Shaders\single_color.frag" />
+    <None Include="Resources\Shaders\single_color.vert" />
+    <None Include="Resources\Shaders\blending.frag" />
+    <None Include="Resources\Shaders\blending.vert" />
+    <None Include="Resources\Shaders\backpack_shader.frag" />
+    <None Include="Resources\Shaders\backpack_shader.vert" />
+    <None Include="Resources\Shaders\framebuffer_shader.frag" />
+    <None Include="Resources\Shaders\framebuffer_shader.vert" />
+    <None Include="Resources\Shaders\skybox_shader.frag" />
+    <None Include="Resources\Shaders\skybox_shader.vert" />
+    <None Include="Resources\Shaders\backpack_reflective_shader.frag" />
+    <None Include="Resources\Shaders\backpack_reflective_shader.vert" />
+    <None Include="Resources\Shaders\backpack_refractive_shader.vert" />
+    <None Include="Resources\Shaders\backpack_refractive_shader.frag" />
+    <None Include="Resources\Shaders\blue.frag" />
+    <None Include="Resources\Shaders\colors.vert" />
+    <None Include="Resources\Shaders\green.frag" />
+    <None Include="Resources\Shaders\red.frag" />
+    <None Include="Resources\Shaders\yellow.frag" />
+    <None Include="Resources\Shaders\explode_object.geom" />
+    <None Include="Resources\Shaders\backpack_shader_ubo.frag" />
+    <None Include="Resources\Shaders\backpack_shader_ubo.vert" />
+    <None Include="Resources\Shaders\backpack_with_normals.frag" />
+    <None Include="Resources\Shaders\backpack_with_normals.geom" />
+    <None Include="Resources\Shaders\backpack_with_normals.vert" />
+    <None Include="Resources\Shaders\instanced_quads.vert" />
+    <None Include="Resources\Shaders\instanced_quads.frag" />
     <None Include="Resources\Shaders\.old\asteroid.frag" />
     <None Include="Resources\Shaders\.old\asteroid.vert" />
     <None Include="Resources\Shaders\.old\backpack_reflective_shader.frag" />
@@ -183,22 +183,22 @@
     <None Include="Resources\Shaders\Terrain\lowPolyTerrain.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\textures\awesomeface.png">
+    <Image Include="Resources\Textures\awesomeface.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\textures\container2.png">
+    <Image Include="Resources\Textures\container2.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\textures\container2_specular.png">
+    <Image Include="Resources\Textures\container2_specular.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\textures\crazycat.jpg">
+    <Image Include="Resources\Textures\crazycat.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\textures\wall.jpg">
+    <Image Include="Resources\Textures\wall.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\textures\wooden-container.jpg">
+    <Image Include="Resources\Textures\wooden-container.jpg">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\Skyboxes\City\back.jpg">

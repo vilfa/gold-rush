@@ -1,3 +1,7 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #include <iostream>
 #include <random>
 
@@ -24,10 +28,9 @@ void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 */
 const uint32_t SCR_WIDTH = 1600;
 const uint32_t SCR_HEIGHT = 900;
-const std::string WINDOW_NAME = "big pp";
+const std::string WINDOW_NAME = "Idea";
 
-Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 
-	4, 2, true, 4);
+Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 4, 2, true);
 Renderer renderer(window);
 
 int main()
@@ -35,8 +38,8 @@ int main()
 	window.SetFramebufferSizeCallback(framebufferSizeCallback);
 	window.SetMouseMoveCallback(mouseMoveCallback);
 	window.SetMouseScrollCallback(mouseScrollCallback);
-
 	renderer.Render();
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
 

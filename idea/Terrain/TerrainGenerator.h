@@ -19,7 +19,7 @@
 class TerrainGenerator
 {
 public:
-    TerrainGenerator(const int gridSize = 256);
+    TerrainGenerator(const uint32_t gridSize = 256);
 
     std::vector<glm::vec3>& GetPositions();
     std::vector<glm::vec3>& GetNormals();
@@ -30,11 +30,8 @@ public:
     std::vector<glm::vec3>& GetGrass();
 
 private:
-    const int gridSize;
-
-    NoiseGenerator noiseGenerator;
-    float* heightMap;
-
+    const uint32_t gridSize;
+    std::shared_ptr<float[]> heightMap;
     std::vector<glm::vec3> grid;
 
     std::vector<glm::vec3> positions;
@@ -50,7 +47,6 @@ private:
     void generateVertexPositions();
     void generateVertexColors();
     void generateVegetationPositions();
-
-    glm::vec3 calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, std::mt19937& engine);
+    glm::vec3 calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
 };
 

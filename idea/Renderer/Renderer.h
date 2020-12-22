@@ -20,34 +20,44 @@
 class Renderer
 {
 public:
-    Renderer(Window& window, glm::vec3 cameraPosition = _DEFAULT_CAMERA_POSITION);
+    Renderer(
+        Window& window, 
+        glm::vec3 cameraPosition = _DEFAULT_CAMERA_POSITION
+    );
 
     void Render();
-    
-    void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-    void MouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
-    void MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+    void FramebufferSizeCallback(
+        GLFWwindow* window, 
+        int width, 
+        int height
+    );
+    void MouseMoveCallback(
+        GLFWwindow* window, 
+        double xPos, 
+        double yPos
+    );
+    void MouseScrollCallback(
+        GLFWwindow* window, 
+        double xOffset, 
+        double yOffset
+    );
 
 private:
     Window& window;
     Camera camera;
-
-    static const glm::vec3 _DEFAULT_CAMERA_POSITION;
-
     double deltaTime;
     double lastFrame;
-
     bool firstMouse;
     float lastX;
     float lastY;
 
+    static const glm::vec3 _DEFAULT_CAMERA_POSITION;
+
     void setupInput(int mode, int value);
     void setupGlobalEnables();
-
     void processKeyboardInput();
-
     void processFrametime();
-    std::string getRenderStats();
-    void setRenderStats();
     void clearFramebuffers();
+    void setRenderStats();
+    std::string getRenderStats();
 };

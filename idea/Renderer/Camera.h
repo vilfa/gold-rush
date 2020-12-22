@@ -31,7 +31,6 @@ public:
 	glm::vec3 Front;
 	glm::vec3 Up;
 	glm::vec3 Right;
-
 	float FrustumNear;
 	float FrustumFar;
 	float Yaw;
@@ -50,16 +49,17 @@ public:
 		float yaw = _YAW, 
 		float pitch = _PITCH
 	);
+
 	Camera(
 		Window& window, 
-		float& posX, 
-		float& posY, 
-		float& posZ, 
-		float& upX, 
-		float& upY, 
-		float& upZ, 
-		float& yaw, 
-		float& pitch, 
+		float posX, 
+		float posY, 
+		float posZ, 
+		float upX, 
+		float upY, 
+		float upZ, 
+		float yaw, 
+		float pitch, 
 		float frustumNear = _FRUSTUM_NEAR, 
 		float frustumFar = _FRUSTUM_FAR
 	);
@@ -67,13 +67,21 @@ public:
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetProjectionMatrix() const;
 	glm::mat4 GetProjectionViewMatrix() const;
-
-	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, float deltaTime);
-	void ProcessMouseMovement(float& xOffset, float& yOffset, GLboolean constrainPitch = true);
-	void ProcessMouseScroll(float& yOffset);
+	void ProcessKeyboard(
+		CAMMOVenum direction, 
+		CAMSPDenum speed, 
+		float deltaTime
+	);
+	void ProcessMouseMovement(
+		float xOffset, 
+		float yOffset, 
+		GLboolean constrainPitch = true
+	);
+	void ProcessMouseScroll(float yOffset);
 
 private:
 	Window& window;
+
 	static const float _FRUSTUM_NEAR;
 	static const float _FRUSTUM_FAR;
 	static const float _YAW;

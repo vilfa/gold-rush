@@ -26,7 +26,7 @@ vec4 Explode(vec4 position, vec3 normal)
     return position + vec4(direction, 0.0);
 }
 
-const float MAGNITUDE = 1.0;
+const float MAGNITUDE = 2;
 
 void main()
 {

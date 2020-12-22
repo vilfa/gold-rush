@@ -4,9 +4,9 @@ const int Window::_GL_VERSION_MAJOR = 3;
 const int Window::_GL_VERSION_MINOR = 3;
 
 Window::Window(
-	const uint32_t& width, 
-	const uint32_t& height, 
-	const std::string& windowName, 
+	const uint32_t width, 
+	const uint32_t height, 
+	const std::string windowName, 
 	const int glVersionMajor, 
 	const int glVersionMinor,
 	const bool glUseMultisampling, 
@@ -21,15 +21,7 @@ Window::Window(
 	glUseMultisampling(glUseMultisampling),
 	glMultisampleCount(glNumberOfSamples)
 {
-    glfwInit();
-
-	double time = glfwGetTime();
 	std::cout << "INFO::WINDOW::WINDOW::GLFW::INIT_START" << std::endl;
-    
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, glProfile);
-
 	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::VERSION" << std::endl;
 	std::cout << "Using GL version major:" << glVersionMajor << std::endl;
 	std::cout << "Using GL version minor:" << glVersionMinor << std::endl;
@@ -37,6 +29,14 @@ Window::Window(
 	std::cout << "Max uniform components:" << GL_MAX_VERTEX_UNIFORM_COMPONENTS << std::endl;
 	std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::ANTI_ALIASING" << std::endl;
 	std::cout << "Using multisampling:" << glUseMultisampling << std::endl;
+
+    glfwInit();
+
+	double time = glfwGetTime();
+    
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, glProfile);
 
 	if (glUseMultisampling)
 	{
@@ -48,7 +48,7 @@ Window::Window(
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif // __APPLE__
 
-	window = glfwCreateWindow(this->width, this->height, this->name.c_str(), monitor, share);
+	window = glfwCreateWindow(width, height, name.c_str(), monitor, share);
 	if (window == NULL)
 	{
 		std::cout << "ERROR::WINDOW::WINDOW::GLFW::INIT" << std::endl;
@@ -59,10 +59,6 @@ Window::Window(
 	glfwSetWindowUserPointer(window, this);
 	glfwMakeContextCurrent(window);
 
-	double deltaTime = glfwGetTime() - time;
-	std::cout << "INFO::WINDOW::WINDOW::GLFW::INIT_END" << std::endl;
-	std::cout << "Window init took:" << deltaTime * 1000 << "ms" << std::endl;
-
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "ERROR::WINDOW::WINDOW::GLAD::INIT" << std::endl;
@@ -70,7 +66,10 @@ Window::Window(
 		std::exit(EXIT_FAILURE);
 	}
 
-	glViewport(0, 0, this->width, this->height);
+	glViewport(0, 0, width, height);
+
+	std::cout << "INFO::WINDOW::WINDOW::GLFW::INIT_END" << std::endl;
+	std::cout << "Window init took:" << (glfwGetTime() - time) * 1000 << "ms" << std::endl;
 }
 
 GLFWwindow* Window::GetWindow() const
@@ -105,13 +104,7 @@ bool Window::GetMultisamplingEnabled() const
 
 void Window::SetWindowShouldClose(bool shouldClose)
 {
-	if (shouldClose)
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
-	else {
-		glfwSetWindowShouldClose(window, GL_FALSE);
-	}
+	glfwSetWindowShouldClose(window, (GLboolean)shouldClose);
 }
 
 void Window::SetInputMode(int mode, int value)
@@ -119,7 +112,7 @@ void Window::SetInputMode(int mode, int value)
 	glfwSetInputMode(window, mode, value);
 }
 
-void Window::SetWindowTitle(const std::string& title)
+void Window::SetWindowTitle(const std::string title)
 {
 	glfwSetWindowTitle(window, title.c_str());
 }

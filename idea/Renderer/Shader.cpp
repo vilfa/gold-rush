@@ -1,6 +1,9 @@
 #include "Renderer/Shader.h"
 
-Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
+Shader::Shader(
+	const std::string vertexPath, 
+	const std::string fragmentPath
+)
 {
 	std::string vertexSource, fragmentSource;
 	std::ifstream vShaderFile, fShaderFile;
@@ -14,9 +17,6 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-	/*
-	* Read shader files.
-	*/
 	try
 	{
 		vShaderFile.open(vertexPath);
@@ -71,11 +71,10 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 	glDeleteShader(fragmentShader);
 }
 
-Shader::Shader
-(
-	const std::string& vertexPath, 
-	const std::string& geometryPath, 
-	const std::string& fragmentPath
+Shader::Shader(
+	const std::string vertexPath, 
+	const std::string geometryPath, 
+	const std::string fragmentPath
 )
 {
 	std::string vertexSource, geometrySource, fragmentSource;
@@ -91,9 +90,6 @@ Shader::Shader
 	gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-	/*
-	* Read shader files.
-	*/
 	try
 	{
 		vShaderFile.open(vertexPath);
@@ -165,7 +161,7 @@ void Shader::Use() const
 	glUseProgram(ID);
 }
 
-void Shader::CheckCompile(GLuint& id, const SHTYPEenum& type) const
+void Shader::CheckCompile(GLuint id, const SHTYPEenum type) const
 {
 	int success;
 	char infoLog[512];
@@ -192,7 +188,7 @@ void Shader::CheckCompile(GLuint& id, const SHTYPEenum& type) const
 	}
 }
 
-GLint Shader::GetUniformLocation(const std::string& name) const
+GLint Shader::GetUniformLocation(const std::string name) const
 {
 	GLint location = glGetUniformLocation(ID, name.c_str());
 	if (location < 0)
@@ -204,47 +200,47 @@ GLint Shader::GetUniformLocation(const std::string& name) const
 	return location;
 }
 
-void Shader::SetBool(const std::string& name, const bool& value) const
+void Shader::SetBool(const std::string name, const bool value) const
 {
 	glUniform1i(GetUniformLocation(name), (int)value);
 }
 
-void Shader::SetInt(const std::string& name, const int& value) const
+void Shader::SetInt(const std::string name, const int value) const
 {
 	glUniform1i(GetUniformLocation(name), value);
 }
 
-void Shader::SetFloat(const std::string& name, const float& value) const
+void Shader::SetFloat(const std::string name, const float value) const
 {
 	glUniform1f(GetUniformLocation(name), value);
 }
 
-void Shader::SetMat2(const std::string& name, const glm::mat2& value, GLboolean transpose) const
+void Shader::SetMat2(const std::string name, const glm::mat2& value, GLboolean transpose) const
 {
 	glUniformMatrix2fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
 
-void Shader::SetMat3(const std::string& name, const glm::mat3& value, GLboolean transpose) const
+void Shader::SetMat3(const std::string name, const glm::mat3& value, GLboolean transpose) const
 {
 	glUniformMatrix3fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
 
-void Shader::SetMat4(const std::string& name, const glm::mat4& value, GLboolean transpose) const
+void Shader::SetMat4(const std::string name, const glm::mat4& value, GLboolean transpose) const
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, glm::value_ptr(value));
 }
 
-void Shader::SetVec2(const std::string& name, const glm::vec2& value) const
+void Shader::SetVec2(const std::string name, const glm::vec2& value) const
 {
 	glUniform2fv(GetUniformLocation(name), 1, glm::value_ptr(value));
 }
 
-void Shader::SetVec3(const std::string& name, const glm::vec3& value) const
+void Shader::SetVec3(const std::string name, const glm::vec3& value) const
 {
 	glUniform3fv(GetUniformLocation(name), 1, glm::value_ptr(value));
 }
 
-void Shader::SetVec4(const std::string& name, const glm::vec4& value) const
+void Shader::SetVec4(const std::string name, const glm::vec4& value) const
 {
 	glUniform4fv(GetUniformLocation(name), 1, glm::value_ptr(value));
 }

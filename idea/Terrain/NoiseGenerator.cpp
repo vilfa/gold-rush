@@ -1,23 +1,17 @@
 #include "Terrain/NoiseGenerator.h"
 
-NoiseGenerator::NoiseGenerator() :
-    rd(std::random_device()),
-    mt(std::mt19937(rd())),
-    dist(std::uniform_real_distribution<float> (0, 1)),
-    seed(nullptr)
+std::shared_ptr<float[]> NoiseGenerator::PerlinNoise2D(
+    const int width, 
+    const int height, 
+    const int octaves, 
+    const float bias
+)
 {
-}
+    std::mt19937 reng(std::random_device{}());
+    std::uniform_real_distribution<float> dist(0, 1);
 
-NoiseGenerator::~NoiseGenerator()
-{
-    delete[] seed;
-}
-
-float* NoiseGenerator::PerlinNoise2D(const int width, const int height, const int octaves, const float bias)
-{
-    generateSeed(width, height);
-
-    float* heightMap = new float[(width * height)];
+    std::shared_ptr<float[]> seed(generateSeed(width, height, reng, dist));
+    std::shared_ptr<float[]> heightMap(new float[width * height]);
 
     for (int x = 0; x < width; x++)
     {
@@ -54,14 +48,21 @@ float* NoiseGenerator::PerlinNoise2D(const int width, const int height, const in
     return heightMap;
 }
 
-void NoiseGenerator::generateSeed(const int width, const int height)
+std::shared_ptr<float[]> NoiseGenerator::generateSeed(
+    const int width, 
+    const int height,
+    std::mt19937& reng,
+    std::uniform_real_distribution<float>& dist
+)
 {
-    seed = new float[(width * height)];
+    std::shared_ptr<float[]> pSeed(new float[width * height]);
 
     for (int i = 0; i < width * height; i++)
     {
-        seed[i] = dist(mt);
+        pSeed[i] = dist(reng);
     }
+
+    return pSeed;
 }
 
 double NoiseGenerator::fade(const double& t) const

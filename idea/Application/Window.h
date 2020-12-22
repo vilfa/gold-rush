@@ -13,9 +13,9 @@ class Window
 {
 public:
     Window(
-        const uint32_t& width, 
-        const uint32_t& height, 
-        const std::string& windowName, 
+        const uint32_t width, 
+        const uint32_t height, 
+        const std::string windowName, 
         const int glVersionMajor = _GL_VERSION_MAJOR, 
         const int glVersionMinor = _GL_VERSION_MINOR,
         const bool glUseMultisampling = false, 
@@ -31,11 +31,9 @@ public:
     int GetHeight() const;
     int GetWindowShouldClose() const;
     bool GetMultisamplingEnabled() const;
-    
     void SetInputMode(int mode, int value);
-    void SetWindowTitle(const std::string& title);
+    void SetWindowTitle(const std::string title);
     void SetWindowShouldClose(bool shouldClose);
-
     void SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback);
     void SetMouseMoveCallback(MouseCallbackFunction callback);
     void SetMouseScrollCallback(MouseCallbackFunction callback);
@@ -45,7 +43,6 @@ private:
     std::string name;
     uint32_t width;
     uint32_t height;
-
     const bool glUseMultisampling;
     const int glMultisampleCount;
 

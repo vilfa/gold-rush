@@ -18,16 +18,20 @@ enum class SKYBFORMATenum
 class Skybox
 {
 public:
-    Skybox(const std::string directory, const SKYBFORMATenum format, const bool isMultipleFiles = true);
-	void Draw(Shader& shader);
+    Skybox(
+        const std::string directory, 
+        const SKYBFORMATenum format
+    );
+	
+    void Draw(Shader& shader);
 
 private:
     uint32_t ID;
     uint32_t VAO, VBO;
-    std::string directory;
     SKYBFORMATenum format;
+    std::string directory;
 
     void loadCubemap(const std::vector<std::string> files);
-    void prepare();
+    void setup();
 };
 

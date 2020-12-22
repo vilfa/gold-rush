@@ -23,9 +23,8 @@
 class Model
 {
 public:
-    Model
-    (
-        const std::string& path, 
+    Model(
+        const std::string path, 
         bool embedded = false, 
         bool gamma = false
     );
@@ -35,25 +34,22 @@ public:
     void DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMats);
 
 private:
-    std::vector<Mesh> meshes;
-    std::vector<Mesh::Texture> texturesLoaded;
     std::string directory;
     bool gammaCorrection;
-    bool materialsEmbedded;
+    bool texturesEmbedded;
+    std::vector<Mesh> meshes;
+    std::vector<Mesh::Texture> texturesLoaded;
 
-    void loadModel(const std::string& path);
+    void loadModel(const std::string path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-
-    std::vector<Mesh::Texture> loadMaterialTextures
-    (
+    std::vector<Mesh::Texture> loadMaterialTextures(
         aiMaterial* material,
         aiTextureType aiType, 
         TEXTYPEenum txType, 
         TEXFORMATenum txFormat
     );
-    std::vector<Mesh::Texture> loadMaterialTexturesEmbedded
-    (
+    std::vector<Mesh::Texture> loadMaterialTexturesEmbedded(
         aiMaterial* material,
         aiTextureType aiType,
         TEXFORMATenum txFormat

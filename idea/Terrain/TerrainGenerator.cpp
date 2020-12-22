@@ -1,9 +1,9 @@
 #include "Terrain/TerrainGenerator.h"
 
-TerrainGenerator::TerrainGenerator(const int gridSize) :
-    noiseGenerator(NoiseGenerator()),
-    gridSize(gridSize),
-    heightMap(nullptr)
+TerrainGenerator::TerrainGenerator(
+    const uint32_t gridSize
+) :
+    gridSize(gridSize)
 {
     generateHeightMap();
     generateGrid();
@@ -44,45 +44,42 @@ std::vector<glm::vec3>& TerrainGenerator::GetGrass()
 
 void TerrainGenerator::generateHeightMap()
 {
-    heightMap = noiseGenerator.PerlinNoise2D(gridSize, gridSize, 4);
+    heightMap = NoiseGenerator::PerlinNoise2D(gridSize, gridSize, 6);
 }
 
 void TerrainGenerator::generateGrid()
 {
-    for (int x = 0; x < gridSize; x++)
+    for (std::size_t i = 0; i < gridSize; i++)
     {
-        for (int y = 0; y < gridSize; y++)
+        for (std::size_t j = 0; j < gridSize; j++)
         {
-            // Normalize x and y by dividing with grid size.
-            float u = (float)x / (float)gridSize;
-            float v = (float)y / (float)gridSize;
-            float w = heightMap[x * gridSize + y];
-
-            grid.push_back(glm::vec3(u, v, w));
+            float x = (float)i / (float)gridSize;
+            float y = (float)j / (float)gridSize;
+            float z = heightMap[i * gridSize + j];
+            grid.push_back(glm::vec3(x, y, z));
         }
     }
 }
 
 void TerrainGenerator::generateVertexPositions()
 {    
-    std::mt19937 engine(std::random_device{}());
     // Construct quad from unique vertices first, then duplicate vertices.
     // Why do this:
     // a.) there is no need for an index buffer, and
     // b.) each vertex can have its own normal.
     // This does introduce a performance penalty, but I choose to ignore it for now.
     int q0, q1, q2, q3;
-    for (int x = 0; x < gridSize - 1; x++)
+    for (std::size_t x = 0; x < gridSize - 1; x++)
     {
-        for (int y = 0; y < gridSize - 1; y++)
+        for (std::size_t y = 0; y < gridSize - 1; y++)
         {
             q0 = x * gridSize + y;
             q1 = x * gridSize + (y + 1);
             q2 = (x + 1) * gridSize + y;
             q3 = (x + 1) * gridSize + (y + 1);
 
-            // The indices of each triangle need to be in CCW order, since we've set
-            // the GL_CCW as front face, and OpenGL will cull back faces.
+            // The indices of each triangle need to be in CCW order, since we've 
+            // set GL_CCW as front face, and OpenGL will cull back faces.
             glm::vec3 v0, v1, v2, v3;
             v0 = grid.at(q0);
             v1 = grid.at(q1);
@@ -90,8 +87,8 @@ void TerrainGenerator::generateVertexPositions()
             v3 = grid.at(q3);
 
             glm::vec3 n1, n2;
-            n1 = calculateTriangleNormal(v0, v2, v1, engine);
-            n2 = calculateTriangleNormal(v2, v3, v1, engine);
+            n1 = calculateTriangleNormal(v0, v2, v1);
+            n2 = calculateTriangleNormal(v2, v3, v1);
 
             positions.push_back(v0);
             normals.push_back(n1);
@@ -111,50 +108,30 @@ void TerrainGenerator::generateVertexPositions()
 
 void TerrainGenerator::generateVertexColors()
 {
-    glm::vec3 woodlandColors[] = {
-        glm::vec3(0.364f, 0.729f, 0.254f),
-        /*glm::vec3(0.71f, 0.73f, 0.49f),
-        glm::vec3(0.48f, 0.54f, 0.29f),
-        glm::vec3(0.59f, 0.65f, 0.38f),
-        glm::vec3(0.36f, 0.45f, 0.22f),
-        glm::vec3(0.32f, 0.36f, 0.21f),
-        glm::vec3(0.26f, 0.34f, 0.17f)*/
-    };
+    glm::vec3 woodlandColor(0.364f, 0.729f, 0.254f);
 
-    std::mt19937 engine(std::random_device{}());
-    std::uniform_int_distribution<int> distrib(0, 5);
-
-    int colorIndex = 0;
-    //int colorIndex;
     for (std::size_t i = 0; i < positions.size(); i+=3)
     {
-        //colorIndex = distrib(engine);
-        colors.push_back(woodlandColors[colorIndex]);
-        colors.push_back(woodlandColors[colorIndex]);
-        colors.push_back(woodlandColors[colorIndex]);
+        colors.push_back(woodlandColor);
+        colors.push_back(woodlandColor);
+        colors.push_back(woodlandColor);
     }
 }
 
-glm::vec3 TerrainGenerator::calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, std::mt19937& engine)
+glm::vec3 TerrainGenerator::calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2)
 {
-    // Calculate triangle vectors.
-    glm::vec3 t1 = v0 - v1;
-    glm::vec3 t2 = v2 - v1;
+    glm::vec3 t0 = v0 - v1;
+    glm::vec3 t1 = v2 - v1;
+
     // Calculate triangle normal. We want all three normals to be 
     // the same, so we get the low-poly shading effect
     // when calculating lighting.
-
-    //return glm::normalize(glm::cross(t1, t2));
-    std::uniform_real_distribution<float> distrib(-1, 1);
-    float x = distrib(engine);
-    float y = distrib(engine);
-    float z = distrib(engine);
-    return glm::normalize(glm::vec3(x, y, z));
+    return glm::normalize(glm::cross(t1, t0));
 }
 
 void TerrainGenerator::generateVegetationPositions()
 {
-    std::mt19937 engine(std::random_device{}());
+    std::mt19937 reng(std::random_device{}());
     std::vector<glm::vec3> sample;
 
     std::sample(
@@ -162,13 +139,12 @@ void TerrainGenerator::generateVegetationPositions()
         grid.end(), 
         std::back_inserter(sample),
         10000,
-        engine
+        reng
     );
-
     std::shuffle(
         sample.begin(),
         sample.end(),
-        engine
+        reng
     );
 
     // Distribute the vegetation positions with the following ratio:

@@ -5,14 +5,12 @@ const std::string Mesh::_TEXTURE_DIFFUSE_NAME = "texture_diffuse_";
 const std::string Mesh::_TEXTURE_SPECULAR_NAME = "texture_specular_";
 const std::string Mesh::_TEXTURE_NORMAL_NAME = "texture_normal_";
 const std::string Mesh::_TEXTURE_HEIGHT_NAME = "texture_height_";
-
 const std::string Mesh::_COLOR_DIFFUSE_NAME = "color_diffuse_";
 const std::string Mesh::_COLOR_SPECULAR_NAME = "color_specular_";
 const std::string Mesh::_COLOR_AMBIENT_NAME = "color_ambient_";
 const std::string Mesh::_COLOR_EMISSIVE_NAME = "color_emissive_";
 
-Mesh::Mesh
-(
+Mesh::Mesh(
     std::vector<Mesh::Vertex>& vertices, 
     std::vector<uint32_t>& indices, 
     std::vector<Mesh::Texture>& textures,
@@ -26,10 +24,9 @@ Mesh::Mesh
     setupMesh();
 }
 
-uint32_t Mesh::LoadMaterialTextureFromFile
-(
-    const std::string& path, 
-    const std::string& directory, 
+uint32_t Mesh::LoadTextureFromFile(
+    const std::string path, 
+    const std::string directory, 
     bool gamma, 
     bool flipVertical,
     GLenum textureWrapping, 
@@ -40,13 +37,9 @@ uint32_t Mesh::LoadMaterialTextureFromFile
     const std::string fullPath = directory + "/" + path;
 
     uint32_t textureId;
-
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
 
-    /*
-    * Load and generate texture.
-    */
     stbi_set_flip_vertically_on_load(flipVertical);
 
     int width, height, nChannels;
@@ -103,11 +96,8 @@ void Mesh::Draw(Shader& shader)
         setupTexturesEmbedded(shader);
     }
 
-    // Draw the mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, (GLsizei)Indices.size(), GL_UNSIGNED_INT, (const void*)0);
-
-    // Unbind the VAO
     glBindVertexArray(0);
 
     glActiveTexture(GL_TEXTURE0);
@@ -145,7 +135,11 @@ void Mesh::DrawInstanced(Shader& shader, const std::size_t instanceSize)
     glVertexAttribDivisor(6, 1);
 
     glDrawElementsInstanced(
-        GL_TRIANGLES, (GLsizei)Indices.size(), GL_UNSIGNED_INT, (const void*)0, (GLsizei)instanceSize
+        GL_TRIANGLES, 
+        (GLsizei)Indices.size(), 
+        GL_UNSIGNED_INT, 
+        (const void*)0, 
+        (GLsizei)instanceSize
     );
 
     glBindVertexArray(0);
@@ -178,24 +172,38 @@ void Mesh::setupMesh()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * Indices.size(), Indices.data(), GL_STATIC_DRAW);
 
     /*
-    * VERTEX ATTRIBUTE ARRAY
+    * VERTEX ATTRIBUTES
     */
-    // Position vectors of a vertex
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), 
-        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::position));
-    // Normal vectors of a vertex
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), 
-        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::normal));
-    // Texture coordinates of a vertex
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), 
-        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::textureCoordinates));
+    glVertexAttribPointer(
+        0,
+        3,
+        GL_FLOAT, 
+        GL_FALSE, 
+        sizeof(Mesh::Vertex), 
+        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::position)
+    );
 
-    /*
-    * Unbind the vertex attribute array
-    */
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(
+        1, 
+        3, 
+        GL_FLOAT, 
+        GL_FALSE, 
+        sizeof(Mesh::Vertex), 
+        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::normal)
+    );
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(
+        2, 
+        2, 
+        GL_FLOAT, 
+        GL_FALSE, 
+        sizeof(Mesh::Vertex), 
+        (const void*)offsetof(Mesh::Vertex, Mesh::Vertex::textureCoordinates)
+    );
+
     glBindVertexArray(0);
 }
 
@@ -222,7 +230,7 @@ void Mesh::setupTextures(Shader& shader)
         }
         catch (const std::out_of_range& e)
         {
-            std::cout << "ERROR::MESH::DRAW::OUT_OF_RANGE_EXCEPTION" << std::endl;
+            std::cout << "ERROR::MESH::SETUP_TEXTURES::OUT_OF_RANGE_EXCEPTION" << std::endl;
             std::cout << e.what() << std::endl;
         }
 
@@ -257,8 +265,8 @@ void Mesh::setupTexturesEmbedded(Shader& shader)
     shader.Use();
 
     uint32_t diffuseCount = 1;
-    uint32_t specularCount = 1;
     uint32_t ambientCount = 1;
+    //uint32_t specularCount = 1;
     //uint32_t emissiveCount = 1;
 
     for (std::size_t i = 0; i < Textures.size(); i++)
@@ -273,7 +281,7 @@ void Mesh::setupTexturesEmbedded(Shader& shader)
         }
         catch (const std::out_of_range& e)
         {
-            std::cout << "ERROR::MESH::DRAW::OUT_OF_RANGE_EXCEPTION" << std::endl;
+            std::cout << "ERROR::MESH::SETUP_TEXTURES_EMBEDDED::OUT_OF_RANGE_EXCEPTION" << std::endl;
             std::cout << e.what() << std::endl;
         }
 
@@ -282,16 +290,16 @@ void Mesh::setupTexturesEmbedded(Shader& shader)
             textureName = _COLOR_DIFFUSE_NAME;
             textureNumber = std::to_string(diffuseCount++);
         }
-        else if (textureType == TEXTYPEenum::SPECULAR)
-        {
-            textureName = _COLOR_SPECULAR_NAME;
-            textureNumber = std::to_string(specularCount++);
-        }
         else if (textureType == TEXTYPEenum::AMBIENT)
         {
             textureName = _COLOR_AMBIENT_NAME;
             textureNumber = std::to_string(ambientCount++);
         }
+        /*else if (textureType == TEXTYPEenum::SPECULAR)
+        {
+            textureName = _COLOR_SPECULAR_NAME;
+            textureNumber = std::to_string(specularCount++);
+        }*/
         /*else if (textureType == TEXTYPEenum::EMISSIVE)
         {
             textureName = _COLOR_EMISSIVE_NAME;

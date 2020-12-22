@@ -1,7 +1,10 @@
 #include "Skybox.h"
 
-Skybox::Skybox(const std::string dir, const SKYBFORMATenum format, const bool isMultipleFiles) :
-	directory(dir),
+Skybox::Skybox(
+	const std::string directory, 
+	const SKYBFORMATenum format
+) :
+	directory(directory),
 	format(format)
 {
 	std::string fileFormat;
@@ -25,7 +28,7 @@ Skybox::Skybox(const std::string dir, const SKYBFORMATenum format, const bool is
 	};
 
 	loadCubemap(files);
-	prepare();
+	setup();
 }
 
 void Skybox::Draw(Shader& shader)
@@ -97,7 +100,7 @@ void Skybox::loadCubemap(const std::vector<std::string> files)
 	ID = textureID;
 }
 
-void Skybox::prepare()
+void Skybox::setup()
 {
 	float skyboxVertices[] = {
 		-1.0f,  1.0f, -1.0f,
