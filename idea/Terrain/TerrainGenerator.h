@@ -51,6 +51,6 @@ private:
     void generateVertexColors();
     void generateVegetationPositions();
 
-    glm::vec3 calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
+    glm::vec3 calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, std::mt19937& engine);
 };
 

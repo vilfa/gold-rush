@@ -228,7 +228,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		}
 	}
 
-	return Mesh(vertices, indices, textures);
+	return Mesh(vertices, indices, textures, materialsEmbedded);
 }
 
 std::vector<Mesh::Texture> Model::loadMaterialTextures(
@@ -308,14 +308,14 @@ std::vector<Mesh::Texture> Model::loadMaterialTexturesEmbedded(
 		texture.format = txFormat;
 		textures.push_back(texture);
 	}
-	if (AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_EMISSIVE, &emissive))
+	/*if (AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_EMISSIVE, &emissive))
 	{
 		Mesh::Texture texture;
 		texture.color = glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
 		texture.type = TEXTYPEenum::EMISSIVE;
 		texture.format = txFormat;
 		textures.push_back(texture);
-	}
+	}*/
 
 	return textures;
 }

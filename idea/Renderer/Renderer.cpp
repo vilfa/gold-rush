@@ -8,8 +8,8 @@ Renderer::Renderer(Window& window, glm::vec3 cameraPosition) :
     deltaTime(0.0),
     lastFrame(0.0),
     firstMouse(true),
-    lastX(window.GetWidth() / 2),
-    lastY(window.GetHeight() / 2)
+    lastX((float)window.GetWidth() / 2.0f),
+    lastY((float)window.GetHeight() / 2.0f)
 {
 	setupInput(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	setupGlobalEnables();
@@ -18,7 +18,7 @@ Renderer::Renderer(Window& window, glm::vec3 cameraPosition) :
 void Renderer::Render()
 {
 	/*----- UNIFORM BLOCKS ------*/
-	uint32_t uboMatrices, uboCamera;
+	uint32_t uboMatrices, uboCamera, uboWorldLight;
 	glGenBuffers(1, &uboMatrices);
 	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices); // The target is GL_UNIFORM_BUFFER.
 	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW); // Allocate for view and projection matrix.
@@ -29,24 +29,44 @@ void Renderer::Render()
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+	glGenBuffers(1, &uboWorldLight);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboWorldLight);
+	glBufferData(GL_UNIFORM_BUFFER, 4 * sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4)); // Bind the entire buffer to binding point 0.
 	glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboCamera, 0, sizeof(glm::vec3));
+	glBindBufferRange(GL_UNIFORM_BUFFER, 2, uboWorldLight, 0, 4 * sizeof(glm::vec3));
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	/*----- RESOURCES -----*/
+
+	std::vector<glm::vec3> light = {
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(0.2f, 0.2f, 0.2f),
+		glm::vec3(0.4f, 0.4f, 0.4f),
+	};
+
 	Shader terrainShader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag");
 	Shader treeShader("Resources/Shaders/Model/lowPolyTree.vert", "Resources/Shaders/Model/lowPolyTree.frag");
 
 	Shader skyboxShader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag");
 	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG);
 
+	Shader normalVisualiser("Resources/Shaders/.old/backpack_with_normals.vert",
+		"Resources/Shaders/.old/backpack_with_normals.geom",
+		"Resources/Shaders/.old/backpack_with_normals.frag");
+
 	Terrain lowPolyTerrain(512);
 
 	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
-	Model tree2("Resources/Models/tree_2/tree_2.obj", true);
-	Model tree3("Resources/Models/tree_3/tree_3.obj", true);
-	Model treeTrunk("Resources/Models/tree_trunk/tree_trunk.obj", true);
+	//Model tree2("Resources/Models/tree_2/tree_2.obj", true);
+	//Model tree3("Resources/Models/tree_3/tree_3.obj", true);
+	//Model treeTrunk("Resources/Models/tree_trunk/tree_trunk.obj", true);
+
+	std::shared_ptr<std::vector<glm::mat4>> treeInstanceModelMats = lowPolyTerrain.GetTreeModelMats();
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -68,12 +88,20 @@ void Renderer::Render()
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(camera.Position));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+		glBindBuffer(GL_UNIFORM_BUFFER, uboWorldLight);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, 4 * sizeof(glm::vec3), light.data());
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 		terrainShader.Use();
 		terrainShader.SetMat4("model", model);
 		lowPolyTerrain.Draw(terrainShader);
+		
+		/*normalVisualiser.Use();
+		normalVisualiser.SetMat4("model", model);
+		lowPolyTerrain.Draw(normalVisualiser);*/
 
 		treeShader.Use();
-		tree1.DrawInstanced(treeShader, lowPolyTerrain.GetTreeModelMats());
+		tree1.DrawInstanced(treeShader, treeInstanceModelMats);
 
 		/*treeShader.SetMat4("model", model);
 		tree1.Draw(treeShader);

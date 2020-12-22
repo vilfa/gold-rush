@@ -259,7 +259,7 @@ void Mesh::setupTexturesEmbedded(Shader& shader)
     uint32_t diffuseCount = 1;
     uint32_t specularCount = 1;
     uint32_t ambientCount = 1;
-    uint32_t emissiveCount = 1;
+    //uint32_t emissiveCount = 1;
 
     for (std::size_t i = 0; i < Textures.size(); i++)
     {
@@ -292,11 +292,11 @@ void Mesh::setupTexturesEmbedded(Shader& shader)
             textureName = _COLOR_AMBIENT_NAME;
             textureNumber = std::to_string(ambientCount++);
         }
-        else if (textureType == TEXTYPEenum::EMISSIVE)
+        /*else if (textureType == TEXTYPEenum::EMISSIVE)
         {
             textureName = _COLOR_EMISSIVE_NAME;
             textureNumber = std::to_string(emissiveCount++);
-        }
+        }*/
 
         shader.SetVec4((textureName + textureNumber), Textures.at(i).color);
     }

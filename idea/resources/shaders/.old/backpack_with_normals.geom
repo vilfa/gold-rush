@@ -8,9 +8,9 @@ out vec2 TexCoords;
 
 in VS_OUT
 {
-    vec3 normal;
+    vec3 fragPos;
+    vec3 fragNormal;
 } gs_in[];
-
 
 vec3 GetNormal()
 {
@@ -26,7 +26,7 @@ vec4 Explode(vec4 position, vec3 normal)
     return position + vec4(direction, 0.0);
 }
 
-const float MAGNITUDE = 0.4;
+const float MAGNITUDE = 1.0;
 
 void main()
 {
@@ -36,7 +36,7 @@ void main()
     {
         gl_Position = gl_in[i].gl_Position;
         EmitVertex();
-        gl_Position = gl_in[i].gl_Position + vec4(gs_in[i].normal, 0.0) * MAGNITUDE;
+        gl_Position = gl_in[i].gl_Position + vec4(gs_in[i].fragNormal, 0.0) * MAGNITUDE;
         EmitVertex();
     }
 
