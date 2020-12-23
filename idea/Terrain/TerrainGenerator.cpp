@@ -32,6 +32,11 @@ std::vector<glm::vec3>& TerrainGenerator::GetTrees()
     return treePositions;
 }
 
+std::vector<glm::vec3>& TerrainGenerator::GetBushes()
+{
+    return bushPositions;
+}
+
 std::vector<glm::vec3>& TerrainGenerator::GetRocks()
 {
     return rockPositions;
@@ -148,19 +153,24 @@ void TerrainGenerator::generateVegetationPositions()
     );
 
     // Distribute the vegetation positions with the following ratio:
-    // 50% trees, 25% rocks, 25% grass buds.
+    // 40% trees, 15% bushes, 20% rocks, 25% grass buds.
     std::copy(
         sample.begin(), 
-        sample.begin() + (sample.size() / 2), 
+        sample.begin() + sample.size() * 0.4, 
         std::back_inserter(treePositions)
     );
     std::copy(
-        sample.begin() + (sample.size() / 2), 
-        sample.begin() + (sample.size() / 4) * 3, 
+        sample.begin() + sample.size() * 0.4, 
+        sample.begin() + sample.size() * 0.55, 
+        std::back_inserter(bushPositions)
+    );
+    std::copy(
+        sample.begin() + sample.size() * 0.55,
+        sample.begin() + sample.size() * 0.75,
         std::back_inserter(rockPositions)
     );
     std::copy(
-        sample.begin() + (sample.size() / 4) * 3, 
+        sample.begin() + sample.size() * 0.75, 
         sample.end(), 
         std::back_inserter(grassPositions)
     );

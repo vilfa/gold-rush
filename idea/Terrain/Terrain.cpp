@@ -7,7 +7,7 @@ Terrain::Terrain(
 {
     TerrainGenerator tg(gridSize);
     setupVertices(tg.GetPositions(), tg.GetNormals(), tg.GetColors());
-    setupVegetation(tg.GetTrees(), tg.GetRocks(), tg.GetGrass());
+    setupVegetation(tg.GetTrees(), tg.GetBushes(), tg.GetRocks(), tg.GetGrass());
     setupTerrain();
 }
 
@@ -20,9 +20,24 @@ void Terrain::Draw(Shader& shader)
     glBindVertexArray(0);
 }
 
-std::shared_ptr<std::vector<glm::vec3>> Terrain::GetTrees()
+std::shared_ptr<std::vector<glm::vec3>> Terrain::GetTrees1()
 {
-    return treePositions;
+    return tree1Positions;
+}
+
+std::shared_ptr<std::vector<glm::vec3>> Terrain::GetTrees2()
+{
+    return tree2Positions;
+}
+
+std::shared_ptr<std::vector<glm::vec3>> Terrain::GetTrees3()
+{
+    return tree3Positions;
+}
+
+std::shared_ptr<std::vector<glm::vec3>> Terrain::GetBushes()
+{
+    return bushPositions;
 }
 
 std::shared_ptr<std::vector<glm::vec3>> Terrain::GetRocks()
@@ -35,9 +50,24 @@ std::shared_ptr<std::vector<glm::vec3>> Terrain::GetGrass()
     return grassPositions;
 }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTreeModelMats()
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree1ModelMats()
 {
-    return treeModelMats;
+    return tree1ModelMats;
+}
+
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree2ModelMats()
+{
+    return tree2ModelMats;
+}
+
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree3ModelMats()
+{
+    return tree3ModelMats;
+}
+
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetBushModelMats()
+{
+    return bushModelMats;
 }
 
 std::shared_ptr<std::vector<glm::mat4>> Terrain::GetRockModelMats()
@@ -70,17 +100,34 @@ void Terrain::setupVertices(
 
 void Terrain::setupVegetation(
     std::vector<glm::vec3>& trees,
-    std::vector<glm::vec3>& rocks,
+    std::vector<glm::vec3>& bushes, 
+    std::vector<glm::vec3>& rocks, 
     std::vector<glm::vec3>& grass
 )
 {
-    std::vector<glm::mat4> treeMats, rockMats, grassMats;
+    std::vector<glm::mat4> tree1Mats, tree2Mats, tree3Mats, bushMats, rockMats, grassMats;
     glm::mat4 model = getTransform();
 
     for (std::size_t i = 0; i < trees.size(); i++)
     {
         trees.at(i) = glm::vec3(model * glm::vec4(trees.at(i), 1.0f));
-        treeMats.push_back(glm::translate(glm::mat4(1.0f), trees.at(i)));
+        if (i < trees.size() / 5) // 1/5 of the trees (most costly to draw)
+        {
+            tree1Mats.push_back(glm::translate(glm::mat4(1.0f), trees.at(i)));
+        }
+        else if (i < (trees.size() / 5) * 3) // 2/5 of the trees
+        {
+            tree2Mats.push_back(glm::translate(glm::mat4(1.0f), trees.at(i)));
+        }
+        else if (i < trees.size()) // 2/5 of the trees
+        {
+            tree3Mats.push_back(glm::translate(glm::mat4(1.0f), trees.at(i)));
+        }
+    }
+    for (std::size_t i = 0; i < bushes.size(); i++)
+    {
+        bushes.at(i) = glm::vec3(model * glm::vec4(bushes.at(i), 1.0f));
+        bushMats.push_back(glm::translate(glm::mat4(1.0f), bushes.at(i)));
     }
     for (std::size_t i = 0; i < rocks.size(); i++)
     {
@@ -93,7 +140,10 @@ void Terrain::setupVegetation(
         grassMats.push_back(glm::translate(glm::mat4(1.0f), grass.at(i)));
     }
 
-    treeModelMats = std::make_shared<std::vector<glm::mat4>>(treeMats);
+    tree1ModelMats = std::make_shared<std::vector<glm::mat4>>(tree1Mats);
+    tree2ModelMats = std::make_shared<std::vector<glm::mat4>>(tree2Mats);
+    tree3ModelMats = std::make_shared<std::vector<glm::mat4>>(tree3Mats);
+    bushModelMats = std::make_shared<std::vector<glm::mat4>>(bushMats);
     rockModelMats = std::make_shared<std::vector<glm::mat4>>(rockMats);
     grassModelMats = std::make_shared<std::vector<glm::mat4>>(grassMats);
 }

@@ -43,21 +43,30 @@ void Renderer::Render()
 
 	/*----- RESOURCES -----*/
 	Shader terrainShader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag");
-	Shader treeShader("Resources/Shaders/Model/lowPolyTree.vert", "Resources/Shaders/Model/lowPolyTree.frag");
-	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
-	Terrain lowPolyTerrain(512);
-
+	Shader vegetationShader("Resources/Shaders/Model/lowPolyTree.vert", "Resources/Shaders/Model/lowPolyTree.frag");
 	Shader skyboxShader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag");
-	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG);
+	
+	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
+	Model tree2("Resources/Models/tree_2/tree_2.obj", true);
+	Model tree3("Resources/Models/tree_3/tree_3.obj", true);
+	Model bush("Resources/Models/lil_bush/lil_bush.obj", true);
+	Model rock("Resources/Models/rock/rock.obj", true);
+	Model grass("Resources/Models/grass_bud/grass_bud.obj", true);
+	
+	Terrain lowPolyTerrain(256);
 
+	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG);
 
 	Shader normalVisualiser("Resources/Shaders/.old/backpack_with_normals.vert",
 		"Resources/Shaders/.old/backpack_with_normals.geom",
 		"Resources/Shaders/.old/backpack_with_normals.frag");
 
-
-
-	std::shared_ptr<std::vector<glm::mat4>> treeInstanceModelMats = lowPolyTerrain.GetTreeModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> tree1ImMats = lowPolyTerrain.GetTree1ModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> tree2ImMats = lowPolyTerrain.GetTree2ModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> tree3ImMats = lowPolyTerrain.GetTree3ModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> bushesImMats = lowPolyTerrain.GetBushModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> rocksImMats = lowPolyTerrain.GetRockModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> grassImMats = lowPolyTerrain.GetGrassModelMats();
 
 	glm::vec3 sunPos[] = {
 		glm::vec3(-1.0f, -1.0f, 0.0f),
@@ -92,13 +101,14 @@ void Renderer::Render()
 		terrainShader.Use();
 		terrainShader.SetMat4("model", model);
 		lowPolyTerrain.Draw(terrainShader);
-		/*
-		normalVisualiser.Use();
-		normalVisualiser.SetMat4("model", model);
-		lowPolyTerrain.Draw(normalVisualiser);*/
 
-		treeShader.Use();
-		tree1.DrawInstanced(treeShader, treeInstanceModelMats);
+		vegetationShader.Use();
+		tree1.DrawInstanced(vegetationShader, tree1ImMats);
+		tree2.DrawInstanced(vegetationShader, tree2ImMats);
+		tree3.DrawInstanced(vegetationShader, tree3ImMats);
+		bush.DrawInstanced(vegetationShader, bushesImMats);
+		rock.DrawInstanced(vegetationShader, rocksImMats);
+		grass.DrawInstanced(vegetationShader, grassImMats);
 
 		// Skybox
 		skyboxShader.Use();

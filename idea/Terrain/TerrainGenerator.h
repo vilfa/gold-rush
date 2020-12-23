@@ -26,6 +26,7 @@ public:
     std::vector<glm::vec3>& GetColors();
 
     std::vector<glm::vec3>& GetTrees();
+    std::vector<glm::vec3>& GetBushes();
     std::vector<glm::vec3>& GetRocks();
     std::vector<glm::vec3>& GetGrass();
 
@@ -39,6 +40,7 @@ private:
     std::vector<glm::vec3> colors;
 
     std::vector<glm::vec3> treePositions;
+    std::vector<glm::vec3> bushPositions;
     std::vector<glm::vec3> rockPositions;
     std::vector<glm::vec3> grassPositions;
 

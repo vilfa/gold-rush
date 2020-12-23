@@ -34,10 +34,17 @@ public:
     Terrain(const uint32_t gridSize);
     
     void Draw(Shader& shader);
-    std::shared_ptr<std::vector<glm::vec3>> GetTrees();
+    std::shared_ptr<std::vector<glm::vec3>> GetTrees1();
+    std::shared_ptr<std::vector<glm::vec3>> GetTrees2();
+    std::shared_ptr<std::vector<glm::vec3>> GetTrees3();
+    std::shared_ptr<std::vector<glm::vec3>> GetBushes();
     std::shared_ptr<std::vector<glm::vec3>> GetRocks();
     std::shared_ptr<std::vector<glm::vec3>> GetGrass();
-    std::shared_ptr<std::vector<glm::mat4>> GetTreeModelMats();
+
+    std::shared_ptr<std::vector<glm::mat4>> GetTree1ModelMats();
+    std::shared_ptr<std::vector<glm::mat4>> GetTree2ModelMats();
+    std::shared_ptr<std::vector<glm::mat4>> GetTree3ModelMats();
+    std::shared_ptr<std::vector<glm::mat4>> GetBushModelMats();
     std::shared_ptr<std::vector<glm::mat4>> GetRockModelMats();
     std::shared_ptr<std::vector<glm::mat4>> GetGrassModelMats();
 
@@ -45,10 +52,17 @@ private:
     const uint32_t gridSize;
     uint32_t VAO, VBO;
 
-    std::shared_ptr<std::vector<glm::vec3>> treePositions;
+    std::shared_ptr<std::vector<glm::vec3>> tree1Positions;
+    std::shared_ptr<std::vector<glm::vec3>> tree2Positions;
+    std::shared_ptr<std::vector<glm::vec3>> tree3Positions;
+    std::shared_ptr<std::vector<glm::vec3>> bushPositions;
     std::shared_ptr<std::vector<glm::vec3>> rockPositions;
     std::shared_ptr<std::vector<glm::vec3>> grassPositions;
-    std::shared_ptr<std::vector<glm::mat4>> treeModelMats;
+
+    std::shared_ptr<std::vector<glm::mat4>> tree1ModelMats;
+    std::shared_ptr<std::vector<glm::mat4>> tree2ModelMats;
+    std::shared_ptr<std::vector<glm::mat4>> tree3ModelMats;
+    std::shared_ptr<std::vector<glm::mat4>> bushModelMats;
     std::shared_ptr<std::vector<glm::mat4>> rockModelMats;
     std::shared_ptr<std::vector<glm::mat4>> grassModelMats;
 
@@ -59,6 +73,7 @@ private:
     );
     void setupVegetation(
         std::vector<glm::vec3>& trees,
+        std::vector<glm::vec3>& bushes,
         std::vector<glm::vec3>& rocks,
         std::vector<glm::vec3>& grass
     );
