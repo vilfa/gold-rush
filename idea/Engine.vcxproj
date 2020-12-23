@@ -150,6 +150,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="World\GTree.cpp" />
+    <ClCompile Include="World\GObject.cpp" />
+    <ClCompile Include="World\GWorld.cpp" />
     <ClCompile Include="Renderer\Camera.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
@@ -165,6 +170,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Callbacks.h" />
+    <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="World\GTree.h" />
+    <ClInclude Include="World\GObject.h" />
+    <ClInclude Include="World\GWorld.h" />
     <ClInclude Include="Renderer\Camera.h" />
     <ClInclude Include="Renderer\Mesh.h" />
     <ClInclude Include="Renderer\Model.h" />
@@ -178,6 +188,7 @@
     <ClInclude Include="Application\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="Resources\Shaders\.old\asteroid.frag" />
     <None Include="Resources\Shaders\.old\asteroid.vert" />
     <None Include="Resources\Shaders\.old\backpack_reflective_shader.frag" />

@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="Camera" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEZAAAEAAAQFoAgBAAAABJCkAAYgIAADQAAAAAAo=</HashCode>
+      <FileName>Renderer\Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mesh" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAkAgAAAFQAAgJAAAAAAQAAAEAAAAAgEwAAASQMACA=</HashCode>
+      <FileName>Renderer\Mesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Model" Collapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAQAAASAAQAigAgACIAAAAAAAAAAACAAgAAAAAAAA=</HashCode>
+      <FileName>Renderer\Model.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NoiseGenerator" Collapsed="true">
+    <Position X="12.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAIAAAAAAAAAAAAAAATAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Terrain\NoiseGenerator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Renderer" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAgAAAoEAAIAAAgRAAwEAAAAAAAAIABCACCAgAAE=</HashCode>
+      <FileName>Renderer\Renderer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shader" Collapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBAMAAgAAAAAggAIAAAACAAAAAAEAAAAQAAAAAA4AAA=</HashCode>
+      <FileName>Renderer\Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Skybox" Collapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAQgggAgAAACAAAAAAAAAAEAAAAAAAEAAA=</HashCode>
+      <FileName>Renderer\Skybox.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Terrain" Collapsed="true">
+    <Position X="12.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAkgRAAAEEAgAJBAAAQgYAAIAAAAAAOsAACkAMMIA=</HashCode>
+      <FileName>Terrain\Terrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TerrainGenerator" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAEAEAgAAKMAABAIAAAAIgAAAAAAEICBKgAAAAAAQIA=</HashCode>
+      <FileName>Terrain\TerrainGenerator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Window" Collapsed="true">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IABQAAQAQBAAAAQAQAAACADAAABEgAAYAAAAKECAEAA=</HashCode>
+      <FileName>Application\Window.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="gladGLversionStruct" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>C:\Users\vilfa\Dropbox\code\idea\include\glad\glad.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="FramebufferSizeCallbackFunction" Collapsed="true">
+    <Position X="1" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Application\Callbacks.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="MouseCallbackFunction" Collapsed="true">
+    <Position X="2.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Application\Callbacks.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="PFNWGLGETPROCADDRESSPROC_PRIVATE" Collapsed="true">
+    <Position X="2.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>glad.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="PFNGLXGETPROCADDRESSPROC_PRIVATE" Collapsed="true">
+    <Position X="1" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>glad.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="CAMMOVenum" Collapsed="true">
+    <Position X="7.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAIAAAAAAAAA=</HashCode>
+      <FileName>Renderer\Camera.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CAMSPDenum" Collapsed="true">
+    <Position X="9.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Renderer\Camera.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SHTYPEenum" Collapsed="true">
+    <Position X="11" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAACAAQEAAAA=</HashCode>
+      <FileName>Renderer\Shader.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SKYBFORMATenum" Collapsed="true">
+    <Position X="12.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Renderer\Skybox.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TEXFORMATenum" Collapsed="true">
+    <Position X="7.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAE=</HashCode>
+      <FileName>Renderer\Mesh.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TEXTYPEenum" Collapsed="true">
+    <Position X="9.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAIAAAAAAAABAAAAAAAAAAAhABAAAA=</HashCode>
+      <FileName>Renderer\Mesh.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -7,7 +7,7 @@ Renderer::Renderer(
 	glm::vec3 cameraPosition
 ) :
     window(window),
-	camera(Camera(window, cameraPosition)),
+	camera(Camera(cameraPosition)),
     deltaTime(0.0),
     lastFrame(0.0),
     firstMouse(true),
@@ -100,10 +100,6 @@ void Renderer::Render()
 		terrainShader.SetMat4("model", model);
 		lowPolyTerrain.Draw(terrainShader);
 
-		normalVisShader.Use();
-		normalVisShader.SetMat4("model", model);
-		lowPolyTerrain.Draw(normalVisShader);
-
 		woodlandShader.Use();
 		tree1.DrawInstanced(woodlandShader, tree1ImMats);
 		tree2.DrawInstanced(woodlandShader, tree2ImMats);
@@ -112,7 +108,6 @@ void Renderer::Render()
 		rock.DrawInstanced(woodlandShader, rocksImMats);
 		grass.DrawInstanced(woodlandShader, grassImMats);
 
-		// Skybox
 		skyboxShader.Use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 		skyboxShader.SetMat4("projection", projection);
@@ -187,7 +182,7 @@ void Renderer::setupGlobalEnables()
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//glEnable(GL_FRAMEBUFFER_SRGB);
+	glEnable(GL_FRAMEBUFFER_SRGB);
 	
 	if (window.GetMultisamplingEnabled())
 	{

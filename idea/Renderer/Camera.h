@@ -26,6 +26,7 @@ enum class CAMSPDenum
 class Camera
 {
 public:
+	const float AspectRatio;
 	glm::vec3 WorldUp;
 	glm::vec3 Position;
 	glm::vec3 Front;
@@ -41,8 +42,8 @@ public:
 	float Fov;
 
 	Camera(
-		Window& window, 
 		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
+		float aspectRatio = _ASPECT_RATIO,
 		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
 		float frustumNear = _FRUSTUM_NEAR, 
 		float frustumFar = _FRUSTUM_FAR, 
@@ -51,7 +52,6 @@ public:
 	);
 
 	Camera(
-		Window& window, 
 		float posX, 
 		float posY, 
 		float posZ, 
@@ -60,6 +60,7 @@ public:
 		float upZ, 
 		float yaw, 
 		float pitch, 
+		float aspectRatio = _ASPECT_RATIO,
 		float frustumNear = _FRUSTUM_NEAR, 
 		float frustumFar = _FRUSTUM_FAR
 	);
@@ -80,8 +81,6 @@ public:
 	void ProcessMouseScroll(float yOffset);
 
 private:
-	Window& window;
-
 	static const float _FRUSTUM_NEAR;
 	static const float _FRUSTUM_FAR;
 	static const float _YAW;
@@ -90,6 +89,7 @@ private:
 	static const float _SPEED_FAST;
 	static const float _SENSITIVITY;
 	static const float _FOV;
+	static const float _ASPECT_RATIO;
 
 	void updateCameraVectors();
 };

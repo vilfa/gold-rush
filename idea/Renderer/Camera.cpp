@@ -8,18 +8,19 @@ const float Camera::_SPEED = 3.5f;
 const float Camera::_SPEED_FAST = 7.0f;
 const float Camera::_SENSITIVITY = 0.08f;
 const float Camera::_FOV = 45.0f;
+const float Camera::_ASPECT_RATIO = 16.0f / 9.0f;
 
 Camera::Camera(
-	Window& window, 
 	glm::vec3 position, 
+	float aspectRatio,
 	glm::vec3 up,
 	float frustumNear, 
 	float frustumFar,
 	float yaw, 
 	float pitch
 ) :
-	window(window),
 	Position(position),
+	AspectRatio(aspectRatio),
 	WorldUp(up),
 	FrustumNear(frustumNear),
 	FrustumFar(frustumFar),
@@ -35,7 +36,6 @@ Camera::Camera(
 }
 
 Camera::Camera(
-	Window& window, 
 	float posX, 
 	float posY, 
 	float posZ, 
@@ -44,16 +44,17 @@ Camera::Camera(
 	float upZ, 
 	float yaw, 
 	float pitch, 
+	float aspectRatio,
 	float frustumNear, 
 	float frustumFar
 ) : 
-	window(window),
 	Position(glm::vec3(posX, posY, posZ)),
 	WorldUp(glm::vec3(upX, upY, upZ)),
 	FrustumNear(frustumNear),
 	FrustumFar(frustumFar),
 	Yaw(yaw),
 	Pitch(pitch),
+	AspectRatio(aspectRatio),
 	Front(glm::vec3(0.0f, 0.0f, -1.0f)),
 	MovementSpeed(Camera::_SPEED), 
 	MovementSpeedFast(Camera::_SPEED_FAST), 
@@ -72,7 +73,7 @@ glm::mat4 Camera::GetProjectionMatrix() const
 {
 	return glm::perspective(
 		glm::radians(Fov),
-		(float)window.GetWidth() / (float)window.GetHeight(),
+		AspectRatio,
 		FrustumNear,
 		FrustumFar
 	);
