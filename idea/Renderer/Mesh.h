@@ -13,24 +13,7 @@
 #include <assimp/postprocess.h>
 
 #include "Renderer/Shader.h"
-
-enum class TEXTYPEenum
-{
-    DIFFUSE,
-    SPECULAR,
-    
-    NORMAL,
-    HEIGHT,
-    
-    AMBIENT,
-    EMISSIVE
-};
-
-enum class TEXFORMATenum
-{
-    FILE,
-    EMBEDDED
-};
+#include "Types/ETexture.h"
 
 class Mesh
 {

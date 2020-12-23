@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <limits>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

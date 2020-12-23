@@ -8,12 +8,7 @@
 #include <stb/stb_image.h>
 
 #include "Renderer/Shader.h"
-
-enum class SKYBFORMATenum
-{
-    JPG,
-    PNG
-};
+#include "Types/ESkybox.h"
 
 class Skybox
 {

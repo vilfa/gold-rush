@@ -23,6 +23,8 @@
 class Model
 {
 public:
+    std::vector<Mesh> Meshes;
+    
     Model(
         const std::string path, 
         bool embedded = false, 
@@ -37,7 +39,6 @@ private:
     std::string directory;
     bool gammaCorrection;
     bool texturesEmbedded;
-    std::vector<Mesh> meshes;
     std::vector<Mesh::Texture> texturesLoaded;
 
     void loadModel(const std::string path);

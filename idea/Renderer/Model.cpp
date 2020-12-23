@@ -25,9 +25,9 @@ Model::Model(
 
 void Model::Draw(Shader& shader)
 {
-	for (std::size_t i = 0; i < meshes.size(); i++)
+	for (std::size_t i = 0; i < Meshes.size(); i++)
 	{
-		meshes[i].Draw(shader);
+		Meshes[i].Draw(shader);
 	}
 }
 
@@ -40,9 +40,9 @@ void Model::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMats)
 	glBindBuffer(GL_ARRAY_BUFFER, matricesVBO);
 	glBufferData(GL_ARRAY_BUFFER, instanceSize * sizeof(glm::mat4), &instanceMats[0], GL_STATIC_DRAW);
 
-	for (std::size_t i = 0; i < meshes.size(); i++)
+	for (std::size_t i = 0; i < Meshes.size(); i++)
 	{
-		meshes[i].DrawInstanced(shader, instanceSize);
+		Meshes[i].DrawInstanced(shader, instanceSize);
 	}
 
 	// This is important to avoid infinite memory allocation!!!
@@ -59,9 +59,9 @@ void Model::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>
 	glBindBuffer(GL_ARRAY_BUFFER, matricesVBO);
 	glBufferData(GL_ARRAY_BUFFER, instanceSize * sizeof(glm::mat4), instanceMats->data(), GL_STATIC_DRAW);
 
-	for (std::size_t i = 0; i < meshes.size(); i++)
+	for (std::size_t i = 0; i < Meshes.size(); i++)
 	{
-		meshes[i].DrawInstanced(shader, instanceSize);
+		Meshes[i].DrawInstanced(shader, instanceSize);
 	}
 
 	// This is important to avoid infinite memory allocation!!!
@@ -101,7 +101,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 	for (std::size_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(processMesh(mesh, scene));
+		Meshes.push_back(processMesh(mesh, scene));
 	}
 
 	// Then process all of the node's children

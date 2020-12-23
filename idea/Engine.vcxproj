@@ -169,7 +169,11 @@
     <ClCompile Include="Application\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Callbacks.h" />
+    <ClInclude Include="Types\ECamera.h" />
+    <ClInclude Include="Types\EShader.h" />
+    <ClInclude Include="Types\ESkybox.h" />
+    <ClInclude Include="Types\ETexture.h" />
+    <ClInclude Include="Types\FWindow.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="World\GTree.h" />

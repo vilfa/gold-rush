@@ -1,5 +1,12 @@
 #pragma once
-class Player
+
+#include <iostream>
+#include <vector>
+
+#include "World/GObject.h"
+
+class Player : public GObject
 {
+
 };
 

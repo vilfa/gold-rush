@@ -8,20 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Application/Window.h"
-
-enum class CAMMOVenum
-{
-	FORWARD,
-	BACKWARD,
-	LEFT,
-	RIGHT
-};
-
-enum class CAMSPDenum
-{
-	NORMAL,
-	FAST
-};
+#include "Types/ECamera.h"
 
 class Camera
 {

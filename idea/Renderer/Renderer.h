@@ -9,7 +9,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Application/Window.h"
-#include "Application/Callbacks.h"
 #include "Renderer/Camera.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Mesh.h"

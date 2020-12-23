@@ -10,13 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-enum class SHTYPEenum
-{
-	VERTEX,
-	GEOMETRY,
-	FRAGMENT,
-	PROGRAM
-};
+#include "Types/EShader.h"
 
 class Shader
 {
