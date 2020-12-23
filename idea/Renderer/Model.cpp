@@ -44,6 +44,10 @@ void Model::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMats)
 	{
 		meshes[i].DrawInstanced(shader, instanceSize);
 	}
+
+	// This is important to avoid infinite memory allocation!!!
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &matricesVBO);
 }
 
 void Model::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMats)
@@ -59,6 +63,10 @@ void Model::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>
 	{
 		meshes[i].DrawInstanced(shader, instanceSize);
 	}
+
+	// This is important to avoid infinite memory allocation!!!
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &matricesVBO);
 }
 
 void Model::loadModel(const std::string path)

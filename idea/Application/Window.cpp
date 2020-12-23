@@ -56,7 +56,6 @@ Window::Window(
 		std::exit(EXIT_FAILURE);
 	}
 
-	glfwSetWindowUserPointer(window, this);
 	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

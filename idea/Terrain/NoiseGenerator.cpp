@@ -65,14 +65,14 @@ std::shared_ptr<float[]> NoiseGenerator::generateSeed(
     return pSeed;
 }
 
-double NoiseGenerator::fade(const double& t) const
+double NoiseGenerator::fade(const double& t)
 {
     // The equation proposed by Ken Perlin to replace the smoothstep function in 2002.
     // The equation is the following: 6 * t ** 5 - 15 * t ** 4 + 10 * t ** 3
     return 6 * pow(t, 5) - 15 * pow(t, 4) + 10 * pow(t, 3);
 }
 
-double NoiseGenerator::lerp(const double& lo, const double& hi, const double& t) const
+double NoiseGenerator::lerp(const double& lo, const double& hi, const double& t)
 {
     // Linear interpolate but there is a difference from the ordinary linear interpolation funciton.
     // The normal equation is: t * p1 + (1 - t) * p2, but here we need a value that is between the low and high value,
@@ -81,7 +81,7 @@ double NoiseGenerator::lerp(const double& lo, const double& hi, const double& t)
     return lo + t * (hi - lo);
 }
 
-double NoiseGenerator::grad(const int hash, const double x, const double y, const double z) const
+double NoiseGenerator::grad(const int hash, const double x, const double y, const double z)
 {
     int h = hash & 15;
     double u = h < 8 ? x : y;

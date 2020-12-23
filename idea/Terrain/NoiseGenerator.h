@@ -27,7 +27,7 @@ private:
         std::uniform_real_distribution<float>& dist
     );
 
-    double fade(const double& t) const;
-    double lerp(const double& lo, const double& hi, const double& t) const;
-    double grad(const int hash, const double x, const double y, const double z) const;
+    static double fade(const double& t);
+    static double lerp(const double& lo, const double& hi, const double& t);
+    static double grad(const int hash, const double x, const double y, const double z);
 };

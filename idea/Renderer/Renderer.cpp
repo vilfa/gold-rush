@@ -70,7 +70,7 @@ void Renderer::Render()
 
 	glm::vec3 sunPos[] = {
 		glm::vec3(-1.0f, -1.0f, 0.0f),
-		glm::vec3(1.0f, -1.0f, 0.0f)
+		glm::vec3(1.0f, 1.0f, 0.0f)
 	};
 
 	while (!window.GetWindowShouldClose())
@@ -230,9 +230,9 @@ void Renderer::processKeyboardInput()
 
 void Renderer::processFrametime()
 {
-	double currentFrame = glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
+	double now = glfwGetTime();
+	deltaTime = now - lastFrame;
+	lastFrame = now;
 }
 
 std::string Renderer::getRenderStats()
