@@ -24,8 +24,8 @@ layout (std140, binding = 1) uniform Camera
 
 layout (std140, binding = 2) uniform WorldLight
 {
-	vec3 direction_1;
-	vec3 direction_2;
+	vec4 direction_1;
+	vec4 direction_2;
 };
 
 in VS_OUT
@@ -44,12 +44,12 @@ const float SHININESS = 8.0;
 
 void main()
 {
-	light_1.direction = direction_1;
+	light_1.direction = vec3(direction_1);
 	light_1.ambient = vec3(0.25, 0.25, 0.25);
 	light_1.diffuse = vec3(1.0, 1.0, 1.0);
 	light_1.specular = vec3(0.0, 0.0, 0.0);
 
-	light_2.direction = direction_2;
+	light_2.direction = vec3(direction_2);
 	light_2.ambient = vec3(0.0, 0.0, 0.0);
 	light_2.diffuse = vec3(0.15, 0.15, 0.15);
 	light_2.specular = vec3(0.0, 0.0, 0.0);
@@ -63,12 +63,12 @@ vec3 CalculateDirectionalPhong(DirectionalLight light, vec3 fragPos, vec3 fragNo
 {
 	vec3 kA = light.ambient;
 	vec3 kD = light.diffuse;
-	vec3 kS = light.specular;
+//	vec3 kS = light.specular;
 	
 	vec3 N = normalize(fragNormal);
 	vec3 L = normalize(-light.direction);
-	vec3 R = reflect(N, light.direction);
-	vec3 V = cameraPos;
+//	vec3 R = reflect(N, light.direction);
+//	vec3 V = cameraPos;
 
 	vec3 ambientC = kA * vec3(fragColor);
 	vec3 diffuseC = kD * max(dot(L, N), 0.0) * vec3(fragColor);

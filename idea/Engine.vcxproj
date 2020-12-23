@@ -249,8 +249,8 @@
     <None Include="Resources\Shaders\green.frag" />
     <None Include="Resources\Shaders\instanced_quads.frag" />
     <None Include="Resources\Shaders\instanced_quads.vert" />
-    <None Include="Resources\Shaders\Model\lowPolyTree.frag" />
-    <None Include="Resources\Shaders\Model\lowPolyTree.vert" />
+    <None Include="Resources\Shaders\Model\lowPolyWoodland.frag" />
+    <None Include="Resources\Shaders\Model\lowPolyWoodland.vert" />
     <None Include="Resources\Shaders\model_loading.frag" />
     <None Include="Resources\Shaders\model_loading.vert" />
     <None Include="Resources\Shaders\red.frag" />
@@ -262,6 +262,9 @@
     <None Include="Resources\Shaders\skybox_shader.vert" />
     <None Include="Resources\Shaders\stencils.frag" />
     <None Include="Resources\Shaders\stencils.vert" />
+    <None Include="Resources\Shaders\Terrain\terrainNormals.frag" />
+    <None Include="Resources\Shaders\Terrain\terrainNormals.geom" />
+    <None Include="Resources\Shaders\Terrain\terrainNormals.vert" />
     <None Include="Resources\Shaders\Terrain\lowPolyTerrain.frag" />
     <None Include="Resources\Shaders\Terrain\lowPolyTerrain.vert" />
     <None Include="Resources\Shaders\vertex.vert" />

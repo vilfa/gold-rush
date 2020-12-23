@@ -175,12 +175,15 @@
     <None Include="Resources\Shaders\.old\vertex_light.vert" />
     <None Include="Resources\Shaders\.old\vertex_light_source.vert" />
     <None Include="Resources\Shaders\.old\yellow.frag" />
-    <None Include="Resources\Shaders\Model\lowPolyTree.frag" />
-    <None Include="Resources\Shaders\Model\lowPolyTree.vert" />
     <None Include="Resources\Shaders\Skybox\fantasySkybox.frag" />
     <None Include="Resources\Shaders\Skybox\fantasySkybox.vert" />
     <None Include="Resources\Shaders\Terrain\lowPolyTerrain.frag" />
     <None Include="Resources\Shaders\Terrain\lowPolyTerrain.vert" />
+    <None Include="Resources\Shaders\Model\lowPolyWoodland.frag" />
+    <None Include="Resources\Shaders\Model\lowPolyWoodland.vert" />
+    <None Include="Resources\Shaders\Terrain\terrainNormals.frag" />
+    <None Include="Resources\Shaders\Terrain\terrainNormals.geom" />
+    <None Include="Resources\Shaders\Terrain\terrainNormals.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\awesomeface.png">

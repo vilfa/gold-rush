@@ -143,7 +143,7 @@ void TerrainGenerator::generateVegetationPositions()
         grid.begin(), 
         grid.end(), 
         std::back_inserter(sample),
-        10000,
+        gridSize * 35,
         reng
     );
     std::shuffle(
@@ -153,7 +153,7 @@ void TerrainGenerator::generateVegetationPositions()
     );
 
     // Distribute the vegetation positions with the following ratio:
-    // 40% trees, 15% bushes, 20% rocks, 25% grass buds.
+    // 40% trees, 15% bushes, 10% rocks, 35% grass buds.
     std::copy(
         sample.begin(), 
         sample.begin() + sample.size() * 0.4, 
@@ -166,11 +166,11 @@ void TerrainGenerator::generateVegetationPositions()
     );
     std::copy(
         sample.begin() + sample.size() * 0.55,
-        sample.begin() + sample.size() * 0.75,
+        sample.begin() + sample.size() * 0.65,
         std::back_inserter(rockPositions)
     );
     std::copy(
-        sample.begin() + sample.size() * 0.75, 
+        sample.begin() + sample.size() * 0.65, 
         sample.end(), 
         std::back_inserter(grassPositions)
     );

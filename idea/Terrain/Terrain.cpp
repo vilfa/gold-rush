@@ -86,13 +86,15 @@ void Terrain::setupVertices(
     std::vector<glm::vec3>& colors
 )
 {
-    glm::mat4 model = getTransform();
+    glm::mat4 mP = getPositionTransform();
+    glm::mat4 mN = getNormalTransform();
     for (std::size_t i = 0; i < positions.size(); i++)
     {
         Terrain::Vertex vertex;
         glm::vec4 position = glm::vec4(positions.at(i), 1.0f);
-        vertex.position = glm::vec3(model * position);
-        vertex.normal = normals.at(i);
+        glm::vec4 normal = glm::vec4(normals.at(i), 1.0f);
+        vertex.position = glm::vec3(mP * position);
+        vertex.normal = glm::vec3(mN * normal);
         vertex.color = colors.at(i);
         Vertices.push_back(vertex);
     }
@@ -106,7 +108,7 @@ void Terrain::setupVegetation(
 )
 {
     std::vector<glm::mat4> tree1Mats, tree2Mats, tree3Mats, bushMats, rockMats, grassMats;
-    glm::mat4 model = getTransform();
+    glm::mat4 model = getPositionTransform();
 
     for (std::size_t i = 0; i < trees.size(); i++)
     {
@@ -189,11 +191,18 @@ void Terrain::setupTerrain()
     glBindVertexArray(0);
 }
 
-glm::mat4 Terrain::getTransform()
+glm::mat4 Terrain::getPositionTransform()
 {
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::translate(model, glm::vec3(-((float)gridSize), -((float)gridSize), 0.0f));
-    model = glm::scale(model, glm::vec3((float)(gridSize * 2), (float)(gridSize * 2), 15.0f));
-    return model;
+    glm::mat4 mPosition = glm::mat4(1.0f);
+    mPosition = glm::rotate(mPosition, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    mPosition = glm::translate(mPosition, glm::vec3(-((float)gridSize), -((float)gridSize), 0.0f));
+    mPosition = glm::scale(mPosition, glm::vec3((float)(gridSize * 2), (float)(gridSize * 2), 15.0f));
+    return mPosition;
+}
+
+glm::mat4 Terrain::getNormalTransform()
+{
+    glm::mat4 mNormal = glm::mat4(1.0f);
+    mNormal = glm::rotate(mNormal, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
+    return mNormal;
 }

@@ -1,6 +1,6 @@
 #include "Renderer/Renderer.h"
 
-const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION = glm::vec3(10.0f, 15.0f, 10.0f);
+const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION = glm::vec3(0.0f, 15.0f, 0.0f);
 
 Renderer::Renderer(
 	Window& window, 
@@ -43,8 +43,9 @@ void Renderer::Render()
 
 	/*----- RESOURCES -----*/
 	Shader terrainShader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag");
-	Shader vegetationShader("Resources/Shaders/Model/lowPolyTree.vert", "Resources/Shaders/Model/lowPolyTree.frag");
+	Shader woodlandShader("Resources/Shaders/Model/lowPolyWoodland.vert", "Resources/Shaders/Model/lowPolyWoodland.frag");
 	Shader skyboxShader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag");
+	Shader normalVisShader("Resources/Shaders/Terrain/terrainNormals.vert", "Resources/Shaders/Terrain/terrainNormals.geom", "Resources/Shaders/Terrain/terrainNormals.frag");
 	
 	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
 	Model tree2("Resources/Models/tree_2/tree_2.obj", true);
@@ -53,13 +54,10 @@ void Renderer::Render()
 	Model rock("Resources/Models/rock/rock.obj", true);
 	Model grass("Resources/Models/grass_bud/grass_bud.obj", true);
 	
-	Terrain lowPolyTerrain(256);
+	Terrain lowPolyTerrain(128);
 
 	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG);
 
-	Shader normalVisualiser("Resources/Shaders/.old/backpack_with_normals.vert",
-		"Resources/Shaders/.old/backpack_with_normals.geom",
-		"Resources/Shaders/.old/backpack_with_normals.frag");
 
 	std::shared_ptr<std::vector<glm::mat4>> tree1ImMats = lowPolyTerrain.GetTree1ModelMats();
 	std::shared_ptr<std::vector<glm::mat4>> tree2ImMats = lowPolyTerrain.GetTree2ModelMats();
@@ -68,9 +66,9 @@ void Renderer::Render()
 	std::shared_ptr<std::vector<glm::mat4>> rocksImMats = lowPolyTerrain.GetRockModelMats();
 	std::shared_ptr<std::vector<glm::mat4>> grassImMats = lowPolyTerrain.GetGrassModelMats();
 
-	glm::vec3 sunPos[] = {
-		glm::vec3(-1.0f, -1.0f, 0.0f),
-		glm::vec3(1.0f, 1.0f, 0.0f)
+	float sunPos[] = {
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f
 	};
 
 	while (!window.GetWindowShouldClose())
@@ -102,13 +100,17 @@ void Renderer::Render()
 		terrainShader.SetMat4("model", model);
 		lowPolyTerrain.Draw(terrainShader);
 
-		vegetationShader.Use();
-		tree1.DrawInstanced(vegetationShader, tree1ImMats);
-		tree2.DrawInstanced(vegetationShader, tree2ImMats);
-		tree3.DrawInstanced(vegetationShader, tree3ImMats);
-		bush.DrawInstanced(vegetationShader, bushesImMats);
-		rock.DrawInstanced(vegetationShader, rocksImMats);
-		grass.DrawInstanced(vegetationShader, grassImMats);
+		normalVisShader.Use();
+		normalVisShader.SetMat4("model", model);
+		lowPolyTerrain.Draw(normalVisShader);
+
+		woodlandShader.Use();
+		tree1.DrawInstanced(woodlandShader, tree1ImMats);
+		tree2.DrawInstanced(woodlandShader, tree2ImMats);
+		tree3.DrawInstanced(woodlandShader, tree3ImMats);
+		bush.DrawInstanced(woodlandShader, bushesImMats);
+		rock.DrawInstanced(woodlandShader, rocksImMats);
+		grass.DrawInstanced(woodlandShader, grassImMats);
 
 		// Skybox
 		skyboxShader.Use();

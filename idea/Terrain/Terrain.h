@@ -30,9 +30,9 @@ public:
     };
 
     std::vector<Terrain::Vertex> Vertices;
-    
-    Terrain(const uint32_t gridSize);
-    
+
+    Terrain(const uint32_t gridSize = 256);
+
     void Draw(Shader& shader);
     std::shared_ptr<std::vector<glm::vec3>> GetTrees1();
     std::shared_ptr<std::vector<glm::vec3>> GetTrees2();
@@ -67,8 +67,8 @@ private:
     std::shared_ptr<std::vector<glm::mat4>> grassModelMats;
 
     void setupVertices(
-        std::vector<glm::vec3>& positions, 
-        std::vector<glm::vec3>& normals, 
+        std::vector<glm::vec3>& positions,
+        std::vector<glm::vec3>& normals,
         std::vector<glm::vec3>& colors
     );
     void setupVegetation(
@@ -78,6 +78,6 @@ private:
         std::vector<glm::vec3>& grass
     );
     void setupTerrain();
-    glm::mat4 getTransform();
+    glm::mat4 getPositionTransform();
+    glm::mat4 getNormalTransform();
 };
-
