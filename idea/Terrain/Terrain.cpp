@@ -14,6 +14,7 @@ Terrain::Terrain(
 void Terrain::Draw(Shader& shader)
 {
     shader.Use();
+    shader.SetMat4("model", glm::mat4(1.0f));
 
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Vertices.size());

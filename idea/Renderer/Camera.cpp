@@ -69,6 +69,11 @@ glm::mat4 Camera::GetViewMatrix() const
 	return glm::lookAt(Position, Position + Front, Up);
 }
 
+glm::mat3 Camera::GetViewMatrix3() const
+{
+	return glm::mat3(glm::lookAt(Position, Position + Front, Up));
+}
+
 glm::mat4 Camera::GetProjectionMatrix() const
 {
 	return glm::perspective(

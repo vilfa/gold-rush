@@ -23,7 +23,12 @@ class GObject
 {
 public:
 	AABB BoundingBox;
+
 	GObject(Model objectModel);
+
+	void Draw(Shader& shader);
+	void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMMats);
+	void DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMMats);
 
 	AABB GetBoundingBox();
 
@@ -46,4 +51,3 @@ protected:
 
 	void CalculateBoundingBox();
 };
-

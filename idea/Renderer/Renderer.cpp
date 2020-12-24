@@ -20,31 +20,12 @@ Renderer::Renderer(
 
 void Renderer::Render()
 {
-	uint32_t uboMatrices, uboCamera, uboWorldLight;
-	glGenBuffers(1, &uboMatrices);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glGenBuffers(1, &uboCamera);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboCamera);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glGenBuffers(1, &uboWorldLight);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboWorldLight);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4));
-	glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboCamera, 0, sizeof(glm::vec3));
-	glBindBufferRange(GL_UNIFORM_BUFFER, 2, uboWorldLight, 0, 2 * sizeof(glm::vec4));
-
+	UniformBuffer<glm::mat4> uboMatrices(3, 0);
+	UniformBuffer<glm::vec3> uboCamera(1, 1);
+	UniformBuffer<glm::vec3> uboLight(1, 2);
 
 	/*----- RESOURCES -----*/
-	Shader terrainShader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag");
 	Shader woodlandShader("Resources/Shaders/Model/lowPolyWoodland.vert", "Resources/Shaders/Model/lowPolyWoodland.frag");
-	Shader skyboxShader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag");
 	Shader normalVisShader("Resources/Shaders/Terrain/terrainNormals.vert", "Resources/Shaders/Terrain/terrainNormals.geom", "Resources/Shaders/Terrain/terrainNormals.frag");
 	
 	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
@@ -54,22 +35,15 @@ void Renderer::Render()
 	Model rock("Resources/Models/rock/rock.obj", true);
 	Model grass("Resources/Models/grass_bud/grass_bud.obj", true);
 	
-	Terrain lowPolyTerrain(128);
+	GWorld world;
+	glm::vec3 sun(0.0f, -1.0f, 0.0f);
 
-	Skybox skyboxFantasy("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG);
-
-
-	std::shared_ptr<std::vector<glm::mat4>> tree1ImMats = lowPolyTerrain.GetTree1ModelMats();
+	/*std::shared_ptr<std::vector<glm::mat4>> tree1ImMats = lowPolyTerrain.GetTree1ModelMats();
 	std::shared_ptr<std::vector<glm::mat4>> tree2ImMats = lowPolyTerrain.GetTree2ModelMats();
 	std::shared_ptr<std::vector<glm::mat4>> tree3ImMats = lowPolyTerrain.GetTree3ModelMats();
 	std::shared_ptr<std::vector<glm::mat4>> bushesImMats = lowPolyTerrain.GetBushModelMats();
 	std::shared_ptr<std::vector<glm::mat4>> rocksImMats = lowPolyTerrain.GetRockModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> grassImMats = lowPolyTerrain.GetGrassModelMats();
-
-	float sunPos[] = {
-		0.0f, -1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f
-	};
+	std::shared_ptr<std::vector<glm::mat4>> grassImMats = lowPolyTerrain.GetGrassModelMats();*/
 
 	while (!window.GetWindowShouldClose())
 	{
@@ -80,48 +54,29 @@ void Renderer::Render()
 
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.GetViewMatrix();
+		glm::mat4 view3 = camera.GetViewMatrix3();
 		glm::mat4 projection = camera.GetProjectionMatrix();
 
-		glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		uboMatrices.Data(projection, 0);
+		uboMatrices.Data(view, 1);
+		uboMatrices.Data(view3, 2);
+		uboCamera.Data(camera.Position, 0);
+		uboLight.Data(sun, 0);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, uboCamera);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(camera.Position));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		world.Draw();
 
-		glBindBuffer(GL_UNIFORM_BUFFER, uboWorldLight);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec4), &sunPos);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), 2 * sizeof(glm::vec4), &sunPos + 1);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-		terrainShader.Use();
-		terrainShader.SetMat4("model", model);
-		lowPolyTerrain.Draw(terrainShader);
-
-		woodlandShader.Use();
+		/*woodlandShader.Use();
 		tree1.DrawInstanced(woodlandShader, tree1ImMats);
 		tree2.DrawInstanced(woodlandShader, tree2ImMats);
 		tree3.DrawInstanced(woodlandShader, tree3ImMats);
 		bush.DrawInstanced(woodlandShader, bushesImMats);
 		rock.DrawInstanced(woodlandShader, rocksImMats);
-		grass.DrawInstanced(woodlandShader, grassImMats);
-
-		skyboxShader.Use();
-		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-		skyboxShader.SetMat4("projection", projection);
-		skyboxShader.SetMat4("view", view);
-		skyboxFantasy.Draw(skyboxShader);
+		grass.DrawInstanced(woodlandShader, grassImMats);*/
 
 		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
-
-	glDeleteBuffers(1, &uboMatrices);
-	glDeleteBuffers(1, &uboCamera);
-	glDeleteBuffers(1, &uboWorldLight);
 
 	glfwTerminate();
 }
@@ -173,15 +128,12 @@ void Renderer::setupInput(int mode, int value)
 void Renderer::setupGlobalEnables()
 {
 	glEnable(GL_DEPTH_TEST);
-
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
-
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glEnable(GL_FRAMEBUFFER_SRGB);
 	
 	if (window.GetMultisamplingEnabled())
@@ -197,15 +149,8 @@ void Renderer::processKeyboardInput()
 		window.SetWindowShouldClose(true);
 	}
 
-	CAMSPDenum speed;
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-	{
-		speed = CAMSPDenum::FAST;
-	}
-	else
-	{
-		speed = CAMSPDenum::NORMAL;
-	}
+	CAMSPDenum speed = (glfwGetKey(window.GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) 
+		? CAMSPDenum::FAST : CAMSPDenum::NORMAL;
 
 	if (glfwGetKey(window.GetWindow(), GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -234,7 +179,11 @@ void Renderer::processFrametime()
 
 std::string Renderer::getRenderStats()
 {
-	return window.GetWindowTitle() + (" FPS:" + std::to_string(1 / deltaTime) + "|Frametime:" + std::to_string(deltaTime * 1000));
+	return window.GetWindowTitle() + 
+		u8" • " + "FPS:" + 
+		std::to_string(1 / deltaTime) + 
+		"|Frametime:" + 
+		std::to_string(deltaTime * 1000);
 }
 
 void Renderer::setRenderStats()

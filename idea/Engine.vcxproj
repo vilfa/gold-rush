@@ -152,7 +152,8 @@
   <ItemGroup>
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\Player.cpp" />
-    <ClCompile Include="World\GTree.cpp" />
+    <ClCompile Include="Game\Prop.cpp" />
+    <ClCompile Include="World\GQuadTree.cpp" />
     <ClCompile Include="World\GObject.cpp" />
     <ClCompile Include="World\GWorld.cpp" />
     <ClCompile Include="Renderer\Camera.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Application\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Prop.h" />
     <ClInclude Include="Types\ECamera.h" />
     <ClInclude Include="Types\EShader.h" />
     <ClInclude Include="Types\ESkybox.h" />
@@ -176,7 +178,8 @@
     <ClInclude Include="Types\FWindow.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Player.h" />
-    <ClInclude Include="World\GTree.h" />
+    <ClInclude Include="Buffers\UniformBuffer.h" />
+    <ClInclude Include="World\GQuadTree.h" />
     <ClInclude Include="World\GObject.h" />
     <ClInclude Include="World\GWorld.h" />
     <ClInclude Include="Renderer\Camera.h" />

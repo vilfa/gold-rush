@@ -24,8 +24,7 @@ layout (std140, binding = 1) uniform Camera
 
 layout (std140, binding = 2) uniform WorldLight
 {
-	vec4 direction_1;
-	vec4 direction_2;
+	vec3 direction;
 };
 
 in VS_OUT
@@ -44,18 +43,12 @@ const float SHININESS = 8.0;
 
 void main()
 {
-	light_1.direction = vec3(direction_1);
+	light_1.direction = direction;
 	light_1.ambient = vec3(0.25, 0.25, 0.25);
 	light_1.diffuse = vec3(1.0, 1.0, 1.0);
 	light_1.specular = vec3(0.0, 0.0, 0.0);
 
-	light_2.direction = vec3(direction_2);
-	light_2.ambient = vec3(0.0, 0.0, 0.0);
-	light_2.diffuse = vec3(0.15, 0.15, 0.15);
-	light_2.specular = vec3(0.0, 0.0, 0.0);
-
 	vec3 fragColor = CalculateDirectionalPhong(light_1, fs_in.fragPos, fs_in.fragNormal, fs_in.fragColor, cameraPos);
-	fragColor += CalculateDirectionalPhong(light_2, fs_in.fragPos, fs_in.fragNormal, fs_in.fragColor, cameraPos);
     gl_FragColor = vec4(fragColor, 1.0);
 }
 

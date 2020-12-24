@@ -38,6 +38,7 @@ int main()
 	window.SetFramebufferSizeCallback(framebufferSizeCallback);
 	window.SetMouseMoveCallback(mouseMoveCallback);
 	window.SetMouseScrollCallback(mouseScrollCallback);
+
 	renderer.Render();
 	_CrtDumpMemoryLeaks();
 	return 0;

@@ -9,12 +9,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Application/Window.h"
+#include "Buffers/UniformBuffer.h"
 #include "Renderer/Camera.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Mesh.h"
 #include "Renderer/Model.h"
-#include "Renderer/Skybox.h"
-#include "Terrain/Terrain.h"
+#include "World/GWorld.h"
 
 class Renderer
 {

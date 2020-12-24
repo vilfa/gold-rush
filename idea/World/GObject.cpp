@@ -8,6 +8,21 @@ GObject::GObject(
     CalculateBoundingBox();
 }
 
+void GObject::Draw(Shader& shader)
+{
+    GModel.Draw(shader);
+}
+
+void GObject::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMMats)
+{
+    GModel.DrawInstanced(shader, instanceMMats);
+}
+
+void GObject::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMMats)
+{
+    GModel.DrawInstanced(shader, instanceMMats);
+}
+
 AABB GObject::GetBoundingBox()
 {
     return BoundingBox;

@@ -13,7 +13,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer/Renderer.h"
 #include "Terrain/NoiseGenerator.h"
 
 class TerrainGenerator

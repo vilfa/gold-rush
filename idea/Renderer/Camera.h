@@ -53,6 +53,7 @@ public:
 	);
 
 	glm::mat4 GetViewMatrix() const;
+	glm::mat3 GetViewMatrix3() const;
 	glm::mat4 GetProjectionMatrix() const;
 	glm::mat4 GetProjectionViewMatrix() const;
 	void ProcessKeyboard(
