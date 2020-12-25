@@ -22,43 +22,7 @@ void Renderer::Render()
 	UniformBuffer<glm::vec3> ubo_camera(1, 1);
 	UniformBuffer<glm::vec3> ubo_light(1, 2);
 
-	// RESOURCES
-	Shader prop_shader("Resources/Shaders/Model/lowPolyWoodland.vert", "Resources/Shaders/Model/lowPolyWoodland.frag");
-	
-	Prop tree_1(
-		Model("Resources/Models/tree_1/tree_1.obj", true),
-		prop_shader
-	);
-	Prop tree_2(
-		Model("Resources/Models/tree_2/tree_2.obj", true),
-		prop_shader
-	);
-	Prop tree_3(
-		Model("Resources/Models/tree_3/tree_3.obj", true),
-		prop_shader
-	);
-	Prop bush(
-		Model("Resources/Models/lil_bush/lil_bush.obj", true),
-		prop_shader
-	);
-	Prop rock(
-		Model("Resources/Models/rock/rock.obj", true),
-		prop_shader
-	);
-	Prop grass(
-		Model("Resources/Models/grass_bud/grass_bud.obj", true),
-		prop_shader
-	);
-	
-	GWorld world;
-	glm::vec3 sun(0.0f, -1.0f, 0.0f);
-
-	std::shared_ptr<std::vector<glm::mat4>> tree_1_mod_mats = world.GetTree1Mats();
-	/*std::shared_ptr<std::vector<glm::mat4>> tree_2_mod_mats = lowPolyTerrain.GetTree2ModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> tree_3_mod_mats = lowPolyTerrain.GetTree3ModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> bushes_mod_mats = lowPolyTerrain.GetBushModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> rocks_mod_mats = lowPolyTerrain.GetRockModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> grass_mod_mats = lowPolyTerrain.GetGrassModelMats();*/
+	GameWorld world;
 
 	while (!window_.GetWindowShouldClose())
 	{
@@ -76,18 +40,10 @@ void Renderer::Render()
 		ubo_matrices.Data(view, 1);
 		ubo_matrices.Data(view_3, 2);
 		ubo_camera.Data(camera_.position_, 0);
-		ubo_light.Data(sun, 0);
+		ubo_light.Data(world.GetSunPosition(), 0);
 
 		world.Draw();
 
-		tree_1.DrawInstanced(tree_1_mod_mats);
-		/*tree_2.DrawInstanced(tree_2_mod_mats);
-		tree_3.DrawInstanced(tree_3_mod_mats);
-		bush.DrawInstanced(bushes_mod_mats);
-		rock.DrawInstanced(rocks_mod_mats);
-		grass.DrawInstanced(grass_mod_mats);*/
-
-		/*--- Events and buffers ---*/
 		glfwSwapBuffers(window_.GetWindow());
 		glfwPollEvents();
 	}

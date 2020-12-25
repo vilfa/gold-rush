@@ -51,9 +51,6 @@
     <ClCompile Include="Terrain\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="World\GWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="World\GObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,10 +60,16 @@
     <ClCompile Include="Game\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="World\GQuadTree.cpp">
+    <ClCompile Include="World\GameWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Prop.cpp">
+    <ClCompile Include="World\QuadTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World\TerrainElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,9 +107,6 @@
     <ClInclude Include="Terrain\Terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="World\GWorld.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="World\GObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -131,13 +131,22 @@
     <ClInclude Include="Types\ESkybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="World\GQuadTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Buffers\UniformBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Prop.h">
+    <ClInclude Include="World\GameWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World\QuadTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\SBoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World\TerrainElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -230,12 +239,12 @@
     <None Include="Resources\Shaders\Skybox\fantasySkybox.vert" />
     <None Include="Resources\Shaders\Terrain\lowPolyTerrain.frag" />
     <None Include="Resources\Shaders\Terrain\lowPolyTerrain.vert" />
-    <None Include="Resources\Shaders\Model\lowPolyWoodland.frag" />
-    <None Include="Resources\Shaders\Model\lowPolyWoodland.vert" />
     <None Include="Resources\Shaders\Terrain\terrainNormals.frag" />
     <None Include="Resources\Shaders\Terrain\terrainNormals.geom" />
     <None Include="Resources\Shaders\Terrain\terrainNormals.vert" />
     <None Include="ClassDiagram.cd" />
+    <None Include="Resources\Shaders\Model\lowPolyTerrainElement.frag" />
+    <None Include="Resources\Shaders\Model\lowPolyTerrainElement.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\awesomeface.png">
@@ -349,5 +358,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Colors\colors.txt" />
+    <Text Include="Resources\Naming\naming_rules.txt" />
   </ItemGroup>
 </Project>

@@ -9,20 +9,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Types/SBoundingBox.h"
 #include "Renderer/Model.h"
-
-struct AABB
-{
-	glm::vec3 center_position;
-	float x_half_dim;
-	float y_half_dim;
-	float z_half_dim;
-};
 
 class GObject
 {
 public:
-	AABB bounding_box_;
+	AABB model_bounding_box_;
 
 	GObject(Model obj_model);
 
@@ -30,24 +23,18 @@ public:
 	void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instance_mod_mats);
 	void DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instance_mod_mats);
 
-	AABB GetBoundingBox();
+	AABB GetModelBoundingBox();
 
-	float GetXMaxAABB();
-	float GetXMinAABB();
-	float GetYMaxAABB();
-	float GetYMinAABB();
-	float GetZMaxAABB();
-	float GetZMinAABB();
-
-	glm::vec3 GetWorldPosition();
-	void SetWorldPosition(glm::vec3 new_world_pos);
-
-	bool CollidesAABB(GObject oth_obj);
-	bool ContainsAABB(glm::vec3 oth_pos);
-
+	float GetXMaxModelAABB();
+	float GetXMinModelAABB();
+	float GetYMaxModelAABB();
+	float GetYMinModelAABB();
+	float GetZMaxModelAABB();
+	float GetZMinModelAABB();
+	
 protected:
 	Model model_;
 	glm::vec3 world_position_;
 
-	void calculateBoundingBox();
+	void calculateModelBoundingBox();
 };

@@ -3,7 +3,7 @@
 GObject::GObject(Model obj_model) :
     model_(obj_model)
 {
-    calculateBoundingBox();
+    calculateModelBoundingBox();
 }
 
 void GObject::Draw(Shader& shader)
@@ -21,71 +21,42 @@ void GObject::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat
     model_.DrawInstanced(shader, instance_mod_mats);
 }
 
-AABB GObject::GetBoundingBox()
+AABB GObject::GetModelBoundingBox()
 {
-    return bounding_box_;
+    return model_bounding_box_;
 }
 
-float GObject::GetXMaxAABB()
+float GObject::GetXMaxModelAABB()
 {
-    return bounding_box_.center_position.x + bounding_box_.x_half_dim;
+    return model_bounding_box_.center_position.x + model_bounding_box_.x_half_dim;
 }
 
-float GObject::GetXMinAABB()
+float GObject::GetXMinModelAABB()
 {
-    return bounding_box_.center_position.x - bounding_box_.x_half_dim;
+    return model_bounding_box_.center_position.x - model_bounding_box_.x_half_dim;
 }
 
-float GObject::GetYMaxAABB()
+float GObject::GetYMaxModelAABB()
 {
-    return bounding_box_.center_position.y + bounding_box_.y_half_dim;
+    return model_bounding_box_.center_position.y + model_bounding_box_.y_half_dim;
 }
 
-float GObject::GetYMinAABB()
+float GObject::GetYMinModelAABB()
 {
-    return bounding_box_.center_position.y - bounding_box_.y_half_dim;
+    return model_bounding_box_.center_position.y - model_bounding_box_.y_half_dim;
 }
 
-float GObject::GetZMaxAABB()
+float GObject::GetZMaxModelAABB()
 {
-    return bounding_box_.center_position.z + bounding_box_.z_half_dim;
+    return model_bounding_box_.center_position.z + model_bounding_box_.z_half_dim;
 }
 
-float GObject::GetZMinAABB()
+float GObject::GetZMinModelAABB()
 {
-    return bounding_box_.center_position.z - bounding_box_.z_half_dim;
+    return model_bounding_box_.center_position.z - model_bounding_box_.z_half_dim;
 }
 
-glm::vec3 GObject::GetWorldPosition()
-{
-    return bounding_box_.center_position;
-}
-
-void GObject::SetWorldPosition(glm::vec3 new_world_pos)
-{
-    world_position_ = new_world_pos;
-    //calculateBoundingBox();
-}
-
-bool GObject::CollidesAABB(GObject oth_obj)
-{
-    return (
-        (oth_obj.GetXMinAABB() >= GetXMinAABB() && oth_obj.GetXMaxAABB() <= GetXMaxAABB()) &&
-        (oth_obj.GetYMinAABB() >= GetYMinAABB() && oth_obj.GetYMaxAABB() <= GetYMaxAABB()) &&
-        (oth_obj.GetZMinAABB() >= GetZMinAABB() && oth_obj.GetZMaxAABB() <= GetZMaxAABB())
-        );
-}
-
-bool GObject::ContainsAABB(glm::vec3 oth_pos)
-{
-    return (
-        (oth_pos.x >= GetXMinAABB() && oth_pos.x <= GetXMaxAABB()) &&
-        (oth_pos.y >= GetYMinAABB() && oth_pos.y <= GetYMaxAABB()) &&
-        (oth_pos.z >= GetZMinAABB() && oth_pos.z <= GetZMaxAABB())
-        );
-}
-
-void GObject::calculateBoundingBox()
+void GObject::calculateModelBoundingBox()
 {
     float min_x, min_y, min_z, max_x, max_y, max_z;
     min_x = min_y = min_z = std::numeric_limits<float>::max();
@@ -118,8 +89,8 @@ void GObject::calculateBoundingBox()
     center_x = min_x + half_x;
     center_y = min_y + half_y;
     center_z = min_z + half_z;
-    bounding_box_.center_position = glm::vec3(center_x, center_y, center_z);
-    bounding_box_.x_half_dim = half_x;
-    bounding_box_.y_half_dim = half_y;
-    bounding_box_.z_half_dim = half_z;
+    model_bounding_box_.center_position = glm::vec3(center_x, center_y, center_z);
+    model_bounding_box_.x_half_dim = half_x;
+    model_bounding_box_.y_half_dim = half_y;
+    model_bounding_box_.z_half_dim = half_z;
 }

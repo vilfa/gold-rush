@@ -14,8 +14,8 @@
 #include "Renderer/Shader.h"
 #include "Renderer/Mesh.h"
 #include "Renderer/Model.h"
-#include "World/GWorld.h"
-#include "Game/Prop.h"
+#include "World/GameWorld.h"
+#include "World/TerrainElement.h"
 
 class Renderer
 {

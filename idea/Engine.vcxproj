@@ -150,12 +150,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Entity.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\Player.cpp" />
-    <ClCompile Include="Game\Prop.cpp" />
-    <ClCompile Include="World\GQuadTree.cpp" />
+    <ClCompile Include="World\TerrainElement.cpp" />
+    <ClCompile Include="World\QuadTree.cpp" />
     <ClCompile Include="World\GObject.cpp" />
-    <ClCompile Include="World\GWorld.cpp" />
+    <ClCompile Include="World\GameWorld.cpp" />
     <ClCompile Include="Renderer\Camera.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
@@ -170,7 +171,9 @@
     <ClCompile Include="Application\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Prop.h" />
+    <ClInclude Include="Game\Entity.h" />
+    <ClInclude Include="Types\SBoundingBox.h" />
+    <ClInclude Include="World\TerrainElement.h" />
     <ClInclude Include="Types\ECamera.h" />
     <ClInclude Include="Types\EShader.h" />
     <ClInclude Include="Types\ESkybox.h" />
@@ -179,9 +182,9 @@
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Buffers\UniformBuffer.h" />
-    <ClInclude Include="World\GQuadTree.h" />
+    <ClInclude Include="World\QuadTree.h" />
     <ClInclude Include="World\GObject.h" />
-    <ClInclude Include="World\GWorld.h" />
+    <ClInclude Include="World\GameWorld.h" />
     <ClInclude Include="Renderer\Camera.h" />
     <ClInclude Include="Renderer\Mesh.h" />
     <ClInclude Include="Renderer\Model.h" />
@@ -267,8 +270,8 @@
     <None Include="Resources\Shaders\green.frag" />
     <None Include="Resources\Shaders\instanced_quads.frag" />
     <None Include="Resources\Shaders\instanced_quads.vert" />
-    <None Include="Resources\Shaders\Model\lowPolyWoodland.frag" />
-    <None Include="Resources\Shaders\Model\lowPolyWoodland.vert" />
+    <None Include="Resources\Shaders\Model\lowPolyTerrainElement.frag" />
+    <None Include="Resources\Shaders\Model\lowPolyTerrainElement.vert" />
     <None Include="Resources\Shaders\model_loading.frag" />
     <None Include="Resources\Shaders\model_loading.vert" />
     <None Include="Resources\Shaders\red.frag" />
@@ -330,6 +333,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Colors\colors.txt" />
+    <Text Include="Resources\Naming\naming_rules.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
