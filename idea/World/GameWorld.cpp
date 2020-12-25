@@ -3,6 +3,7 @@
 GameWorld::GameWorld(glm::vec3 sun_position) :
     terrain_(Terrain(128)),
     skybox_(Skybox("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG)),
+    quad_tree_(AABB(glm::vec3(0.0f), terrain_.GetHalfDimension())),
     shader_terrain_(Shader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag")),
     shader_skybox_(Shader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag")),
     shader_entity_(Shader("Resources/Shaders/Model/lowPolyTerrainElement.vert", "Resources/Shaders/Model/lowPolyTerrainElement.frag")),

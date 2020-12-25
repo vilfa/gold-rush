@@ -19,6 +19,11 @@ void Terrain::Draw(Shader& shader)
     glBindVertexArray(0);
 }
 
+float Terrain::GetHalfDimension()
+{
+    return (float)(_grid_size_ / 2);
+}
+
 std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree1ModelMats()
 {
     return tree_1_model_mats_;

@@ -34,6 +34,7 @@ public:
     Terrain(const uint32_t _grid_size = 256);
 
     void Draw(Shader& shader);
+    float GetHalfDimension();
 
     std::shared_ptr<std::vector<glm::mat4>> GetTree1ModelMats();
     std::shared_ptr<std::vector<glm::mat4>> GetTree2ModelMats();

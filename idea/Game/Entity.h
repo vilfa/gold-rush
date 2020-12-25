@@ -9,18 +9,21 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Types/SBoundingBox.h"
+#include "Types/AABB.h"
 #include "World/TerrainElement.h"
 
 class Entity
 {
 public:
+    AABB bounding_box_;
+
     Entity(TerrainElement& terr_el, glm::mat4& world_transform);
 
     AABB& GetBoundingBox();
     bool Collides(Entity oth_ent);
     bool Contains(glm::vec3 oth_pos);
 
+    glm::vec3 GetCenter();
     float GetXMaxAABB();
     float GetXMinAABB();
     float GetYMaxAABB();
@@ -29,8 +32,6 @@ public:
     float GetZMinAABB();
 
 private:
-    AABB bounding_box_;
-
     TerrainElement& terrain_element_;
     glm::mat4& world_transform_;
 

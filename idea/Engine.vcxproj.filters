@@ -140,13 +140,13 @@
     <ClInclude Include="World\QuadTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Types\SBoundingBox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="World\TerrainElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\AABB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

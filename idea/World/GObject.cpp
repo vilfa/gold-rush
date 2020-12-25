@@ -28,32 +28,32 @@ AABB GObject::GetModelBoundingBox()
 
 float GObject::GetXMaxModelAABB()
 {
-    return model_bounding_box_.center_position.x + model_bounding_box_.x_half_dim;
+    return model_bounding_box_.XMax();
 }
 
 float GObject::GetXMinModelAABB()
 {
-    return model_bounding_box_.center_position.x - model_bounding_box_.x_half_dim;
+    return model_bounding_box_.XMin();
 }
 
 float GObject::GetYMaxModelAABB()
 {
-    return model_bounding_box_.center_position.y + model_bounding_box_.y_half_dim;
+    return model_bounding_box_.YMax();
 }
 
 float GObject::GetYMinModelAABB()
 {
-    return model_bounding_box_.center_position.y - model_bounding_box_.y_half_dim;
+    return model_bounding_box_.YMin();
 }
 
 float GObject::GetZMaxModelAABB()
 {
-    return model_bounding_box_.center_position.z + model_bounding_box_.z_half_dim;
+    return model_bounding_box_.ZMax();
 }
 
 float GObject::GetZMinModelAABB()
 {
-    return model_bounding_box_.center_position.z - model_bounding_box_.z_half_dim;
+    return model_bounding_box_.ZMin();
 }
 
 void GObject::calculateModelBoundingBox()

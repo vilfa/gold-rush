@@ -172,7 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Entity.h" />
-    <ClInclude Include="Types\SBoundingBox.h" />
+    <ClInclude Include="Types\AABB.h" />
     <ClInclude Include="World\TerrainElement.h" />
     <ClInclude Include="Types\ECamera.h" />
     <ClInclude Include="Types\EShader.h" />

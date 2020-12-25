@@ -14,50 +14,47 @@ AABB& Entity::GetBoundingBox()
 
 bool Entity::Collides(Entity oth_ent)
 {
-    return (
-        (oth_ent.GetXMinAABB() >= GetXMinAABB() && oth_ent.GetXMaxAABB() <= GetXMaxAABB()) &&
-        (oth_ent.GetYMinAABB() >= GetYMinAABB() && oth_ent.GetYMaxAABB() <= GetYMaxAABB()) &&
-        (oth_ent.GetZMinAABB() >= GetZMinAABB() && oth_ent.GetZMaxAABB() <= GetZMaxAABB())
-        );
+    return bounding_box_.Collides(oth_ent.bounding_box_);
 }
 
 bool Entity::Contains(glm::vec3 oth_pos)
 {
-    return (
-        (oth_pos.x >= GetXMinAABB() && oth_pos.x <= GetXMaxAABB()) &&
-        (oth_pos.y >= GetYMinAABB() && oth_pos.y <= GetYMaxAABB()) &&
-        (oth_pos.z >= GetZMinAABB() && oth_pos.z <= GetZMaxAABB())
-        );
+    return bounding_box_.Contains(oth_pos);
+}
+
+glm::vec3 Entity::GetCenter()
+{
+    return bounding_box_.GetCenter();
 }
 
 float Entity::GetXMaxAABB()
 {
-    return bounding_box_.center_position.x + bounding_box_.x_half_dim;
+    return bounding_box_.XMax();
 }
 
 float Entity::GetXMinAABB()
 {
-    return bounding_box_.center_position.x - bounding_box_.x_half_dim;
+    return bounding_box_.XMin();
 }
 
 float Entity::GetYMaxAABB()
 {
-    return bounding_box_.center_position.y + bounding_box_.y_half_dim;
+    return bounding_box_.YMax();
 }
 
 float Entity::GetYMinAABB()
 {
-    return bounding_box_.center_position.y - bounding_box_.y_half_dim;
+    return bounding_box_.YMin();
 }
 
 float Entity::GetZMaxAABB()
 {
-    return bounding_box_.center_position.z + bounding_box_.z_half_dim;
+    return bounding_box_.ZMax();
 }
 
 float Entity::GetZMinAABB()
 {
-    return bounding_box_.center_position.z - bounding_box_.z_half_dim;
+    return bounding_box_.ZMin();
 }
 
 void Entity::setupBoundingBox()
