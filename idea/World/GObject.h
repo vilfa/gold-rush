@@ -13,22 +13,22 @@
 
 struct AABB
 {
-	glm::vec3 CenterPosition;
-	float XHalfDim;
-	float YHalfDim;
-	float ZHalfDim;
+	glm::vec3 center_position;
+	float x_half_dim;
+	float y_half_dim;
+	float z_half_dim;
 };
 
 class GObject
 {
 public:
-	AABB BoundingBox;
+	AABB bounding_box_;
 
-	GObject(Model objectModel);
+	GObject(Model obj_model);
 
 	void Draw(Shader& shader);
-	void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMMats);
-	void DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMMats);
+	void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instance_mod_mats);
+	void DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instance_mod_mats);
 
 	AABB GetBoundingBox();
 
@@ -40,14 +40,14 @@ public:
 	float GetZMinAABB();
 
 	glm::vec3 GetWorldPosition();
-	void SetWorldPosition(glm::vec3 newPosition);
+	void SetWorldPosition(glm::vec3 new_world_pos);
 
-	bool CollidesAABB(GObject oObj);
-	bool ContainsAABB(glm::vec3 oPos);
+	bool CollidesAABB(GObject oth_obj);
+	bool ContainsAABB(glm::vec3 oth_pos);
 
 protected:
-	Model GModel;
-	glm::vec3 WPosition;
+	Model model_;
+	glm::vec3 world_position_;
 
-	void CalculateBoundingBox();
+	void calculateBoundingBox();
 };

@@ -13,20 +13,18 @@
 class Skybox
 {
 public:
-    Skybox(
-        const std::string directory, 
-        const SKYBFORMATenum format
-    );
+    Skybox(const std::string _directory, 
+        const SKYBFORMATenum _format);
 	
     void Draw(Shader& shader);
 
 private:
-    uint32_t ID;
-    uint32_t VAO, VBO;
-    SKYBFORMATenum format;
-    std::string directory;
+    uint32_t id_;
+    uint32_t vao_, vbo_;
+    SKYBFORMATenum format_;
+    std::string directory_;
 
-    void loadCubemap(const std::vector<std::string> files);
+    void loadCubemap(const std::vector<std::string> _files);
     void setup();
 };
 

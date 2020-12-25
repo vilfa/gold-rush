@@ -1,18 +1,16 @@
 #include "Renderer/Renderer.h"
 
-const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION = glm::vec3(0.0f, 15.0f, 0.0f);
+const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION_ = glm::vec3(0.0f, 15.0f, 0.0f);
 
-Renderer::Renderer(
-	Window& window, 
-	glm::vec3 cameraPosition
-) :
-    window(window),
-	camera(Camera(cameraPosition)),
-    deltaTime(0.0),
-    lastFrame(0.0),
-    firstMouse(true),
-    lastX((float)window.GetWidth() / 2.0f),
-    lastY((float)window.GetHeight() / 2.0f)
+Renderer::Renderer(Window& window,
+	glm::vec3 camera_position) :
+    window_(window),
+	camera_(Camera(camera_position)),
+    delta_time_(0.0),
+    last_frame_(0.0),
+    first_mouse_(true),
+    last_x_((float)window.GetWidth() / 2.0f),
+    last_y_((float)window.GetHeight() / 2.0f)
 {
 	setupInput(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	setupGlobalEnables();
@@ -20,32 +18,49 @@ Renderer::Renderer(
 
 void Renderer::Render()
 {
-	UniformBuffer<glm::mat4> uboMatrices(3, 0);
-	UniformBuffer<glm::vec3> uboCamera(1, 1);
-	UniformBuffer<glm::vec3> uboLight(1, 2);
+	UniformBuffer<glm::mat4> ubo_matrices(3, 0);
+	UniformBuffer<glm::vec3> ubo_camera(1, 1);
+	UniformBuffer<glm::vec3> ubo_light(1, 2);
 
-	/*----- RESOURCES -----*/
-	Shader woodlandShader("Resources/Shaders/Model/lowPolyWoodland.vert", "Resources/Shaders/Model/lowPolyWoodland.frag");
-	Shader normalVisShader("Resources/Shaders/Terrain/terrainNormals.vert", "Resources/Shaders/Terrain/terrainNormals.geom", "Resources/Shaders/Terrain/terrainNormals.frag");
+	// RESOURCES
+	Shader prop_shader("Resources/Shaders/Model/lowPolyWoodland.vert", "Resources/Shaders/Model/lowPolyWoodland.frag");
 	
-	Model tree1("Resources/Models/tree_1/tree_1.obj", true);
-	Model tree2("Resources/Models/tree_2/tree_2.obj", true);
-	Model tree3("Resources/Models/tree_3/tree_3.obj", true);
-	Model bush("Resources/Models/lil_bush/lil_bush.obj", true);
-	Model rock("Resources/Models/rock/rock.obj", true);
-	Model grass("Resources/Models/grass_bud/grass_bud.obj", true);
+	Prop tree_1(
+		Model("Resources/Models/tree_1/tree_1.obj", true),
+		prop_shader
+	);
+	Prop tree_2(
+		Model("Resources/Models/tree_2/tree_2.obj", true),
+		prop_shader
+	);
+	Prop tree_3(
+		Model("Resources/Models/tree_3/tree_3.obj", true),
+		prop_shader
+	);
+	Prop bush(
+		Model("Resources/Models/lil_bush/lil_bush.obj", true),
+		prop_shader
+	);
+	Prop rock(
+		Model("Resources/Models/rock/rock.obj", true),
+		prop_shader
+	);
+	Prop grass(
+		Model("Resources/Models/grass_bud/grass_bud.obj", true),
+		prop_shader
+	);
 	
 	GWorld world;
 	glm::vec3 sun(0.0f, -1.0f, 0.0f);
 
-	/*std::shared_ptr<std::vector<glm::mat4>> tree1ImMats = lowPolyTerrain.GetTree1ModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> tree2ImMats = lowPolyTerrain.GetTree2ModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> tree3ImMats = lowPolyTerrain.GetTree3ModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> bushesImMats = lowPolyTerrain.GetBushModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> rocksImMats = lowPolyTerrain.GetRockModelMats();
-	std::shared_ptr<std::vector<glm::mat4>> grassImMats = lowPolyTerrain.GetGrassModelMats();*/
+	std::shared_ptr<std::vector<glm::mat4>> tree_1_mod_mats = world.GetTree1Mats();
+	/*std::shared_ptr<std::vector<glm::mat4>> tree_2_mod_mats = lowPolyTerrain.GetTree2ModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> tree_3_mod_mats = lowPolyTerrain.GetTree3ModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> bushes_mod_mats = lowPolyTerrain.GetBushModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> rocks_mod_mats = lowPolyTerrain.GetRockModelMats();
+	std::shared_ptr<std::vector<glm::mat4>> grass_mod_mats = lowPolyTerrain.GetGrassModelMats();*/
 
-	while (!window.GetWindowShouldClose())
+	while (!window_.GetWindowShouldClose())
 	{
 		processFrametime();
 		setRenderStats();
@@ -53,76 +68,66 @@ void Renderer::Render()
 		clearFramebuffers();
 
 		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		glm::mat4 view3 = camera.GetViewMatrix3();
-		glm::mat4 projection = camera.GetProjectionMatrix();
+		glm::mat4 view = camera_.GetViewMatrix();
+		glm::mat4 view_3 = camera_.GetViewMatrix3();
+		glm::mat4 projection = camera_.GetProjectionMatrix();
 
-		uboMatrices.Data(projection, 0);
-		uboMatrices.Data(view, 1);
-		uboMatrices.Data(view3, 2);
-		uboCamera.Data(camera.Position, 0);
-		uboLight.Data(sun, 0);
+		ubo_matrices.Data(projection, 0);
+		ubo_matrices.Data(view, 1);
+		ubo_matrices.Data(view_3, 2);
+		ubo_camera.Data(camera_.position_, 0);
+		ubo_light.Data(sun, 0);
 
 		world.Draw();
 
-		/*woodlandShader.Use();
-		tree1.DrawInstanced(woodlandShader, tree1ImMats);
-		tree2.DrawInstanced(woodlandShader, tree2ImMats);
-		tree3.DrawInstanced(woodlandShader, tree3ImMats);
-		bush.DrawInstanced(woodlandShader, bushesImMats);
-		rock.DrawInstanced(woodlandShader, rocksImMats);
-		grass.DrawInstanced(woodlandShader, grassImMats);*/
+		tree_1.DrawInstanced(tree_1_mod_mats);
+		/*tree_2.DrawInstanced(tree_2_mod_mats);
+		tree_3.DrawInstanced(tree_3_mod_mats);
+		bush.DrawInstanced(bushes_mod_mats);
+		rock.DrawInstanced(rocks_mod_mats);
+		grass.DrawInstanced(grass_mod_mats);*/
 
 		/*--- Events and buffers ---*/
-		glfwSwapBuffers(window.GetWindow());
+		glfwSwapBuffers(window_.GetWindow());
 		glfwPollEvents();
 	}
 
 	glfwTerminate();
 }
 
-void Renderer::FramebufferSizeCallback(
-	GLFWwindow* window, 
-	int width, 
-	int height
-)
+void Renderer::FramebufferSizeCallback(GLFWwindow* window, int width,
+	int height)
 {
 	glViewport(0, 0, width, height);
 }
 
-void Renderer::MouseMoveCallback(
-	GLFWwindow* window, 
-	double xPos, 
-	double yPos
-)
+void Renderer::MouseMoveCallback(GLFWwindow* window, double x_pos,
+	double y_pos)
 {
-	if (firstMouse)
+	if (first_mouse_)
 	{
-		lastX = (float)xPos;
-		lastY = (float)yPos;
-		firstMouse = false;
+		last_x_ = (float)x_pos;
+		last_y_ = (float)y_pos;
+		first_mouse_ = false;
 	}
 
-	float xOffset = (float)xPos - lastX;
-	float yOffset = lastY - (float)yPos; // Reversed since y-coordinates range from bottom to top.
-	lastX = (float)xPos;
-	lastY = (float)yPos;
+	float x_offset = (float)x_pos - last_x_;
+	float y_offset = last_y_ - (float)y_pos; // Reversed since y-coordinates range from bottom to top.
+	last_x_ = (float)x_pos;
+	last_y_ = (float)y_pos;
 
-	camera.ProcessMouseMovement(xOffset, yOffset);
+	camera_.ProcessMouseMovement(x_offset, y_offset);
 }
 
-void Renderer::MouseScrollCallback(
-	GLFWwindow* window, 
-	double xOffset, 
-	double yOffset
-)
+void Renderer::MouseScrollCallback(GLFWwindow* window, double x_offset,
+	double y_offset)
 {
-	camera.ProcessMouseScroll((float&)yOffset);
+	camera_.ProcessMouseScroll((float&)y_offset);
 }
 
 void Renderer::setupInput(int mode, int value)
 {
-	glfwSetInputMode(window.GetWindow(), mode, value);
+	glfwSetInputMode(window_.GetWindow(), mode, value);
 }
 
 void Renderer::setupGlobalEnables()
@@ -136,7 +141,7 @@ void Renderer::setupGlobalEnables()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_FRAMEBUFFER_SRGB);
 	
-	if (window.GetMultisamplingEnabled())
+	if (window_.GetMultisamplingEnabled())
 	{
 		glEnable(GL_MULTISAMPLE);
 	}
@@ -144,51 +149,51 @@ void Renderer::setupGlobalEnables()
 
 void Renderer::processKeyboardInput()
 {
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
-		window.SetWindowShouldClose(true);
+		window_.SetWindowShouldClose(true);
 	}
 
-	CAMSPDenum speed = (glfwGetKey(window.GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) 
+	CAMSPDenum speed = (glfwGetKey(window_.GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) 
 		? CAMSPDenum::FAST : CAMSPDenum::NORMAL;
 
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_W) == GLFW_PRESS)
+	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera.ProcessKeyboard(CAMMOVenum::FORWARD, speed, (float)deltaTime);
+		camera_.ProcessKeyboard(CAMMOVenum::FORWARD, speed, (float)delta_time_);
 	}
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
+	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera.ProcessKeyboard(CAMMOVenum::BACKWARD, speed, (float)deltaTime);
+		camera_.ProcessKeyboard(CAMMOVenum::BACKWARD, speed, (float)delta_time_);
 	}
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
+	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera.ProcessKeyboard(CAMMOVenum::LEFT, speed, (float)deltaTime);
+		camera_.ProcessKeyboard(CAMMOVenum::LEFT, speed, (float)delta_time_);
 	}
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
+	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera.ProcessKeyboard(CAMMOVenum::RIGHT, speed, (float)deltaTime);
+		camera_.ProcessKeyboard(CAMMOVenum::RIGHT, speed, (float)delta_time_);
 	}
 }
 
 void Renderer::processFrametime()
 {
 	double now = glfwGetTime();
-	deltaTime = now - lastFrame;
-	lastFrame = now;
+	delta_time_ = now - last_frame_;
+	last_frame_ = now;
 }
 
 std::string Renderer::getRenderStats()
 {
-	return window.GetWindowTitle() + 
+	return window_.GetWindowName() + 
 		u8" • " + "FPS:" + 
-		std::to_string(1 / deltaTime) + 
+		std::to_string(1 / delta_time_) +
 		"|Frametime:" + 
-		std::to_string(deltaTime * 1000);
+		std::to_string(delta_time_ * 1000);
 }
 
 void Renderer::setRenderStats()
 {
-	window.SetWindowTitle(getRenderStats());
+	window_.SetWindowName(getRenderStats());
 }
 
 void Renderer::clearFramebuffers()

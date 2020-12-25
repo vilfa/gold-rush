@@ -1,30 +1,28 @@
 #include "Skybox.h"
 
-Skybox::Skybox(
-	const std::string directory, 
-	const SKYBFORMATenum format
-) :
-	directory(directory),
-	format(format)
+Skybox::Skybox(const std::string _directory,
+	const SKYBFORMATenum _format) :
+	directory_(_directory),
+	format_(_format)
 {
-	std::string fileFormat;
-	if (format == SKYBFORMATenum::JPG)
+	std::string file_format;
+	if (format_ == SKYBFORMATenum::JPG)
 	{
-		fileFormat = ".jpg";
+		file_format = ".jpg";
 	}
-	else if (format == SKYBFORMATenum::PNG)
+	else if (format_ == SKYBFORMATenum::PNG)
 	{
-		fileFormat = ".png";
+		file_format = ".png";
 	}
 
 	std::vector<std::string> files
 	{
-		directory + "right" + fileFormat,
-		directory + "left" + fileFormat,
-		directory + "top" + fileFormat,
-		directory + "bottom" + fileFormat,
-		directory + "front" + fileFormat,
-		directory + "back" + fileFormat
+		directory_ + "right" + file_format,
+		directory_ + "left" + file_format,
+		directory_ + "top" + file_format,
+		directory_ + "bottom" + file_format,
+		directory_ + "front" + file_format,
+		directory_ + "back" + file_format
 	};
 
 	loadCubemap(files);
@@ -37,9 +35,9 @@ void Skybox::Draw(Shader& shader)
 
 	glDepthFunc(GL_LEQUAL);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id_);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(vao_);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 
@@ -47,29 +45,29 @@ void Skybox::Draw(Shader& shader)
 	glDepthFunc(GL_LESS);
 }
 
-void Skybox::loadCubemap(const std::vector<std::string> files)
+void Skybox::loadCubemap(const std::vector<std::string> _files)
 {
-	uint32_t textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	uint32_t texture_id;
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
 
-	int width, height, nComp;
+	int width, height, n_comp;
 	unsigned char* data;
-	for (std::size_t i = 0; i < files.size(); i++)
+	for (std::size_t i = 0; i < _files.size(); i++)
 	{
-		data = stbi_load(files[i].c_str(), &width, &height, &nComp, 0);
+		data = stbi_load(_files[i].c_str(), &width, &height, &n_comp, 0);
 		if (data)
 		{
 			GLenum format = GL_RGB;
-			if (nComp == 1)
+			if (n_comp == 1)
 			{
 				format = GL_RED;
 			}
-			else if (nComp == 3)
+			else if (n_comp == 3)
 			{
 				format = GL_RGB;
 			}
-			else if (nComp == 4)
+			else if (n_comp == 4)
 			{
 				format = GL_RGBA;
 			}
@@ -84,7 +82,7 @@ void Skybox::loadCubemap(const std::vector<std::string> files)
 		else
 		{
 			std::cout << "ERROR::MAIN::LOAD_CUBEMAP::CUBEMAP_LOAD_ERROR" << std::endl;
-			std::cout << "Cubemap load failed at path:" << files[i] << std::endl;
+			std::cout << "Cubemap load failed at path:" << _files[i] << std::endl;
 			stbi_image_free(data);
 		}
 	}
@@ -97,7 +95,7 @@ void Skybox::loadCubemap(const std::vector<std::string> files)
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-	ID = textureID;
+	id_ = texture_id;
 }
 
 void Skybox::setup()
@@ -146,10 +144,10 @@ void Skybox::setup()
 		 1.0f, -1.0f,  1.0f
 	};
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glGenVertexArrays(1, &vao_);
+	glGenBuffers(1, &vbo_);
+	glBindVertexArray(vao_);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)0);

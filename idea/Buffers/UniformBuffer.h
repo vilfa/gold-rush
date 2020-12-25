@@ -12,15 +12,15 @@ template <class T>
 class UniformBuffer
 {
 public:
-    UniformBuffer(uint32_t count, GLuint ubRange);
+    UniformBuffer(uint32_t count, GLuint ub_range);
     ~UniformBuffer();
-    void Data(T& data, uint32_t subStart = 0);
+    void Data(T& data, uint32_t sub_start = 0);
 
 private:
-    uint32_t ID;
-    std::size_t sSize;
-    uint32_t count;
-    GLuint range;
+    uint32_t id_;
+    std::size_t single_size_;
+    uint32_t el_count_;
+    GLuint range_;
 
     void generate();
     void bind();
@@ -31,13 +31,10 @@ private:
 };
 
 template<class T>
-inline UniformBuffer<T>::UniformBuffer(
-    uint32_t count,
-    GLuint ubRange
-) : 
-    sSize(sizeof(T)),
-    count(count),
-    range(ubRange)
+inline UniformBuffer<T>::UniformBuffer(uint32_t count, GLuint ub_range) : 
+    single_size_(sizeof(T)),
+    el_count_(count),
+    range_(ub_range)
 {
     generate();
     bind();
@@ -53,35 +50,35 @@ inline UniformBuffer<T>::~UniformBuffer()
 }
 
 template<class T>
-inline void UniformBuffer<T>::Data(T& data, uint32_t subStart)
+inline void UniformBuffer<T>::Data(T& data, uint32_t sub_start)
 {
     bind();
-    glBufferSubData(GL_UNIFORM_BUFFER, subStart * sSize, sSize, glm::value_ptr(data));
+    glBufferSubData(GL_UNIFORM_BUFFER, sub_start * single_size_, single_size_, glm::value_ptr(data));
     unbind();
 }
 
 template<class T>
 inline void UniformBuffer<T>::generate()
 {
-    glGenBuffers(1, &ID);
+    glGenBuffers(1, &id_);
 }
 
 template<class T>
 inline void UniformBuffer<T>::bind()
 {
-    glBindBuffer(GL_UNIFORM_BUFFER, ID);
+    glBindBuffer(GL_UNIFORM_BUFFER, id_);
 }
 
 template<class T>
 inline void UniformBuffer<T>::allocate()
 {
-    glBufferData(GL_UNIFORM_BUFFER, count * sSize, NULL, GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, el_count_ * single_size_, NULL, GL_STATIC_DRAW);
 }
 
 template<class T>
 inline void UniformBuffer<T>::bindRange()
 {
-    glBindBufferRange(GL_UNIFORM_BUFFER, range, ID, 0, count * sSize);
+    glBindBufferRange(GL_UNIFORM_BUFFER, range_, id_, 0, el_count_ * single_size_);
 }
 
 template<class T>
@@ -93,5 +90,5 @@ inline void UniformBuffer<T>::unbind()
 template<class T>
 inline void UniformBuffer<T>::remove()
 {
-    glDeleteBuffers(1, &ID);
+    glDeleteBuffers(1, &id_);
 }

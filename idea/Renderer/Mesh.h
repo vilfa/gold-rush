@@ -22,9 +22,9 @@ public:
     {
         glm::vec3 position;
         glm::vec3 normal;
-        glm::vec2 textureCoordinates;
+        glm::vec2 texture_coords;
         glm::vec3 tangent;
-        glm::vec3 biTangent;
+        glm::vec3 bi_tangent;
     };
 
     struct Texture
@@ -36,41 +36,34 @@ public:
         TEXFORMATenum format;
     };
 
-    std::vector<Mesh::Vertex> Vertices;
-    std::vector<uint32_t> Indices;
-    std::vector<Mesh::Texture> Textures;
+    std::vector<Mesh::Vertex> vertices_;
+    std::vector<uint32_t> indices_;
+    std::vector<Mesh::Texture> textures_;
 
-    Mesh(
-        std::vector<Mesh::Vertex>& vertices, 
+    Mesh(std::vector<Mesh::Vertex>& vertices, 
         std::vector<uint32_t>& indices, 
-        std::vector<Mesh::Texture>& textures,
-        bool embedded = false
-    );
+        std::vector<Mesh::Texture>& textures, 
+        bool embedded = false);
 
-    static uint32_t LoadTextureFromFile(
-        const std::string path, 
-        const std::string directory, 
-        bool gamma = false,
-        bool flipVertical = true, 
-        GLenum textureWrapping = GL_REPEAT,
-        GLenum mipmapFilteringMin = GL_LINEAR_MIPMAP_LINEAR, 
-        GLenum mipmapFilteringMax = GL_LINEAR
-    );
+    static uint32_t LoadTextureFromFile(const std::string _path, const std::string _directory, 
+        bool gamma = false, bool flip_vertical = true, 
+        GLenum texture_wrapping = GL_REPEAT, GLenum mipmap_filtering_min = GL_LINEAR_MIPMAP_LINEAR, 
+        GLenum mipmap_filtering_max = GL_LINEAR);
     void Draw(Shader& shader);
-    void DrawInstanced(Shader& shader, const std::size_t instanceSize);
+    void DrawInstanced(Shader& shader, const std::size_t _instance_size);
 
 private:
-    uint32_t VAO, VBO, EBO;
-    bool embedded;
+    uint32_t vao_, vbo_, ebo_;
+    bool embedded_;
 
-    static const std::string _TEXTURE_DIFFUSE_NAME;
-    static const std::string _TEXTURE_SPECULAR_NAME;
-    static const std::string _TEXTURE_NORMAL_NAME;
-    static const std::string _TEXTURE_HEIGHT_NAME;
-    static const std::string _COLOR_DIFFUSE_NAME;
-    static const std::string _COLOR_SPECULAR_NAME;
-    static const std::string _COLOR_AMBIENT_NAME;
-    static const std::string _COLOR_EMISSIVE_NAME;
+    static const std::string _TEXTURE_DIFFUSE_NAME_;
+    static const std::string _TEXTURE_SPECULAR_NAME_;
+    static const std::string _TEXTURE_NORMAL_NAME_;
+    static const std::string _TEXTURE_HEIGHT_NAME_;
+    static const std::string _COLOR_DIFFUSE_NAME_;
+    static const std::string _COLOR_SPECULAR_NAME_;
+    static const std::string _COLOR_AMBIENT_NAME_;
+    static const std::string _COLOR_EMISSIVE_NAME_;
 
     void setupMesh();
     void setupTextures(Shader& shader);

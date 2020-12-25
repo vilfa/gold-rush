@@ -1,127 +1,125 @@
 #include "GObject.h"
 
-GObject::GObject(
-    Model objectModel
-) :
-    GModel(objectModel)
+GObject::GObject(Model obj_model) :
+    model_(obj_model)
 {
-    CalculateBoundingBox();
+    calculateBoundingBox();
 }
 
 void GObject::Draw(Shader& shader)
 {
-    GModel.Draw(shader);
+    model_.Draw(shader);
 }
 
-void GObject::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instanceMMats)
+void GObject::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instance_mod_mats)
 {
-    GModel.DrawInstanced(shader, instanceMMats);
+    model_.DrawInstanced(shader, instance_mod_mats);
 }
 
-void GObject::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instanceMMats)
+void GObject::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instance_mod_mats)
 {
-    GModel.DrawInstanced(shader, instanceMMats);
+    model_.DrawInstanced(shader, instance_mod_mats);
 }
 
 AABB GObject::GetBoundingBox()
 {
-    return BoundingBox;
+    return bounding_box_;
 }
 
 float GObject::GetXMaxAABB()
 {
-    return BoundingBox.CenterPosition.x + BoundingBox.XHalfDim;
+    return bounding_box_.center_position.x + bounding_box_.x_half_dim;
 }
 
 float GObject::GetXMinAABB()
 {
-    return BoundingBox.CenterPosition.x - BoundingBox.XHalfDim;
+    return bounding_box_.center_position.x - bounding_box_.x_half_dim;
 }
 
 float GObject::GetYMaxAABB()
 {
-    return BoundingBox.CenterPosition.y + BoundingBox.YHalfDim;
+    return bounding_box_.center_position.y + bounding_box_.y_half_dim;
 }
 
 float GObject::GetYMinAABB()
 {
-    return BoundingBox.CenterPosition.y - BoundingBox.YHalfDim;
+    return bounding_box_.center_position.y - bounding_box_.y_half_dim;
 }
 
 float GObject::GetZMaxAABB()
 {
-    return BoundingBox.CenterPosition.z + BoundingBox.ZHalfDim;
+    return bounding_box_.center_position.z + bounding_box_.z_half_dim;
 }
 
 float GObject::GetZMinAABB()
 {
-    return BoundingBox.CenterPosition.z - BoundingBox.ZHalfDim;
+    return bounding_box_.center_position.z - bounding_box_.z_half_dim;
 }
 
 glm::vec3 GObject::GetWorldPosition()
 {
-    return BoundingBox.CenterPosition;
+    return bounding_box_.center_position;
 }
 
-void GObject::SetWorldPosition(glm::vec3 newPosition)
+void GObject::SetWorldPosition(glm::vec3 new_world_pos)
 {
-    WPosition = newPosition;
-    CalculateBoundingBox();
+    world_position_ = new_world_pos;
+    //calculateBoundingBox();
 }
 
-bool GObject::CollidesAABB(GObject oObj)
+bool GObject::CollidesAABB(GObject oth_obj)
 {
     return (
-        (oObj.GetXMinAABB() >= GetXMinAABB() && oObj.GetXMaxAABB() <= GetXMaxAABB()) &&
-        (oObj.GetYMinAABB() >= GetYMinAABB() && oObj.GetYMaxAABB() <= GetYMaxAABB()) &&
-        (oObj.GetZMinAABB() >= GetZMinAABB() && oObj.GetZMaxAABB() <= GetZMaxAABB())
+        (oth_obj.GetXMinAABB() >= GetXMinAABB() && oth_obj.GetXMaxAABB() <= GetXMaxAABB()) &&
+        (oth_obj.GetYMinAABB() >= GetYMinAABB() && oth_obj.GetYMaxAABB() <= GetYMaxAABB()) &&
+        (oth_obj.GetZMinAABB() >= GetZMinAABB() && oth_obj.GetZMaxAABB() <= GetZMaxAABB())
         );
 }
 
-bool GObject::ContainsAABB(glm::vec3 oPos)
+bool GObject::ContainsAABB(glm::vec3 oth_pos)
 {
     return (
-        (oPos.x >= GetXMinAABB() && oPos.x <= GetXMaxAABB()) &&
-        (oPos.y >= GetYMinAABB() && oPos.y <= GetYMaxAABB()) &&
-        (oPos.z >= GetZMinAABB() && oPos.z <= GetZMaxAABB())
+        (oth_pos.x >= GetXMinAABB() && oth_pos.x <= GetXMaxAABB()) &&
+        (oth_pos.y >= GetYMinAABB() && oth_pos.y <= GetYMaxAABB()) &&
+        (oth_pos.z >= GetZMinAABB() && oth_pos.z <= GetZMaxAABB())
         );
 }
 
-void GObject::CalculateBoundingBox()
+void GObject::calculateBoundingBox()
 {
-    float minX, minY, minZ, maxX, maxY, maxZ;
-    minX = minY = minZ = std::numeric_limits<float>::max();
-    maxX = maxY = maxZ = std::numeric_limits<float>::min();
+    float min_x, min_y, min_z, max_x, max_y, max_z;
+    min_x = min_y = min_z = std::numeric_limits<float>::max();
+    max_x = max_y = max_z = std::numeric_limits<float>::min();
 
-    glm::vec3 cPos;
-    for (std::size_t i = 0; i < GModel.Meshes.size(); i++)
+    glm::vec3 curr_vert;
+    for (std::size_t i = 0; i < model_.meshes_.size(); i++)
     {
-        Mesh& mesh = GModel.Meshes.at(i);
-        for (std::size_t j = 0; j < mesh.Vertices.size(); j++)
+        Mesh& curr_mesh = model_.meshes_.at(i);
+        for (std::size_t j = 0; j < curr_mesh.vertices_.size(); j++)
         {
-            cPos = mesh.Vertices.at(i).position;
-            
+            curr_vert = curr_mesh.vertices_.at(i).position;
+
             float x, y, z;
-            x = cPos.x;
-            y = cPos.y;
-            z = cPos.z;
-            
-            if (x < minX) minX = x; else if (x > maxX) maxX = x;
-            if (y < minY) minY = y; else if (y > maxY) maxY = y;
-            if (z < minZ) minZ = z; else if (z > maxZ) maxZ = z;
+            x = curr_vert.x;
+            y = curr_vert.y;
+            z = curr_vert.z;
+
+            if (x < min_x) min_x = x; else if (x > max_x) max_x = x;
+            if (y < min_y) min_y = y; else if (y > max_y) max_y = y;
+            if (z < min_z) min_z = z; else if (z > max_z) max_z = z;
         }
     }
 
-    float hX, hY, hZ, cX, cY, cZ;
+    float half_x, half_y, half_z, center_x, center_y, center_z;
 
-    hX = (maxX - minX) / 2;
-    hY = (maxY - minY) / 2;
-    hZ = (maxZ - minZ) / 2;
-    cX = minX + hX;
-    cY = minY + hY;
-    cZ = minZ + hZ;
-    BoundingBox.CenterPosition = glm::vec3(cX, cY, cZ);
-    BoundingBox.XHalfDim = hX;
-    BoundingBox.YHalfDim = hY;
-    BoundingBox.ZHalfDim = hZ;
+    half_x = (max_x - min_x) / 2;
+    half_y = (max_y - min_y) / 2;
+    half_z = (max_z - min_z) / 2;
+    center_x = min_x + half_x;
+    center_y = min_y + half_y;
+    center_z = min_z + half_z;
+    bounding_box_.center_position = glm::vec3(center_x, center_y, center_z);
+    bounding_box_.x_half_dim = half_x;
+    bounding_box_.y_half_dim = half_y;
+    bounding_box_.z_half_dim = half_z;
 }

@@ -29,17 +29,11 @@ public:
         glm::vec3 color;
     };
 
-    std::vector<Terrain::Vertex> Vertices;
+    std::vector<Terrain::Vertex> vertices_;
 
-    Terrain(const uint32_t gridSize = 256);
+    Terrain(const uint32_t _grid_size = 256);
 
     void Draw(Shader& shader);
-    std::shared_ptr<std::vector<glm::vec3>> GetTrees1();
-    std::shared_ptr<std::vector<glm::vec3>> GetTrees2();
-    std::shared_ptr<std::vector<glm::vec3>> GetTrees3();
-    std::shared_ptr<std::vector<glm::vec3>> GetBushes();
-    std::shared_ptr<std::vector<glm::vec3>> GetRocks();
-    std::shared_ptr<std::vector<glm::vec3>> GetGrass();
 
     std::shared_ptr<std::vector<glm::mat4>> GetTree1ModelMats();
     std::shared_ptr<std::vector<glm::mat4>> GetTree2ModelMats();
@@ -49,34 +43,20 @@ public:
     std::shared_ptr<std::vector<glm::mat4>> GetGrassModelMats();
 
 private:
-    const uint32_t gridSize;
-    uint32_t VAO, VBO;
+    const uint32_t _grid_size_;
+    uint32_t vao_, vbo_;
 
-    std::shared_ptr<std::vector<glm::vec3>> tree1Positions;
-    std::shared_ptr<std::vector<glm::vec3>> tree2Positions;
-    std::shared_ptr<std::vector<glm::vec3>> tree3Positions;
-    std::shared_ptr<std::vector<glm::vec3>> bushPositions;
-    std::shared_ptr<std::vector<glm::vec3>> rockPositions;
-    std::shared_ptr<std::vector<glm::vec3>> grassPositions;
+    std::shared_ptr<std::vector<glm::mat4>> tree_1_model_mats_;
+    std::shared_ptr<std::vector<glm::mat4>> tree_2_model_mats_;
+    std::shared_ptr<std::vector<glm::mat4>> tree_3_model_mats_;
+    std::shared_ptr<std::vector<glm::mat4>> bush_model_mats_;
+    std::shared_ptr<std::vector<glm::mat4>> rock_model_mats_;
+    std::shared_ptr<std::vector<glm::mat4>> grass_model_mats_;
 
-    std::shared_ptr<std::vector<glm::mat4>> tree1ModelMats;
-    std::shared_ptr<std::vector<glm::mat4>> tree2ModelMats;
-    std::shared_ptr<std::vector<glm::mat4>> tree3ModelMats;
-    std::shared_ptr<std::vector<glm::mat4>> bushModelMats;
-    std::shared_ptr<std::vector<glm::mat4>> rockModelMats;
-    std::shared_ptr<std::vector<glm::mat4>> grassModelMats;
-
-    void setupVertices(
-        std::vector<glm::vec3>& positions,
-        std::vector<glm::vec3>& normals,
-        std::vector<glm::vec3>& colors
-    );
-    void setupVegetation(
-        std::vector<glm::vec3>& trees,
-        std::vector<glm::vec3>& bushes,
-        std::vector<glm::vec3>& rocks,
-        std::vector<glm::vec3>& grass
-    );
+    void setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals,
+        std::vector<glm::vec3>& colors);
+    void setupVegetation(std::vector<glm::vec3>& trees, std::vector<glm::vec3>& bushes,
+        std::vector<glm::vec3>& rocks, std::vector<glm::vec3>& grass);
     void setupTerrain();
     glm::mat4 getPositionTransform();
     glm::mat4 getNormalTransform();

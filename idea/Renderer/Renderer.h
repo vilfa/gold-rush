@@ -15,42 +15,32 @@
 #include "Renderer/Mesh.h"
 #include "Renderer/Model.h"
 #include "World/GWorld.h"
+#include "Game/Prop.h"
 
 class Renderer
 {
 public:
-    Renderer(
-        Window& window, 
-        glm::vec3 cameraPosition = _DEFAULT_CAMERA_POSITION
-    );
+    Renderer(Window& window, 
+        glm::vec3 camera_position = _DEFAULT_CAMERA_POSITION_);
 
     void Render();
-    void FramebufferSizeCallback(
-        GLFWwindow* window, 
-        int width, 
-        int height
-    );
-    void MouseMoveCallback(
-        GLFWwindow* window, 
-        double xPos, 
-        double yPos
-    );
-    void MouseScrollCallback(
-        GLFWwindow* window, 
-        double xOffset, 
-        double yOffset
-    );
+    void FramebufferSizeCallback(GLFWwindow* window, int width, 
+        int height);
+    void MouseMoveCallback(GLFWwindow* window, double x_pos, 
+        double y_pos);
+    void MouseScrollCallback(GLFWwindow* window, double x_offset, 
+        double y_offset);
 
 private:
-    Window& window;
-    Camera camera;
-    double deltaTime;
-    double lastFrame;
-    bool firstMouse;
-    float lastX;
-    float lastY;
+    Window& window_;
+    Camera camera_;
+    double delta_time_;
+    double last_frame_;
+    bool first_mouse_;
+    float last_x_;
+    float last_y_;
 
-    static const glm::vec3 _DEFAULT_CAMERA_POSITION;
+    static const glm::vec3 _DEFAULT_CAMERA_POSITION_;
 
     void setupInput(int mode, int value);
     void setupGlobalEnables();
