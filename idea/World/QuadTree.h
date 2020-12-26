@@ -7,10 +7,10 @@
 #include "Game/Entity.h"
 
 // This is a region quadtree implementation.
-// Also the Z dimension is being ignored, since the game objects
+// Also the Y dimension is being ignored, since the game objects
 // are static objects positioned beforehand at game initialization.
 // Since the player can only move on the terrain level, we only need
-// to check X and Y dimensions to determine if a collision has occured.
+// to check X and Z dimensions to determine if a collision has occured.
 //
 class QuadTree
 {

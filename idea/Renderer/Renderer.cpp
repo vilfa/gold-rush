@@ -1,6 +1,6 @@
 #include "Renderer/Renderer.h"
 
-const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION_ = glm::vec3(0.0f, 15.0f, 0.0f);
+const glm::vec3 Renderer::_DEFAULT_CAMERA_POSITION_ = glm::vec3(0.0f, 20.0f, 0.0f);
 
 Renderer::Renderer(Window& window,
 	glm::vec3 camera_position) :

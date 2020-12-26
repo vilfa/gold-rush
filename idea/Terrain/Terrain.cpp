@@ -58,14 +58,13 @@ void Terrain::setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::
     std::vector<glm::vec3>& colors)
 {
     glm::mat4 mod_p_transform = getPositionTransform();
-    glm::mat4 mod_n_transform = getNormalTransform();
     for (std::size_t i = 0; i < positions.size(); i++)
     {
         Terrain::Vertex vertex;
         glm::vec4 position = glm::vec4(positions.at(i), 1.0f);
         glm::vec4 normal = glm::vec4(normals.at(i), 1.0f);
         vertex.position = glm::vec3(mod_p_transform * position);
-        vertex.normal = glm::vec3(mod_n_transform * normal);
+        vertex.normal = normals.at(i);
         vertex.color = colors.at(i);
         vertices_.push_back(vertex);
     }
@@ -161,15 +160,8 @@ void Terrain::setupTerrain()
 glm::mat4 Terrain::getPositionTransform()
 {
     glm::mat4 mod_position = glm::mat4(1.0f);
-    mod_position = glm::rotate(mod_position, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    mod_position = glm::translate(mod_position, glm::vec3(-((float)_grid_size_), -((float)_grid_size_), 0.0f));
-    mod_position = glm::scale(mod_position, glm::vec3((float)(_grid_size_ * 2), (float)(_grid_size_ * 2), 10.0f));
+    //mod_position = glm::rotate(mod_position, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    mod_position = glm::translate(mod_position, glm::vec3(-((float)_grid_size_), 0.0f, -((float)_grid_size_)));
+    mod_position = glm::scale(mod_position, glm::vec3((float)(_grid_size_ * 2), 10.0f, (float)(_grid_size_ * 2)));
     return mod_position;
-}
-
-glm::mat4 Terrain::getNormalTransform()
-{
-    glm::mat4 mod_normal = glm::mat4(1.0f);
-    mod_normal = glm::rotate(mod_normal, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
-    return mod_normal;
 }

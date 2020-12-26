@@ -60,5 +60,4 @@ private:
         std::vector<glm::vec3>& rocks, std::vector<glm::vec3>& grass);
     void setupTerrain();
     glm::mat4 getPositionTransform();
-    glm::mat4 getNormalTransform();
 };

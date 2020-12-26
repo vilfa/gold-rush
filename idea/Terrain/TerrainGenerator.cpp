@@ -57,8 +57,8 @@ void TerrainGenerator::generateGrid()
         for (std::size_t j = 0; j < _grid_size_; j++)
         {
             float x = (float)i / (float)_grid_size_;
-            float y = (float)j / (float)_grid_size_;
-            float z = height_map_[i * _grid_size_ + j];
+            float y = height_map_[i * _grid_size_ + j];
+            float z = (float)j / (float)_grid_size_;
             grid_.push_back(glm::vec3(x, y, z));
         }
     }
@@ -90,20 +90,20 @@ void TerrainGenerator::generateVertexPositions()
             v3 = grid_.at(q3);
 
             glm::vec3 n1, n2;
-            n1 = calculateTriangleNormal(v0, v2, v1);
-            n2 = calculateTriangleNormal(v2, v3, v1);
+            n1 = calculateTriangleNormal(v0, v1, v2);
+            n2 = calculateTriangleNormal(v2, v1, v3);
 
             positions_.push_back(v0);
             normals_.push_back(n1);
-            positions_.push_back(v2);
-            normals_.push_back(n1);
             positions_.push_back(v1);
             normals_.push_back(n1);
             positions_.push_back(v2);
+            normals_.push_back(n1);
+            positions_.push_back(v2);
+            normals_.push_back(n2);
+            positions_.push_back(v1);
             normals_.push_back(n2);
             positions_.push_back(v3);
-            normals_.push_back(n2);
-            positions_.push_back(v1);
             normals_.push_back(n2);
         }
     }
