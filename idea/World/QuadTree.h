@@ -16,6 +16,10 @@ class QuadTree
 {
 public:
     QuadTree(AABB bounding_box);
+    ~QuadTree();
+
+    bool Insert(Entity ent);
+    std::vector<Entity> Query(AABB range);
 
 private:
     const uint32_t _node_capacity_;
@@ -27,9 +31,7 @@ private:
     QuadTree* quadrant_2_;
     QuadTree* quadrant_3_;
     QuadTree* quadrant_4_;
-
-    bool insert(Entity ent);
+    
     void subdivide();
-    void query(AABB range);
 };
 

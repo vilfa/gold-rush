@@ -1,9 +1,10 @@
 #include "GameWorld.h"
 
-GameWorld::GameWorld(glm::vec3 sun_position) :
-    terrain_(Terrain(128)),
+GameWorld::GameWorld(glm::vec3 sun_position, uint32_t grid_size_) :
+    _grid_size_(grid_size_),
+    terrain_(Terrain(grid_size_)),
     skybox_(Skybox("Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG)),
-    quad_tree_(AABB(glm::vec3(0.0f), terrain_.GetHalfDimension())),
+    quad_tree_(AABB(glm::vec3(0.0f), (float)grid_size_)),
     shader_terrain_(Shader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag")),
     shader_skybox_(Shader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag")),
     shader_entity_(Shader("Resources/Shaders/Model/lowPolyTerrainElement.vert", "Resources/Shaders/Model/lowPolyTerrainElement.frag")),
@@ -17,6 +18,7 @@ GameWorld::GameWorld(glm::vec3 sun_position) :
 {
     setupModelMatsAll();
     createGameEntities();
+    createQuadTree();
 }
 
 void GameWorld::Draw()
@@ -71,6 +73,14 @@ void GameWorld::createGameEntities()
     for (std::size_t i = 0; i < model_mats_all_.at(5)->size(); i++)
     {
         game_entities_.push_back(Entity(trrel_grass_, model_mats_all_.at(5)->at(i)));
+    }
+}
+
+void GameWorld::createQuadTree()
+{
+    for (std::size_t i = 0; i < game_entities_.size(); i++)
+    {
+        quad_tree_.Insert(game_entities_.at(i));
     }
 }
 

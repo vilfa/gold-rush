@@ -1,6 +1,6 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
 
 #include <iostream>
 #include <random>
@@ -23,38 +23,35 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
 void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
-/*
-* Window setup
-*/
-const uint32_t SCR_WIDTH = 1600;
-const uint32_t SCR_HEIGHT = 900;
-const std::string WINDOW_NAME = "Idea";
+const uint32_t _SCR_WIDTH = 1600;
+const uint32_t _SCR_HEIGHT = 900;
+const std::string _WINDOW_NAME = "Idea";
 
-Window window(SCR_WIDTH, SCR_HEIGHT, WINDOW_NAME, 4, 2, true);
-Renderer renderer(window);
+Window WINDOW(_SCR_WIDTH, _SCR_HEIGHT, _WINDOW_NAME, 4, 2, true);
+Renderer RENDERER(WINDOW);
 
 int main()
 {
-	window.SetFramebufferSizeCallback(framebufferSizeCallback);
-	window.SetMouseMoveCallback(mouseMoveCallback);
-	window.SetMouseScrollCallback(mouseScrollCallback);
+	WINDOW.SetFramebufferSizeCallback(framebufferSizeCallback);
+	WINDOW.SetMouseMoveCallback(mouseMoveCallback);
+	WINDOW.SetMouseScrollCallback(mouseScrollCallback);
 
-	renderer.Render();
-	_CrtDumpMemoryLeaks();
+	RENDERER.Render();
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-	renderer.FramebufferSizeCallback(window, width, height);
+	RENDERER.FramebufferSizeCallback(window, width, height);
 }
 
-void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
+void mouseMoveCallback(GLFWwindow* window, double x_pos, double y_pos)
 {
-	renderer.MouseMoveCallback(window, xPos, yPos);
+	RENDERER.MouseMoveCallback(window, x_pos, y_pos);
 }
 
-void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+void mouseScrollCallback(GLFWwindow* window, double x_offset, double y_offset)
 {
-	renderer.MouseScrollCallback(window, xOffset, yOffset);
+	RENDERER.MouseScrollCallback(window, x_offset, y_offset);
 }

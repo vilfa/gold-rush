@@ -28,7 +28,7 @@ public:
     std::vector<Entity> game_entities_;
     //Player player_;
 
-    GameWorld(glm::vec3 sun_position = glm::vec3(0.0f, -1.0f, 0.0f));
+    GameWorld(glm::vec3 sun_position = glm::vec3(0.0f, -1.0f, 0.0f), uint32_t grid_size_ = 128);
 
     void Draw();
 
@@ -36,6 +36,8 @@ public:
     void SetSunPosition(glm::vec3 new_sun_pos);
 
 private:
+    const uint32_t _grid_size_;
+
     Shader shader_terrain_, shader_skybox_, shader_entity_;
     Skybox skybox_;
     Terrain terrain_;
@@ -46,6 +48,7 @@ private:
 
     void setupModelMatsAll();
     void createGameEntities();
+    void createQuadTree();
     void drawTerrain();
     void drawSkybox();
     void drawWoodland();

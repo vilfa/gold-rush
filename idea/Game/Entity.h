@@ -19,7 +19,7 @@ public:
 
     Entity(TerrainElement& terr_el, glm::mat4& world_transform);
 
-    AABB& GetBoundingBox();
+    AABB GetBoundingBox();
     bool Collides(Entity oth_ent);
     bool Contains(glm::vec3 oth_pos);
 
@@ -32,9 +32,8 @@ public:
     float GetZMinAABB();
 
 private:
-    TerrainElement& terrain_element_;
-    glm::mat4& world_transform_;
+    TerrainElement terrain_element_;
+    glm::mat4 world_transform_;
 
     void setupBoundingBox();
 };
-

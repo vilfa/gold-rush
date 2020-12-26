@@ -7,7 +7,7 @@ Entity::Entity(TerrainElement& terr_el, glm::mat4& world_transform) :
     setupBoundingBox();
 }
 
-AABB& Entity::GetBoundingBox()
+AABB Entity::GetBoundingBox()
 {
     return bounding_box_;
 }

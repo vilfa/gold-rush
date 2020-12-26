@@ -3,10 +3,10 @@
 #include <iostream>
 #include <vector>
 
-#include "World/GObject.h"
+#include "Game/Entity.h"
 
-class Player : public GObject
+class Player : public virtual Entity
 {
-
+    
 };
 
