@@ -52,7 +52,7 @@ std::vector<glm::vec3>& TerrainGenerator::GetGrass()
 
 void TerrainGenerator::generateHeightMap()
 {
-    height_map_ = NoiseGenerator::PerlinNoise2D(_grid_size_, _grid_size_, 6);
+    height_map_ = NoiseGenerator::PerlinNoise2D(_grid_size_, _grid_size_, 4);
 }
 
 void TerrainGenerator::generateGrid()

@@ -51,22 +51,25 @@ void GameWorld::SetSunPosition(glm::vec3 new_sun_pos)
 
 float GameWorld::GetGridHeight(glm::vec3 player_pos)
 {
-    int grid_half, i, j, add_i, add_j;
-    grid_half = _grid_size_ / 2;
-    add_i = std::round(player_pos.z + _grid_size_) / 2;
-    add_j = std::round(player_pos.x + _grid_size_) / 2;
+    int grid_center, i, j;
+    // Starting grid width height is (128, 128)
+    // Generate map of (128, 128) and scale positions by 2, map still (128, 128), but corrdinates from [0, 256]
+    // Translate map by grid width in -x and -z directions, so coordiantes are now [-128, 128]
+    // Center of height map is at index (64, 64) since it's scaled * 2 and translated
+    grid_center = _grid_size_ / 2; 
+    j = grid_center + (player_pos.z / 2);
+    i = grid_center + (player_pos.x / 2);
 
-    // Make sure we don't get a IndexOutOfBounds if we are 
-    // outside the area of the map.
-    if (add_i > 0 && add_i > _grid_size_) add_i = _grid_size_;
-    if (add_i < 0) add_i = 0;
-    if (add_j > 0 && add_j > _grid_size_) add_j = _grid_size_;
-    if (add_j < 0) add_j = 0;
+    std::cout << "GAME_WORLD::GET_GRID_HEIGHT::TERRAIN_HEIGHT_INDEX" << std::endl;
+    std::cout << "(" << i << "," << j << ")" << std::endl;
 
-    //i = grid_half + add_i;
-    //j = grid_half + add_j;
+    float p0, p1, p2, p3;
+    p0 = grid_->at((i - 1) * _grid_size_ + j).y;
+    p1 = grid_->at(i * _grid_size_ + (j + 1)).y;
+    p2 = grid_->at(i * _grid_size_ + (j - 1)).y;
+    p3 = grid_->at((i + 1) * _grid_size_ + j).y;
 
-    return (grid_->at(add_i * _grid_size_ + add_j)).y;
+    return (p0 + p1 + p2 + p3) / 4.0f;
 }
 
 void GameWorld::createGameEntities()

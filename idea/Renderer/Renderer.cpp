@@ -18,6 +18,8 @@ void Renderer::Render(Camera& camera, Player& player, GameWorld& world)
 	UniformBuffer<glm::vec3> ubo_camera(1, 1);
 	UniformBuffer<glm::vec3> ubo_light(1, 2);
 
+	ProcessMouse(camera, player, window_.GetWindow(), last_x_, last_y_);
+
 	while (!window_.GetWindowShouldClose())
 	{
 		clearFramebuffers();
