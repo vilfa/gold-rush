@@ -7,9 +7,9 @@ Entity::Entity(TerrainElement& terr_el, glm::mat4& world_transform) :
     setupBoundingBox();
 }
 
-void Entity::Draw(glm::vec3 position)
+void Entity::Draw(glm::vec3 position, float yaw)
 {
-    terrain_element_.Draw(position);
+    terrain_element_.Draw(position, yaw);
 }
 
 AABB Entity::GetBoundingBox()

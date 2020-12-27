@@ -21,6 +21,7 @@ public:
 
 	void Draw(Shader& shader);
 	void Draw(Shader& shader, glm::vec3 position);
+	void Draw(Shader& shader, glm::vec3 position, float yaw);
 	void DrawInstanced(Shader& shader, std::vector<glm::mat4>& instance_mod_mats);
 	void DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>> instance_mod_mats);
 

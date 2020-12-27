@@ -20,12 +20,11 @@ void Renderer::Render(Camera& camera, Player& player, GameWorld& world)
 
 	while (!window_.GetWindowShouldClose())
 	{
-		processFrametime();
-		setRenderStats();
-		ProcessKeyboard(camera, player, world);
 		clearFramebuffers();
+		processFrametime();
+		ProcessKeyboard(camera, player, world);
+		setRenderStats();
 
-		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 view_3 = camera.GetViewMatrix3();
 		glm::mat4 projection = camera.GetProjectionMatrix();
@@ -52,7 +51,7 @@ void Renderer::ProcessFramebuffer(GLFWwindow* window, int width,
 	glViewport(0, 0, width, height);
 }
 
-void Renderer::ProcessMouse(GLFWwindow* window, Camera& camera,
+void Renderer::ProcessMouse(Camera& camera, Player& player, GLFWwindow* window,
 	double x_pos, double y_pos)
 {
 	if (first_mouse_)
@@ -67,6 +66,9 @@ void Renderer::ProcessMouse(GLFWwindow* window, Camera& camera,
 	last_x_ = (float)x_pos;
 	last_y_ = (float)y_pos;
 
+	player.HandleMouse(camera, x_offset, y_offset);
+	camera.SetPlayerPosition(player.position_);
+	camera.FollowPlayer();
 	camera.HandleMouse(x_offset, y_offset);
 }
 
@@ -83,25 +85,29 @@ void Renderer::ProcessKeyboard(Camera& camera, Player& player, GameWorld& world)
 	{
 		player.position_ += player.front_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
-		camera.FollowPlayer(player.GetPosition());
+		camera.SetPlayerPosition(player.position_);
+		camera.FollowPlayer();
 	}
 	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
 	{
 		player.position_ -= player.front_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
-		camera.FollowPlayer(player.GetPosition());
+		camera.SetPlayerPosition(player.position_);
+		camera.FollowPlayer();
 	}
 	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
 	{
 		player.position_ -= player.right_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
-		camera.FollowPlayer(player.GetPosition());
+		camera.SetPlayerPosition(player.position_);
+		camera.FollowPlayer();
 	}
 	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
 	{
 		player.position_ += player.right_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
-		camera.FollowPlayer(player.GetPosition());
+		camera.SetPlayerPosition(player.position_);
+		camera.FollowPlayer();
 	}
 
 	std::cout << "RENDERER::PROCESS_KEYBOARD::CAMERA_POSITION" << std::endl;

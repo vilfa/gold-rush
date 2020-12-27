@@ -10,6 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Types/EMovement.h"
+#include "Renderer/Camera.h"
 #include "Game/Entity.h"
 
 class Player : public virtual Entity
@@ -20,6 +21,7 @@ public:
     glm::vec3 front_;
     glm::vec3 right_;
     glm::vec3 up_;
+    float mouse_sensitivity_;
     float movement_speed_;
     float movement_speed_fast_;
     float yaw_;
@@ -32,6 +34,7 @@ public:
         glm::mat4 world_transform = glm::mat4(1.0f));
 
     glm::vec3 GetPosition();
+    void HandleMouse(Camera& camera, float x_offset, float y_offset);
     void Draw();
 
 private:
@@ -39,7 +42,7 @@ private:
     static const float _PITCH_;
     static const float _SPEED_;
     static const float _SPEED_FAST_;
+    static const float _SENSITIVITY_;
     
     void updatePlayerVectors();
 };
-

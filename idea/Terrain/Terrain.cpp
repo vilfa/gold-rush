@@ -168,7 +168,6 @@ void Terrain::setupTerrain()
 glm::mat4 Terrain::getPositionTransform()
 {
     glm::mat4 mod_position = glm::mat4(1.0f);
-    //mod_position = glm::rotate(mod_position, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     mod_position = glm::translate(mod_position, glm::vec3(-((float)_grid_size_), 0.0f, -((float)_grid_size_)));
     mod_position = glm::scale(mod_position, glm::vec3((float)(_grid_size_ * 2), _height_scale_, (float)(_grid_size_ * 2)));
     return mod_position;
@@ -176,8 +175,9 @@ glm::mat4 Terrain::getPositionTransform()
 
 void Terrain::scaleGridHeight()
 {
+    glm::mat4 transform = getPositionTransform();
     for (std::size_t i = 0; i < grid_->size(); i++)
     {
-        grid_->at(i) *= _height_scale_;
+        grid_->at(i) = glm::vec3(transform * glm::vec4(grid_->at(i), 1.0f));
     }
 }

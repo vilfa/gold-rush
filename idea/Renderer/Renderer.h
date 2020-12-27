@@ -27,8 +27,8 @@ public:
 
     void ProcessFramebuffer(GLFWwindow* window, int width, 
         int height);
-    void ProcessMouse(GLFWwindow* window, Camera& camera, double x_pos,
-        double y_pos);
+    void ProcessMouse(Camera& camera, Player& player, GLFWwindow* window,
+        double x_pos, double y_pos);
     void ProcessKeyboard(Camera& camera, Player& player, GameWorld& world);
 
 private:

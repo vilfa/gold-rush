@@ -14,7 +14,9 @@ class Camera
 {
 public:
 	const float _aspect_ratio_;
+	float player_radius_;
 	glm::vec3 player_offset_;
+	glm::vec3 player_position_;
 	glm::vec3 world_up_;
 	glm::vec3 position_;
 	glm::vec3 front_;
@@ -50,15 +52,15 @@ public:
 		float frustum_near = _FRUSTUM_NEAR_, 
 		float frustum_far = _FRUSTUM_FAR_);
 
+
+	void SetPlayerPosition(glm::vec3 player_pos);
+	void HandleMouse(float x_offset, float y_offset);
+	void FollowPlayer();
+
 	glm::mat4 GetViewMatrix() const;
 	glm::mat3 GetViewMatrix3() const;
 	glm::mat4 GetProjectionMatrix() const;
 	glm::mat4 GetProjectionViewMatrix() const;
-	void HandleKeyboard(MOVDIRenum direction, MOVSPDenum speed, 
-		float delta_time);
-	void HandleMouse(float x_offset, float y_offset, 
-		GLboolean constrain_pitch = true);
-	void FollowPlayer(glm::vec3 player_position);
 
 private:
 	static const glm::vec3 _DEFAULT_PLAYER_OFFSET_;

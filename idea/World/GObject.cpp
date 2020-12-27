@@ -19,6 +19,16 @@ void GObject::Draw(Shader& shader, glm::vec3 position)
     model_.Draw(shader);
 }
 
+void GObject::Draw(Shader& shader, glm::vec3 position, float yaw)
+{
+    glm::mat4 model(1.0f);
+    model = glm::translate(model, position);
+    model = glm::rotate(model, glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+    shader.Use();
+    shader.SetMat4("model", model);
+    model_.Draw(shader);
+}
+
 void GObject::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instance_mod_mats)
 {
     model_.DrawInstanced(shader, instance_mod_mats);

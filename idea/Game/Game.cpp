@@ -13,7 +13,8 @@ Game::Game(Window& window) :
     glm::vec3 player_start_pos = _DEFAULT_PLAYER_POSITION_;
     player_start_pos.y = game_world_.GetGridHeight(player_start_pos);
     player_.position_ = player_start_pos;
-    camera_.FollowPlayer(player_start_pos);
+    camera_.SetPlayerPosition(player_start_pos);
+    camera_.FollowPlayer();
 }
 
 void Game::Start()
@@ -34,5 +35,5 @@ void Game::HandleFramebuffer(GLFWwindow* window, int width,
 void Game::HandleMouse(GLFWwindow* window, double x_pos,
     double y_pos)
 {
-    renderer_.ProcessMouse(window, camera_, x_pos, y_pos);
+    renderer_.ProcessMouse(camera_, player_, window, x_pos, y_pos);
 }

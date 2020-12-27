@@ -18,7 +18,7 @@ public:
 
     Entity(TerrainElement& terr_el, glm::mat4& world_transform);
 
-    void Draw(glm::vec3 position);
+    void Draw(glm::vec3 position, float yaw);
 
     AABB GetBoundingBox();
     bool Collides(Entity oth_ent);

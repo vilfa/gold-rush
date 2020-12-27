@@ -53,20 +53,20 @@ float GameWorld::GetGridHeight(glm::vec3 player_pos)
 {
     int grid_half, i, j, add_i, add_j;
     grid_half = _grid_size_ / 2;
-    add_i = (int)(std::round(player_pos.z / 2));
-    add_j = (int)(std::round(player_pos.x / 2));
+    add_i = std::round(player_pos.z + _grid_size_) / 2;
+    add_j = std::round(player_pos.x + _grid_size_) / 2;
 
     // Make sure we don't get a IndexOutOfBounds if we are 
     // outside the area of the map.
-    if (add_i > 0 && add_i > grid_half) add_i = grid_half;
-    if (add_i < 0 && add_i < -grid_half) add_i = -grid_half;
-    if (add_j > 0 && add_j > grid_half) add_j = grid_half;
-    if (add_j < 0 && add_j < -grid_half) add_j = -grid_half;
+    if (add_i > 0 && add_i > _grid_size_) add_i = _grid_size_;
+    if (add_i < 0) add_i = 0;
+    if (add_j > 0 && add_j > _grid_size_) add_j = _grid_size_;
+    if (add_j < 0) add_j = 0;
 
-    i = grid_half + add_i;
-    j = grid_half + add_j;
+    //i = grid_half + add_i;
+    //j = grid_half + add_j;
 
-    return (grid_->at(i * _grid_size_ + j)).y;
+    return (grid_->at(add_i * _grid_size_ + add_j)).y;
 }
 
 void GameWorld::createGameEntities()

@@ -2,14 +2,14 @@
 
 const float Camera::_FRUSTUM_NEAR_ = 0.1f;
 const float Camera::_FRUSTUM_FAR_ = 100.0f;
-const float Camera::_YAW_ = -90.0f;
-const float Camera::_PITCH_ = -30.0f;
+const float Camera::_YAW_ = 0.0f;
+const float Camera::_PITCH_ = 0.0f;
 const float Camera::_SPEED_ = 3.5f;
 const float Camera::_SPEED_FAST_ = 7.0f;
 const float Camera::_SENSITIVITY_ = 0.08f;
-const float Camera::_FOV_ = 45.0f;
+const float Camera::_FOV_ = 50.0f;
 const float Camera::_ASPECT_RATIO_ = 16.0f / 9.0f;
-const glm::vec3 Camera::_DEFAULT_PLAYER_OFFSET_ = glm::vec3(0.0f, 2.0f, 2.0f);
+const glm::vec3 Camera::_DEFAULT_PLAYER_OFFSET_ = glm::vec3(0.0f, 2.0f, 3.0f);
 
 Camera::Camera(glm::vec3 position,
 	glm::vec3 follow_player_offset,
@@ -20,7 +20,9 @@ Camera::Camera(glm::vec3 position,
 	float yaw,
 	float pitch) :
 	position_(position),
+	player_position_(glm::vec3(0.0f, 0.0f, 0.0f)),
 	player_offset_(follow_player_offset),
+	player_radius_(3.0f),
 	world_up_(up),
 	_aspect_ratio_(aspect_ratio),
 	frustum_near_(frustum_near),
@@ -33,6 +35,7 @@ Camera::Camera(glm::vec3 position,
 	mouse_sensitivity_(Camera::_SENSITIVITY_),
 	fov_(Camera::_FOV_)
 {
+	position_ += follow_player_offset;
 	updateCameraVectors();
 }
 
@@ -63,14 +66,21 @@ Camera::Camera(float pos_x,
 	updateCameraVectors();
 }
 
+void Camera::SetPlayerPosition(glm::vec3 player_pos)
+{
+	player_position_ = player_pos;
+}
+
 glm::mat4 Camera::GetViewMatrix() const
 {
-	return glm::lookAt(position_, position_ + front_, up_);
+	glm::vec3 up_off(0.0f, 1.5f, 0.0f);
+	return glm::lookAt(position_, player_position_ + up_off, up_);
 }
 
 glm::mat3 Camera::GetViewMatrix3() const
 {
-	return glm::mat3(glm::lookAt(position_, position_ + front_, up_));
+	glm::vec3 up_off(0.0f, 1.5f, 0.0f);
+	return glm::mat3(glm::lookAt(position_, player_position_ + up_off, up_));
 }
 
 glm::mat4 Camera::GetProjectionMatrix() const
@@ -88,66 +98,39 @@ glm::mat4 Camera::GetProjectionViewMatrix() const
 	return GetProjectionMatrix() * GetViewMatrix();
 }
 
-void Camera::HandleKeyboard(MOVDIRenum direction, MOVSPDenum speed,
-	float delta_time)
-{
-	float velocity = (speed == MOVSPDenum::NORMAL) ? 
-		movement_speed_ * delta_time : movement_speed_fast_ * delta_time;
-
-	if (direction == MOVDIRenum::FORWARD)
-	{
-		position_ += front_ * velocity;
-	}
-	if (direction == MOVDIRenum::BACKWARD)
-	{
-		position_ -= front_ * velocity;
-	}
-	if (direction == MOVDIRenum::LEFT)
-	{
-		position_ -= right_ * velocity;
-	}
-	if (direction == MOVDIRenum::RIGHT)
-	{
-		position_ += right_ * velocity;
-	}
-}
-
-void Camera::HandleMouse(float x_offset, float y_offset, 
-	GLboolean constrain_pitch)
+void Camera::HandleMouse(float x_offset, float y_offset)
 {
 	x_offset *= mouse_sensitivity_;
 	y_offset *= mouse_sensitivity_;
 
-	yaw_ += x_offset;
-	pitch_ += y_offset;
+	yaw_ -= x_offset;
+	//pitch_ += y_offset;
 
-	if (constrain_pitch)
+	if (pitch_ > 89.0f)
 	{
-		if (pitch_ > 89.0f)
-		{
-			pitch_ = 89.0f;
-		}
-		if (pitch_ < -89.0f)
-		{
-			pitch_ = -89.0f;
-		}
+		pitch_ = 89.0f;
+	}
+	if (pitch_ < -89.0f)
+	{
+		pitch_ = -89.0f;
 	}
 
 	updateCameraVectors();
 }
 
-void Camera::FollowPlayer(glm::vec3 player_position)
+void Camera::FollowPlayer()
 {
-	position_ = player_position + player_offset_;
+	player_offset_.x = sin(glm::radians(yaw_)) * player_radius_;
+	player_offset_.y = 2.0f;
+	player_offset_.z = cos(glm::radians(yaw_)) * player_radius_;
+
+	position_ = player_position_ + player_offset_;
 }
 
 void Camera::updateCameraVectors()
 {
-	glm::vec3 front;
-	front.x = cos(glm::radians(yaw_)) * cos(glm::radians(pitch_));
-	front.y = sin(glm::radians(pitch_));
-	front.z = sin(glm::radians(yaw_)) * cos(glm::radians(pitch_));
-
+	glm::vec3 front = player_position_ - position_;
+	front.y = 0.0f;
 	/*
 	* Recalculate the up and right vector.
 	* Normalize all the vectors because their length gets closer to 0
