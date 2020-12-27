@@ -174,7 +174,7 @@
     <ClInclude Include="Game\Entity.h" />
     <ClInclude Include="Types\AABB.h" />
     <ClInclude Include="World\TerrainElement.h" />
-    <ClInclude Include="Types\ECamera.h" />
+    <ClInclude Include="Types\EMovement.h" />
     <ClInclude Include="Types\EShader.h" />
     <ClInclude Include="Types\ESkybox.h" />
     <ClInclude Include="Types\ETexture.h" />
@@ -198,7 +198,6 @@
     <ClInclude Include="Application\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="Resources\Shaders\.old\asteroid.frag" />
     <None Include="Resources\Shaders\.old\asteroid.vert" />
     <None Include="Resources\Shaders\.old\backpack_reflective_shader.frag" />
@@ -270,8 +269,10 @@
     <None Include="Resources\Shaders\green.frag" />
     <None Include="Resources\Shaders\instanced_quads.frag" />
     <None Include="Resources\Shaders\instanced_quads.vert" />
-    <None Include="Resources\Shaders\Model\lowPolyTerrainElement.frag" />
-    <None Include="Resources\Shaders\Model\lowPolyTerrainElement.vert" />
+    <None Include="Resources\Shaders\Model\lowPolyModel.frag" />
+    <None Include="Resources\Shaders\Model\lowPolyModel.vert" />
+    <None Include="Resources\Shaders\Model\lowPolyPlayer.frag" />
+    <None Include="Resources\Shaders\Model\lowPolyPlayer.vert" />
     <None Include="Resources\Shaders\model_loading.frag" />
     <None Include="Resources\Shaders\model_loading.vert" />
     <None Include="Resources\Shaders\red.frag" />

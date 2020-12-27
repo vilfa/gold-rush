@@ -3,14 +3,16 @@
 const float Camera::_FRUSTUM_NEAR_ = 0.1f;
 const float Camera::_FRUSTUM_FAR_ = 100.0f;
 const float Camera::_YAW_ = -90.0f;
-const float Camera::_PITCH_ = 0.0f;
+const float Camera::_PITCH_ = -30.0f;
 const float Camera::_SPEED_ = 3.5f;
 const float Camera::_SPEED_FAST_ = 7.0f;
 const float Camera::_SENSITIVITY_ = 0.08f;
 const float Camera::_FOV_ = 45.0f;
 const float Camera::_ASPECT_RATIO_ = 16.0f / 9.0f;
+const glm::vec3 Camera::_DEFAULT_PLAYER_OFFSET_ = glm::vec3(0.0f, 2.0f, 2.0f);
 
 Camera::Camera(glm::vec3 position,
+	glm::vec3 follow_player_offset,
 	float aspect_ratio,
 	glm::vec3 up,
 	float frustum_near,
@@ -18,6 +20,7 @@ Camera::Camera(glm::vec3 position,
 	float yaw,
 	float pitch) :
 	position_(position),
+	player_offset_(follow_player_offset),
 	world_up_(up),
 	_aspect_ratio_(aspect_ratio),
 	frustum_near_(frustum_near),
@@ -85,30 +88,31 @@ glm::mat4 Camera::GetProjectionViewMatrix() const
 	return GetProjectionMatrix() * GetViewMatrix();
 }
 
-void Camera::ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed,
+void Camera::HandleKeyboard(MOVDIRenum direction, MOVSPDenum speed,
 	float delta_time)
 {
-	float velocity = (speed == CAMSPDenum::NORMAL) ? 
+	float velocity = (speed == MOVSPDenum::NORMAL) ? 
 		movement_speed_ * delta_time : movement_speed_fast_ * delta_time;
-	if (direction == CAMMOVenum::FORWARD)
+
+	if (direction == MOVDIRenum::FORWARD)
 	{
 		position_ += front_ * velocity;
 	}
-	if (direction == CAMMOVenum::BACKWARD)
+	if (direction == MOVDIRenum::BACKWARD)
 	{
 		position_ -= front_ * velocity;
 	}
-	if (direction == CAMMOVenum::LEFT)
+	if (direction == MOVDIRenum::LEFT)
 	{
 		position_ -= right_ * velocity;
 	}
-	if (direction == CAMMOVenum::RIGHT)
+	if (direction == MOVDIRenum::RIGHT)
 	{
 		position_ += right_ * velocity;
 	}
 }
 
-void Camera::ProcessMouseMovement(float x_offset, float y_offset, 
+void Camera::HandleMouse(float x_offset, float y_offset, 
 	GLboolean constrain_pitch)
 {
 	x_offset *= mouse_sensitivity_;
@@ -132,22 +136,11 @@ void Camera::ProcessMouseMovement(float x_offset, float y_offset,
 	updateCameraVectors();
 }
 
-void Camera::ProcessMouseScroll(float y_offset)
+void Camera::FollowPlayer(glm::vec3 player_position)
 {
-	fov_ -= y_offset;
-	if (fov_ < 1.0f)
-	{
-		fov_ = 1.0f;
-	}
-	if (fov_ > 60.0f)
-	{
-		fov_ = 60.0f;
-	}
+	position_ = player_position + player_offset_;
 }
 
-/*
-* Updates front, up and right camera vectors
-*/
 void Camera::updateCameraVectors()
 {
 	glm::vec3 front;

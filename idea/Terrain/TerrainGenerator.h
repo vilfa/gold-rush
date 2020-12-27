@@ -20,6 +20,8 @@ class TerrainGenerator
 public:
     TerrainGenerator(const uint32_t _grid_size = 256);
 
+    std::shared_ptr<std::vector<glm::vec3>> GetGrid();
+
     std::vector<glm::vec3>& GetPositions();
     std::vector<glm::vec3>& GetNormals();
     std::vector<glm::vec3>& GetColors();
@@ -32,7 +34,7 @@ public:
 private:
     const uint32_t _grid_size_;
     std::shared_ptr<float[]> height_map_;
-    std::vector<glm::vec3> grid_;
+    std::shared_ptr<std::vector<glm::vec3>> grid_;
 
     std::vector<glm::vec3> positions_;
     std::vector<glm::vec3> normals_;

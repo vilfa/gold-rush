@@ -16,6 +16,7 @@ public:
     TerrainElement(Model model, Shader shader);
 
     void Draw();
+    void Draw(glm::vec3 position);
     void DrawInstanced(std::vector<glm::mat4>& instance_mod_mats);
     void DrawInstanced(std::shared_ptr<std::vector<glm::mat4>> instance_mod_mats);
 

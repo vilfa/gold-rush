@@ -11,6 +11,14 @@ void GObject::Draw(Shader& shader)
     model_.Draw(shader);
 }
 
+void GObject::Draw(Shader& shader, glm::vec3 position)
+{
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
+    shader.Use();
+    shader.SetMat4("model", model);
+    model_.Draw(shader);
+}
+
 void GObject::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instance_mod_mats)
 {
     model_.DrawInstanced(shader, instance_mod_mats);

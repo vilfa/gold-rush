@@ -1,12 +1,15 @@
 #include "Terrain.h"
 
-Terrain::Terrain(const uint32_t _grid_size) :
-    _grid_size_(_grid_size)
+Terrain::Terrain(const uint32_t _grid_size, const float _height_scale) :
+    _grid_size_(_grid_size),
+    _height_scale_(_height_scale)
 {
     TerrainGenerator tg(_grid_size_);
+    grid_ = tg.GetGrid();
     setupVertices(tg.GetPositions(), tg.GetNormals(), tg.GetColors());
     setupVegetation(tg.GetTrees(), tg.GetBushes(), tg.GetRocks(), tg.GetGrass());
     setupTerrain();
+    scaleGridHeight();
 }
 
 void Terrain::Draw(Shader& shader)
@@ -17,6 +20,11 @@ void Terrain::Draw(Shader& shader)
     glBindVertexArray(vao_);
     glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vertices_.size());
     glBindVertexArray(0);
+}
+
+std::shared_ptr<std::vector<glm::vec3>> Terrain::GetGrid()
+{
+    return grid_;
 }
 
 float Terrain::GetHalfDimension()
@@ -162,6 +170,14 @@ glm::mat4 Terrain::getPositionTransform()
     glm::mat4 mod_position = glm::mat4(1.0f);
     //mod_position = glm::rotate(mod_position, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     mod_position = glm::translate(mod_position, glm::vec3(-((float)_grid_size_), 0.0f, -((float)_grid_size_)));
-    mod_position = glm::scale(mod_position, glm::vec3((float)(_grid_size_ * 2), 10.0f, (float)(_grid_size_ * 2)));
+    mod_position = glm::scale(mod_position, glm::vec3((float)(_grid_size_ * 2), _height_scale_, (float)(_grid_size_ * 2)));
     return mod_position;
+}
+
+void Terrain::scaleGridHeight()
+{
+    for (std::size_t i = 0; i < grid_->size(); i++)
+    {
+        grid_->at(i) *= _height_scale_;
+    }
 }

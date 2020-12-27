@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <iostream>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -8,12 +8,13 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Application/Window.h"
-#include "Types/ECamera.h"
+#include "Types/EMovement.h"
 
 class Camera
 {
 public:
 	const float _aspect_ratio_;
+	glm::vec3 player_offset_;
 	glm::vec3 world_up_;
 	glm::vec3 position_;
 	glm::vec3 front_;
@@ -29,6 +30,7 @@ public:
 	float fov_;
 
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
+		glm::vec3 follow_player_offset = _DEFAULT_PLAYER_OFFSET_,
 		float aspect_ratio = _ASPECT_RATIO_,
 		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
 		float frustum_near = _FRUSTUM_NEAR_, 
@@ -52,13 +54,14 @@ public:
 	glm::mat3 GetViewMatrix3() const;
 	glm::mat4 GetProjectionMatrix() const;
 	glm::mat4 GetProjectionViewMatrix() const;
-	void ProcessKeyboard(CAMMOVenum direction, CAMSPDenum speed, 
+	void HandleKeyboard(MOVDIRenum direction, MOVSPDenum speed, 
 		float delta_time);
-	void ProcessMouseMovement(float x_offset, float y_offset, 
+	void HandleMouse(float x_offset, float y_offset, 
 		GLboolean constrain_pitch = true);
-	void ProcessMouseScroll(float y_offset);
+	void FollowPlayer(glm::vec3 player_position);
 
 private:
+	static const glm::vec3 _DEFAULT_PLAYER_OFFSET_;
 	static const float _FRUSTUM_NEAR_;
 	static const float _FRUSTUM_FAR_;
 	static const float _YAW_;

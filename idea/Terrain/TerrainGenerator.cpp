@@ -10,6 +10,11 @@ TerrainGenerator::TerrainGenerator(const uint32_t _grid_size) :
     generateVegetationPositions();
 }
 
+std::shared_ptr<std::vector<glm::vec3>> TerrainGenerator::GetGrid()
+{
+    return grid_;
+}
+
 std::vector<glm::vec3>& TerrainGenerator::GetPositions()
 {
     return positions_;
@@ -52,6 +57,7 @@ void TerrainGenerator::generateHeightMap()
 
 void TerrainGenerator::generateGrid()
 {
+    std::vector<glm::vec3> grid;
     for (std::size_t i = 0; i < _grid_size_; i++)
     {
         for (std::size_t j = 0; j < _grid_size_; j++)
@@ -59,9 +65,11 @@ void TerrainGenerator::generateGrid()
             float x = (float)i / (float)_grid_size_;
             float y = height_map_[i * _grid_size_ + j];
             float z = (float)j / (float)_grid_size_;
-            grid_.push_back(glm::vec3(x, y, z));
+            grid.push_back(glm::vec3(x, y, z));
         }
     }
+
+    grid_ = std::make_shared<std::vector<glm::vec3>>(grid);
 }
 
 void TerrainGenerator::generateVertexPositions()
@@ -84,10 +92,10 @@ void TerrainGenerator::generateVertexPositions()
             // The indices of each triangle need to be in CCW order, since we've 
             // set GL_CCW as front face, and OpenGL will cull back faces.
             glm::vec3 v0, v1, v2, v3;
-            v0 = grid_.at(q0);
-            v1 = grid_.at(q1);
-            v2 = grid_.at(q2);
-            v3 = grid_.at(q3);
+            v0 = grid_->at(q0);
+            v1 = grid_->at(q1);
+            v2 = grid_->at(q2);
+            v3 = grid_->at(q3);
 
             glm::vec3 n1, n2;
             n1 = calculateTriangleNormal(v0, v1, v2);
@@ -139,8 +147,8 @@ void TerrainGenerator::generateVegetationPositions()
     std::vector<glm::vec3> sample;
 
     std::sample(
-        grid_.begin(), 
-        grid_.end(), 
+        grid_->begin(), 
+        grid_->end(), 
         std::back_inserter(sample),
         _grid_size_ * 35,
         rnd_eng

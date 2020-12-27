@@ -1,6 +1,6 @@
 #pragma once
 
-enum class CAMMOVenum
+enum class MOVDIRenum
 {
 	FORWARD,
 	BACKWARD,
@@ -8,7 +8,7 @@ enum class CAMMOVenum
 	RIGHT
 };
 
-enum class CAMSPDenum
+enum class MOVSPDenum
 {
 	NORMAL,
 	FAST

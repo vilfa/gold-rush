@@ -14,6 +14,11 @@ void TerrainElement::Draw()
     GObject::Draw(shader_);
 }
 
+void TerrainElement::Draw(glm::vec3 position)
+{
+    GObject::Draw(shader_, position);
+}
+
 void TerrainElement::DrawInstanced(std::vector<glm::mat4>& instance_mod_mats)
 {
     GObject::DrawInstanced(shader_, instance_mod_mats);

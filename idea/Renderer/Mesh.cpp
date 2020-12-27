@@ -82,11 +82,11 @@ void Mesh::Draw(Shader& shader)
 
     if (embedded_)
     {
-        setupTextures(shader);
+        setupTexturesEmbedded(shader);
     }
     else
     {
-        setupTexturesEmbedded(shader);
+        setupTextures(shader);
     }
 
     glBindVertexArray(vao_);

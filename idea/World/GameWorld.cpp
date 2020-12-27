@@ -7,7 +7,7 @@ GameWorld::GameWorld(glm::vec3 sun_position, uint32_t grid_size_) :
     quad_tree_(AABB(glm::vec3(0.0f), (float)grid_size_)),
     shader_terrain_(Shader("Resources/Shaders/Terrain/lowPolyTerrain.vert", "Resources/Shaders/Terrain/lowPolyTerrain.frag")),
     shader_skybox_(Shader("Resources/Shaders/Skybox/fantasySkybox.vert", "Resources/Shaders/Skybox/fantasySkybox.frag")),
-    shader_entity_(Shader("Resources/Shaders/Model/lowPolyTerrainElement.vert", "Resources/Shaders/Model/lowPolyTerrainElement.frag")),
+    shader_entity_(Shader("Resources/Shaders/Model/lowPolyModel.vert", "Resources/Shaders/Model/lowPolyModel.frag")),
     trrel_tree_1_(Model("Resources/Models/tree_1/tree_1.obj", true), shader_entity_),
     trrel_tree_2_(Model("Resources/Models/tree_2/tree_2.obj", true), shader_entity_),
     trrel_tree_3_(Model("Resources/Models/tree_3/tree_3.obj", true), shader_entity_),
@@ -16,6 +16,7 @@ GameWorld::GameWorld(glm::vec3 sun_position, uint32_t grid_size_) :
     trrel_grass_(Model("Resources/Models/grass_bud/grass_bud.obj", true), shader_entity_),
     sun_position_(sun_position)
 {
+    grid_ = terrain_.GetGrid();
     setupModelMatsAll();
     createGameEntities();
     createQuadTree();
@@ -46,6 +47,26 @@ glm::vec3& GameWorld::GetSunPosition()
 void GameWorld::SetSunPosition(glm::vec3 new_sun_pos)
 {
     sun_position_ = new_sun_pos;
+}
+
+float GameWorld::GetGridHeight(glm::vec3 player_pos)
+{
+    int grid_half, i, j, add_i, add_j;
+    grid_half = _grid_size_ / 2;
+    add_i = (int)(std::round(player_pos.z / 2));
+    add_j = (int)(std::round(player_pos.x / 2));
+
+    // Make sure we don't get a IndexOutOfBounds if we are 
+    // outside the area of the map.
+    if (add_i > 0 && add_i > grid_half) add_i = grid_half;
+    if (add_i < 0 && add_i < -grid_half) add_i = -grid_half;
+    if (add_j > 0 && add_j > grid_half) add_j = grid_half;
+    if (add_j < 0 && add_j < -grid_half) add_j = -grid_half;
+
+    i = grid_half + add_i;
+    j = grid_half + add_j;
+
+    return (grid_->at(i * _grid_size_ + j)).y;
 }
 
 void GameWorld::createGameEntities()

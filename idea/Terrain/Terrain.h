@@ -31,9 +31,11 @@ public:
 
     std::vector<Terrain::Vertex> vertices_;
 
-    Terrain(const uint32_t _grid_size = 256);
+    Terrain(const uint32_t _grid_size = 256, const float _height_scale = 10.0f);
 
     void Draw(Shader& shader);
+
+    std::shared_ptr<std::vector<glm::vec3>> GetGrid();
     float GetHalfDimension();
 
     std::shared_ptr<std::vector<glm::mat4>> GetTree1ModelMats();
@@ -45,6 +47,9 @@ public:
 
 private:
     const uint32_t _grid_size_;
+    const float _height_scale_;
+    std::shared_ptr<std::vector<glm::vec3>> grid_;
+
     uint32_t vao_, vbo_;
 
     std::shared_ptr<std::vector<glm::mat4>> tree_1_model_mats_;
@@ -60,4 +65,5 @@ private:
         std::vector<glm::vec3>& rocks, std::vector<glm::vec3>& grass);
     void setupTerrain();
     glm::mat4 getPositionTransform();
+    void scaleGridHeight();
 };
