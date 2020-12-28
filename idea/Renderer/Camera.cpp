@@ -131,11 +131,11 @@ void Camera::updateCameraVectors()
 {
 	glm::vec3 front = player_position_ - position_;
 	front.y = 0.0f;
-	/*
-	* Recalculate the up and right vector.
-	* Normalize all the vectors because their length gets closer to 0
-	* the more you look up or down which results in slower movement.
-	*/
+	
+	// Recalculate the up and right vector.
+	// Normalize all the vectors because their length gets closer to 0
+	// the more you look up or down which results in slower movement.
+	//
 	front_ = glm::normalize(front);
 	right_ = glm::normalize(glm::cross(front_, world_up_));
 	up_ = glm::normalize(glm::cross(right_, front_));

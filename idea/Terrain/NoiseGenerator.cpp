@@ -59,18 +59,22 @@ std::shared_ptr<float[]> NoiseGenerator::generateSeed(const int _width, const in
 
 double NoiseGenerator::fade(const double& _t)
 {
+    // THIS IS UNUSED.
     // The equation proposed by Ken Perlin to replace the smoothstep function in 2002.
     // The equation is the following: 6 * t ** 5 - 15 * t ** 4 + 10 * t ** 3
+    //
     return 6 * pow(_t, 5) - 15 * pow(_t, 4) + 10 * pow(_t, 3);
 }
 
 double NoiseGenerator::lerp(const double& _lo, const double& _hi,
     const double& _t)
 {
+    // THIS IS UNUSED.
     // Linear interpolate but there is a difference from the ordinary linear interpolation funciton.
     // The normal equation is: t * p1 + (1 - t) * p2, but here we need a value that is between the low and high value,
     // so we can get a smooth transition, hence the equation adds t * the diffenece to the min.
     // So we get at minimum lo when t = 0 and at maximum hi when t = 1.
+    //
     return _lo + _t * (_hi - _lo);
 }
 

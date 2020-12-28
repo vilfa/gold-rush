@@ -6,7 +6,7 @@
 #include "Types/AABB.h"
 #include "Game/Entity.h"
 
-// This is a region quadtree implementation.
+// This is a point region quadtree implementation.
 // Also the Y dimension is being ignored, since the game objects
 // are static objects positioned beforehand at game initialization.
 // Since the player can only move on the terrain level, we only need

@@ -1,8 +1,9 @@
 #include "Entity.h"
 
-Entity::Entity(TerrainElement& terr_el, glm::mat4& world_transform) :
+Entity::Entity(TerrainElement& terr_el, glm::mat4& world_transform, bool is_collectible) :
     terrain_element_(terr_el),
-    world_transform_(world_transform)
+    world_transform_(world_transform),
+    is_collectible_(is_collectible)
 {
     setupBoundingBox();
 }
@@ -27,9 +28,24 @@ bool Entity::Contains(glm::vec3 oth_pos)
     return bounding_box_.Contains(oth_pos);
 }
 
+bool Entity::IsCollectible()
+{
+    return is_collectible_;
+}
+
+glm::mat4& Entity::GetModelMatrix()
+{
+    return world_transform_;
+}
+
 glm::vec3 Entity::GetCenter()
 {
     return bounding_box_.GetCenter();
+}
+
+void Entity::SetCenter(glm::vec3 bbx_center)
+{
+    bounding_box_.center_position = bbx_center;
 }
 
 float Entity::GetXMaxAABB()

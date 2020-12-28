@@ -2,7 +2,7 @@
 
 const float Player::_YAW_ = -90.0f;
 const float Player::_PITCH_ = 0.0f;
-const float Player::_SPEED_ = 3.5f;
+const float Player::_SPEED_ = 5.5f;
 const float Player::_SPEED_FAST_ = 7.0f;
 const float Player::_SENSITIVITY_ = 0.08f;
 
@@ -23,6 +23,11 @@ Player::Player(glm::vec3 starting_position, TerrainElement terrel, glm::mat4 wor
 glm::vec3 Player::GetPosition()
 {
     return position_;
+}
+
+void Player::UpdateBoundingBox()
+{
+	Entity::SetCenter(position_);
 }
 
 void Player::HandleMouse(Camera& camera, float x_offset, float y_offset)

@@ -198,6 +198,12 @@
     <ClInclude Include="Application\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Blender\hazelnut.blend" />
+    <None Include="Resources\Blender\hazelnut.blend1" />
+    <None Include="Resources\Blender\player.blend" />
+    <None Include="Resources\Blender\player.blend1" />
+    <None Include="Resources\Blender\terrain_models.blend" />
+    <None Include="Resources\Blender\terrain_models.blend1" />
     <None Include="Resources\Shaders\.old\asteroid.frag" />
     <None Include="Resources\Shaders\.old\asteroid.vert" />
     <None Include="Resources\Shaders\.old\backpack_reflective_shader.frag" />
@@ -295,6 +301,7 @@
     <None Include="Resources\Shaders\yellow.frag" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Blender\squirrel-reference.jpg" />
     <Image Include="Resources\Skyboxes\City\back.jpg" />
     <Image Include="Resources\Skyboxes\City\bottom.jpg" />
     <Image Include="Resources\Skyboxes\City\front.jpg" />

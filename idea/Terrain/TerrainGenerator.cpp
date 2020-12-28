@@ -50,9 +50,14 @@ std::vector<glm::vec3>& TerrainGenerator::GetGrass()
     return grass_positions_;
 }
 
+std::vector<glm::vec3>& TerrainGenerator::GetHazelnuts()
+{
+    return hazelnut_positions_;
+}
+
 void TerrainGenerator::generateHeightMap()
 {
-    height_map_ = NoiseGenerator::PerlinNoise2D(_grid_size_, _grid_size_, 4);
+    height_map_ = NoiseGenerator::PerlinNoise2D(_grid_size_, _grid_size_, 6);
 }
 
 void TerrainGenerator::generateGrid()
@@ -79,6 +84,7 @@ void TerrainGenerator::generateVertexPositions()
     // a.) there is no need for an index buffer, and
     // b.) each vertex can have its own normal.
     // This does introduce a performance penalty, but I choose to ignore it for now.
+    //
     int q0, q1, q2, q3;
     for (std::size_t x = 0; x < _grid_size_ - 1; x++)
     {
@@ -91,6 +97,7 @@ void TerrainGenerator::generateVertexPositions()
 
             // The indices of each triangle need to be in CCW order, since we've 
             // set GL_CCW as front face, and OpenGL will cull back faces.
+            //
             glm::vec3 v0, v1, v2, v3;
             v0 = grid_->at(q0);
             v1 = grid_->at(q1);
@@ -138,6 +145,7 @@ glm::vec3 TerrainGenerator::calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1,
     // Calculate triangle normal. We want all three normals to be 
     // the same, so we get the low-poly shading effect
     // when calculating lighting.
+    //
     return glm::normalize(glm::cross(t1, t0));
 }
 
@@ -150,7 +158,7 @@ void TerrainGenerator::generateVegetationPositions()
         grid_->begin(), 
         grid_->end(), 
         std::back_inserter(sample),
-        _grid_size_ * 35,
+        _grid_size_ * 38,
         rnd_eng
     );
     std::shuffle(
@@ -160,7 +168,8 @@ void TerrainGenerator::generateVegetationPositions()
     );
 
     // Distribute the vegetation positions with the following ratio:
-    // 40% trees, 15% bushes, 10% rocks, 35% grass buds.
+    // 40% trees, 15% bushes, 10% rocks, 32% grass buds, 3% hazelnuts
+    //
     std::copy(
         sample.begin(), 
         sample.begin() + sample.size() * 0.4, 
@@ -178,7 +187,12 @@ void TerrainGenerator::generateVegetationPositions()
     );
     std::copy(
         sample.begin() + sample.size() * 0.65, 
-        sample.end(), 
+        sample.begin() + sample.size() * 0.97, 
         std::back_inserter(grass_positions_)
+    );
+    std::copy(
+        sample.begin() + sample.size() * 0.97,
+        sample.end(),
+        std::back_inserter(hazelnut_positions_)
     );
 }

@@ -15,8 +15,9 @@ class Entity
 {
 public:
     AABB bounding_box_;
+    bool is_collectible_;
 
-    Entity(TerrainElement& terr_el, glm::mat4& world_transform);
+    Entity(TerrainElement& terr_el, glm::mat4& world_transform, bool is_collectible = false);
 
     void Draw(glm::vec3 position, float yaw);
 
@@ -24,7 +25,10 @@ public:
     bool Collides(Entity oth_ent);
     bool Contains(glm::vec3 oth_pos);
 
+    bool IsCollectible();
+    glm::mat4& GetModelMatrix();
     glm::vec3 GetCenter();
+    void SetCenter(glm::vec3 bbx_center);
     float GetXMaxAABB();
     float GetXMinAABB();
     float GetYMaxAABB();

@@ -246,6 +246,12 @@
     <None Include="Resources\Shaders\Model\lowPolyModel.vert" />
     <None Include="Resources\Shaders\Model\lowPolyPlayer.frag" />
     <None Include="Resources\Shaders\Model\lowPolyPlayer.vert" />
+    <None Include="Resources\Blender\player.blend" />
+    <None Include="Resources\Blender\player.blend1" />
+    <None Include="Resources\Blender\terrain_models.blend" />
+    <None Include="Resources\Blender\terrain_models.blend1" />
+    <None Include="Resources\Blender\hazelnut.blend1" />
+    <None Include="Resources\Blender\hazelnut.blend" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\awesomeface.png">
@@ -354,6 +360,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\Skyboxes\Space\top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Blender\squirrel-reference.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

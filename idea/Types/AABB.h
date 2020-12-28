@@ -52,15 +52,15 @@ inline AABB::AABB(glm::vec3 center_pos, float half_x,
 
 inline bool AABB::Contains(glm::vec3 oth_pos)
 {
-	return ((oth_pos.x >= XMin() && oth_pos.x <= XMax()) &&
-		(oth_pos.z >= ZMin() && oth_pos.z <= ZMax()));
+	return (oth_pos.x >= XMin() && oth_pos.x <= XMax() &&
+		oth_pos.z >= ZMin() && oth_pos.z <= ZMax());
 		//&& (oth_pos.y >= YMin() && oth_pos.y <= YMax()));
 }
 
 inline bool AABB::Collides(AABB oth_bbx)
 {
-	return ((oth_bbx.XMin() >= XMin() && oth_bbx.XMax() <= XMax()) &&
-		(oth_bbx.ZMin() >= ZMin() && oth_bbx.ZMax() <= ZMax()));
+	return ((XMax() >= oth_bbx.XMin() || XMin() <= oth_bbx.XMax()) &&
+		(ZMax() >= oth_bbx.ZMin() || ZMin() <= oth_bbx.ZMax()));
 		//&& (oth_bbx.YMin() >= YMin() && oth_bbx.YMax() <= YMax()));
 }
 

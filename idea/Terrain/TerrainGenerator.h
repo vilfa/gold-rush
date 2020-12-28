@@ -30,6 +30,7 @@ public:
     std::vector<glm::vec3>& GetBushes();
     std::vector<glm::vec3>& GetRocks();
     std::vector<glm::vec3>& GetGrass();
+    std::vector<glm::vec3>& GetHazelnuts();
 
 private:
     const uint32_t _grid_size_;
@@ -44,6 +45,7 @@ private:
     std::vector<glm::vec3> bush_positions_;
     std::vector<glm::vec3> rock_positions_;
     std::vector<glm::vec3> grass_positions_;
+    std::vector<glm::vec3> hazelnut_positions_;
 
     void generateHeightMap();
     void generateGrid();

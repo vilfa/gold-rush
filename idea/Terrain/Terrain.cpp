@@ -8,6 +8,7 @@ Terrain::Terrain(const uint32_t _grid_size, const float _height_scale) :
     grid_ = tg.GetGrid();
     setupVertices(tg.GetPositions(), tg.GetNormals(), tg.GetColors());
     setupVegetation(tg.GetTrees(), tg.GetBushes(), tg.GetRocks(), tg.GetGrass());
+    setupCollectibles(tg.GetHazelnuts());
     setupTerrain();
     scaleGridHeight();
 }
@@ -62,6 +63,11 @@ std::shared_ptr<std::vector<glm::mat4>> Terrain::GetGrassModelMats()
     return grass_model_mats_;
 }
 
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetHazelnutMats()
+{
+    return hazelnut_model_mats_;
+}
+
 void Terrain::setupVertices(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
     std::vector<glm::vec3>& colors)
 {
@@ -87,15 +93,18 @@ void Terrain::setupVegetation(std::vector<glm::vec3>& trees, std::vector<glm::ve
     for (std::size_t i = 0; i < trees.size(); i++)
     {
         trees.at(i) = glm::vec3(mod_transform * glm::vec4(trees.at(i), 1.0f));
-        if (i < trees.size() / 5) // 1/5 of the trees (most costly to draw)
+        
+        // 1/5 of tree 1 (most costly to draw) and 2/5 of each tree 2 and 3.
+        //
+        if (i < trees.size() / 5)
         {
             tree_1_mod_mats.push_back(glm::translate(glm::mat4(1.0f), trees.at(i)));
         }
-        else if (i < (trees.size() / 5) * 3) // 2/5 of the trees
+        else if (i < (trees.size() / 5) * 3)
         {
             tree_2_mod_mats.push_back(glm::translate(glm::mat4(1.0f), trees.at(i)));
         }
-        else if (i < trees.size()) // 2/5 of the trees
+        else if (i < trees.size())
         {
             tree_3_mod_mats.push_back(glm::translate(glm::mat4(1.0f), trees.at(i)));
         }
@@ -122,6 +131,20 @@ void Terrain::setupVegetation(std::vector<glm::vec3>& trees, std::vector<glm::ve
     bush_model_mats_ = std::make_shared<std::vector<glm::mat4>>(bush_mod_mats);
     rock_model_mats_ = std::make_shared<std::vector<glm::mat4>>(rock_mod_mats);
     grass_model_mats_ = std::make_shared<std::vector<glm::mat4>>(grass_mod_mats);
+}
+
+void Terrain::setupCollectibles(std::vector<glm::vec3>& hazelnuts)
+{
+    std::vector<glm::mat4> hz_mats;
+    glm::mat4 mod_transform = getPositionTransform();
+
+    for (std::size_t i = 0; i < hazelnuts.size(); i++)
+    {
+        hazelnuts.at(i) = glm::vec3(mod_transform * glm::vec4(hazelnuts.at(i), 1.0f));
+        hz_mats.push_back(glm::translate(glm::mat4(1.0f), hazelnuts.at(i)));
+    }
+
+    hazelnut_model_mats_ = std::make_shared<std::vector<glm::mat4>>(hz_mats);
 }
 
 void Terrain::setupTerrain()

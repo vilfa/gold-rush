@@ -56,9 +56,8 @@ uint32_t Mesh::LoadTextureFromFile(const std::string _path, const std::string _d
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        /*
-        * Set the wrapping and filtering options (on currently bound texture object).
-        */
+        // Set the wrapping and filtering options (on the currently bound texture object).
+        //
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_wrapping);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_wrapping);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmap_filtering_min);
@@ -148,25 +147,23 @@ void Mesh::setupMesh()
 
     glBindVertexArray(vao_);
     
-    /*
-    * VERTICES DATA
-    * The data of a single vertex is contained in a single Vertex struct, thus the size
-    * of the data for all vertices is the sizeof(Vertex) * Vertices.size().
-    * Also: prefer container.data() over &container[0]
-    */
+    
+    // VERTICES DATA
+    // The data of a single vertex is contained in a single Vertex struct, thus the size
+    // of the data for all vertices is the sizeof(Vertex) * Vertices.size().
+    // Also: prefer container.data() over &container[0]
+    //
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Mesh::Vertex) * vertices_.size(), vertices_.data(), GL_STATIC_DRAW);
 
-    /*
-    * INDICES DATA
-    * The indices of vertices in a mesh.
-    */
+    // INDICES DATA
+    // The indices of vertices in a mesh.
+    //
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
 
-    /*
-    * VERTEX ATTRIBUTES
-    */
+    // VERTEX ATTRIBUTES
+    //
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
         0,
@@ -288,16 +285,16 @@ void Mesh::setupTexturesEmbedded(Shader& shader)
             texture_name = _COLOR_AMBIENT_NAME_;
             texture_number = std::to_string(ambient_count++);
         }
-        /*else if (texture_type == TEXTYPEenum::SPECULAR)
-        {
-            texture_name = _COLOR_SPECULAR_NAME_;
-            texture_number = std::to_string(specular_count++);
-        }*/
-        /*else if (texture_type == TEXTYPEenum::EMISSIVE)
-        {
-            texture_name = _COLOR_EMISSIVE_NAME_;
-            texture_number = std::to_string(emissive_count++);
-        }*/
+        //else if (texture_type == TEXTYPEenum::SPECULAR)
+        //{
+        //    texture_name = _COLOR_SPECULAR_NAME_;
+        //    texture_number = std::to_string(specular_count++);
+        //}
+        //else if (texture_type == TEXTYPEenum::EMISSIVE)
+        //{
+        //    texture_name = _COLOR_EMISSIVE_NAME_;
+        //    texture_number = std::to_string(emissive_count++);
+        //}
 
         shader.SetVec4((texture_name + texture_number), textures_.at(i).color);
     }

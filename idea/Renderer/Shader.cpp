@@ -7,11 +7,10 @@ Shader::Shader(const std::string _vertex_path,
 	std::ifstream v_shader_file, f_shader_file;
 	std::stringstream v_shader_stream, f_shader_stream;
 
-	/*
-	* Make sure ifstream objects can throw exceptions.
-	* Specify the state flags for which a failure exception is thrown
-	* (failbit = logical error, badbit = read/writing error).
-	*/
+	// Make sure ifstream objects can throw exceptions.
+	// Specify the state flags for which a failure exception is thrown
+	// (failbit = logical error, badbit = read/writing error).
+	//
 	v_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	f_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
@@ -38,9 +37,8 @@ Shader::Shader(const std::string _vertex_path,
 	const char* v_shader_source = vertex_source.c_str();
 	const char* f_shader_source = fragment_source.c_str();
 
-	/*
-	* Create vertex and fragment shaders.
-	*/
+	// Create vertex and fragment shaders.
+	//
 	uint32_t vertex_shader, fragment_shader;
 
 	vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -53,18 +51,16 @@ Shader::Shader(const std::string _vertex_path,
 	glCompileShader(fragment_shader);
 	CheckCompile(fragment_shader, SHTYPEenum::FRAGMENT);
 
-	/*
-	* Create shader program and link.
-	*/
+	// Create shader program and link.
+	//
 	id_ = glCreateProgram();
 	glAttachShader(id_, vertex_shader);
 	glAttachShader(id_, fragment_shader);
 	glLinkProgram(id_);
 	CheckCompile(id_, SHTYPEenum::PROGRAM);
 
-	/*
-	* Delete shaders because link is successful.
-	*/
+	// Delete shaders because link is successful.
+	//
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 }
@@ -77,11 +73,10 @@ Shader::Shader(const std::string _vertex_path,
 	std::ifstream v_shader_file, g_shader_file, f_shader_file;
 	std::stringstream v_shader_stream, g_shader_stream, f_shader_stream;
 
-	/*
-	* Make sure ifstream objects can throw exceptions.
-	* Specify the state flags for which a failure exception is thrown
-	* (failbit = logical error, badbit = read/writing error).
-	*/
+	// Make sure ifstream objects can throw exceptions.
+	// Specify the state flags for which a failure exception is thrown
+	// (failbit = logical error, badbit = read/writing error).
+	//
 	v_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	g_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	f_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -114,9 +109,8 @@ Shader::Shader(const std::string _vertex_path,
 	const char* g_shader_source = geometry_source.c_str();
 	const char* f_shader_source = fragment_source.c_str();
 
-	/*
-	* Create vertex, geometry and fragment shaders.
-	*/
+	// Create vertex, geometry and fragment shaders.
+	//
 	uint32_t vertex_shader, geometry_shader, fragment_shader;
 
 	vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -134,9 +128,8 @@ Shader::Shader(const std::string _vertex_path,
 	glCompileShader(fragment_shader);
 	CheckCompile(fragment_shader, SHTYPEenum::FRAGMENT);
 
-	/*
-	* Create shader program and link.
-	*/
+	// Create shader program and link.
+	//
 	id_ = glCreateProgram();
 	glAttachShader(id_, vertex_shader);
 	glAttachShader(id_, geometry_shader);
@@ -144,9 +137,8 @@ Shader::Shader(const std::string _vertex_path,
 	glLinkProgram(id_);
 	CheckCompile(id_, SHTYPEenum::PROGRAM);
 
-	/*
-	* Delete shaders because link is successful.
-	*/
+	// Delete shaders because link is successful.
+	//
 	glDeleteShader(vertex_shader);
 	glDeleteShader(geometry_shader);
 	glDeleteShader(fragment_shader);

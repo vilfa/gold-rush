@@ -19,12 +19,14 @@ void Renderer::Render(Camera& camera, Player& player, GameWorld& world)
 	UniformBuffer<glm::vec3> ubo_light(1, 2);
 
 	ProcessMouse(camera, player, window_.GetWindow(), last_x_, last_y_);
+	player.UpdateBoundingBox();
 
 	while (!window_.GetWindowShouldClose())
 	{
 		clearFramebuffers();
 		processFrametime();
 		ProcessKeyboard(camera, player, world);
+		world.RemoveCollectibles(world.quad_tree_.Query(player.GetBoundingBox()));
 		setRenderStats();
 
 		glm::mat4 view = camera.GetViewMatrix();
@@ -64,7 +66,7 @@ void Renderer::ProcessMouse(Camera& camera, Player& player, GLFWwindow* window,
 	}
 
 	float x_offset = (float)x_pos - last_x_;
-	float y_offset = last_y_ - (float)y_pos; // Reversed since y-coordinates range from bottom to top.
+	float y_offset = last_y_ - (float)y_pos;
 	last_x_ = (float)x_pos;
 	last_y_ = (float)y_pos;
 
@@ -81,12 +83,12 @@ void Renderer::ProcessKeyboard(Camera& camera, Player& player, GameWorld& world)
 		window_.SetWindowShouldClose(true);
 	}
 
-	float velocity = player.movement_speed_ * delta_time_;
-
+	float velocity = player.movement_speed_ * (float)delta_time_;
 	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_W) == GLFW_PRESS)
 	{
 		player.position_ += player.front_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
+		player.UpdateBoundingBox();
 		camera.SetPlayerPosition(player.position_);
 		camera.FollowPlayer();
 	}
@@ -94,6 +96,7 @@ void Renderer::ProcessKeyboard(Camera& camera, Player& player, GameWorld& world)
 	{
 		player.position_ -= player.front_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
+		player.UpdateBoundingBox();
 		camera.SetPlayerPosition(player.position_);
 		camera.FollowPlayer();
 	}
@@ -101,6 +104,7 @@ void Renderer::ProcessKeyboard(Camera& camera, Player& player, GameWorld& world)
 	{
 		player.position_ -= player.right_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
+		player.UpdateBoundingBox();
 		camera.SetPlayerPosition(player.position_);
 		camera.FollowPlayer();
 	}
@@ -108,14 +112,10 @@ void Renderer::ProcessKeyboard(Camera& camera, Player& player, GameWorld& world)
 	{
 		player.position_ += player.right_ * velocity;
 		player.position_.y = world.GetGridHeight(player.position_);
+		player.UpdateBoundingBox();
 		camera.SetPlayerPosition(player.position_);
 		camera.FollowPlayer();
 	}
-
-	std::cout << "RENDERER::PROCESS_KEYBOARD::CAMERA_POSITION" << std::endl;
-	std::cout << "(" << camera.position_.x << "," << camera.position_.y << "," << camera.position_.z << ")" << std::endl;
-	std::cout << "RENDERER::PROCESS_KEYBOARD::PLAYER_POSITION" << std::endl;
-	std::cout << "(" << player.position_.x << "," << player.position_.y << "," << player.position_.z << ")" << std::endl;
 }
 
 void Renderer::setupInput(int mode, int value)

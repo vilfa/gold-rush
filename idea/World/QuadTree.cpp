@@ -31,34 +31,19 @@ bool QuadTree::Insert(Entity ent)
         return true;
     }
 
-    if (entities_.size() == _node_capacity_)
+    if (quadrant_1_ == nullptr)
     {
         subdivide();
-
-        for (std::size_t i = 0; i < entities_.size(); i++)
-        {
-            if (quadrant_1_->Insert(entities_.at(i))) continue;
-            if (quadrant_2_->Insert(entities_.at(i))) continue;
-            if (quadrant_3_->Insert(entities_.at(i))) continue;
-            if (quadrant_4_->Insert(entities_.at(i))) continue;
-        }
-        entities_.clear();
-
-        if (quadrant_1_->Insert(ent)) return true;
-        if (quadrant_2_->Insert(ent)) return true;
-        if (quadrant_3_->Insert(ent)) return true;
-        if (quadrant_4_->Insert(ent)) return true;
     }
 
-    if (quadrant_1_ != nullptr)
-    {
-        if (quadrant_1_->Insert(ent)) return true;
-        if (quadrant_2_->Insert(ent)) return true;
-        if (quadrant_3_->Insert(ent)) return true;
-        if (quadrant_4_->Insert(ent)) return true;
-    }
-
-    return false; // Should never happen.
+    if (quadrant_1_->Insert(ent)) return true;
+    if (quadrant_2_->Insert(ent)) return true;
+    if (quadrant_3_->Insert(ent)) return true;
+    if (quadrant_4_->Insert(ent)) return true;
+ 
+    // This should never happen.
+    //
+    return false;
 }
 
 std::vector<Entity> QuadTree::Query(AABB range)
@@ -72,7 +57,8 @@ std::vector<Entity> QuadTree::Query(AABB range)
 
     for (std::size_t i = 0; i < entities_.size(); i++)
     {
-        if (range.Contains(entities_.at(i).bounding_box_.GetCenter()))
+        if (range.Contains(entities_.at(i).bounding_box_.GetCenter()) &&
+            entities_.at(i).IsCollectible())
         {
             matching_ents.push_back(entities_.at(i));
         }
@@ -83,15 +69,15 @@ std::vector<Entity> QuadTree::Query(AABB range)
         return matching_ents;
     }
 
-    std::vector<Entity> match_q1, match_q2, match_q3, match_q4;
-    match_q1 = quadrant_1_->Query(range);
-    match_q2 = quadrant_2_->Query(range);
-    match_q3 = quadrant_3_->Query(range);
-    match_q4 = quadrant_4_->Query(range);
-    matching_ents.insert(matching_ents.end(), match_q1.begin(), match_q1.end());
-    matching_ents.insert(matching_ents.end(), match_q2.begin(), match_q2.end());
-    matching_ents.insert(matching_ents.end(), match_q3.begin(), match_q3.end());
-    matching_ents.insert(matching_ents.end(), match_q4.begin(), match_q4.end());
+    std::vector<Entity> match;
+    match = quadrant_1_->Query(range);
+    matching_ents.insert(matching_ents.end(), match.begin(), match.end());
+    match = quadrant_2_->Query(range);
+    matching_ents.insert(matching_ents.end(), match.begin(), match.end());
+    match = quadrant_3_->Query(range);
+    matching_ents.insert(matching_ents.end(), match.begin(), match.end());
+    match = quadrant_4_->Query(range);
+    matching_ents.insert(matching_ents.end(), match.begin(), match.end());
 
     return matching_ents;
 }
@@ -102,8 +88,8 @@ void QuadTree::subdivide()
     float _z = bounding_box_.center_position.z;
     float _h_dim = bounding_box_.x_half_dim / 2;
 
-    quadrant_1_ = new QuadTree(AABB(glm::vec3(_x + _h_dim, 0.0f, _z + _h_dim), _h_dim));
-    quadrant_2_ = new QuadTree(AABB(glm::vec3(_x - _h_dim, 0.0f, _z + _h_dim), _h_dim));
-    quadrant_3_ = new QuadTree(AABB(glm::vec3(_x - _h_dim, 0.0f, _z - _h_dim), _h_dim));
-    quadrant_4_ = new QuadTree(AABB(glm::vec3(_x + _h_dim, 0.0f, _z - _h_dim), _h_dim));
+    quadrant_1_ = new QuadTree(AABB(glm::vec3(_x + _h_dim, 0.0f, _z - _h_dim), _h_dim));
+    quadrant_2_ = new QuadTree(AABB(glm::vec3(_x - _h_dim, 0.0f, _z - _h_dim), _h_dim));
+    quadrant_3_ = new QuadTree(AABB(glm::vec3(_x - _h_dim, 0.0f, _z + _h_dim), _h_dim));
+    quadrant_4_ = new QuadTree(AABB(glm::vec3(_x + _h_dim, 0.0f, _z + _h_dim), _h_dim));
 }

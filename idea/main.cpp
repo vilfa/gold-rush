@@ -11,7 +11,7 @@ void mouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
 
 const uint32_t _SCR_WIDTH = 1600;
 const uint32_t _SCR_HEIGHT = 900;
-const std::string _WINDOW_NAME = "Idea";
+const std::string _WINDOW_NAME = "Squirrel Gold Rush";
 
 Window WINDOW(_SCR_WIDTH, _SCR_HEIGHT, _WINDOW_NAME, 4, 2, true);
 Game GAME(WINDOW);

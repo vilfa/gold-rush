@@ -10,9 +10,8 @@ Model::Model(const std::string _path,
 	std::cout << "INFO::MODEL::MODEL::BEGIN_LOAD" << std::endl;
 	std::cout << "INFO::MODEL::LOAD_MODEL::ASSIMP_LOG" << std::endl;
 	
-	/*
-	* Create logger and attach it to the default output stream.
-	*/
+	// Create logger and attach it to the default output stream.
+	//
 	Assimp::DefaultLogger::create(NULL, Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
 	
 	loadModel(_path);
@@ -43,7 +42,8 @@ void Model::DrawInstanced(Shader& shader, std::vector<glm::mat4>& instance_mod_m
 		meshes_[i].DrawInstanced(shader, instance_size);
 	}
 
-	// This is important to avoid infinite memory allocation!!!
+	// This is important to avoid infinite memory allocation!
+	//
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDeleteBuffers(1, &mat_vbo_id);
 }
@@ -62,24 +62,23 @@ void Model::DrawInstanced(Shader& shader, std::shared_ptr<std::vector<glm::mat4>
 		meshes_[i].DrawInstanced(shader, instance_size);
 	}
 
-	// This is important to avoid infinite memory allocation!!!
+	// This is important to avoid infinite memory allocation!
+	//
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDeleteBuffers(1, &mat_vbo_id);
 }
 
 void Model::loadModel(const std::string _path)
 {
-	/*
-	* Create the importer.
-	*/
+	// Create the importer.
+	//
 	Assimp::Importer importer;
 
-	/*
-	* Read the file. 
-	* Assimp's interface defines each mesh as having an array of faces, where each face
-	* is represented by a single primitive. The aiProcess_Triangulate flag defines the 
-	* primitives as triangles.
-	*/
+	// Read the file. 
+	// Assimp's interface defines each mesh as having an array of faces, where each face
+	// is represented by a single primitive. The aiProcess_Triangulate flag defines the 
+	// primitives as triangles.
+	//
 	const aiScene* scene = importer.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
 	if (!scene || !scene->mRootNode || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE))
@@ -96,6 +95,7 @@ void Model::loadModel(const std::string _path)
 void Model::processNode(aiNode* node, const aiScene* _scene)
 {
 	// First process all the node's meshes_ (if any)
+	//
 	for (std::size_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = _scene->mMeshes[node->mMeshes[i]];
@@ -103,6 +103,7 @@ void Model::processNode(aiNode* node, const aiScene* _scene)
 	}
 
 	// Then process all of the node's children
+	//
 	for (size_t i = 0; i < node->mNumChildren; i++)
 	{
 		processNode(node->mChildren[i], _scene);
@@ -115,15 +116,15 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 	std::vector<uint32_t> indices;
 	std::vector<Mesh::Texture> textures;
 
-	/*
-	* Process the vertices.
-	* Construct the position, normal and texture vectors.
-	*/
+	// Process the vertices.
+	// Construct the position, normal and texture vectors.
+	//
 	for (std::size_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		Mesh::Vertex vertex;
 
 		// Construct the position vector for this vertex
+		//
 		glm::vec3 position_vec;
 		position_vec.x = mesh->mVertices[i].x;
 		position_vec.y = mesh->mVertices[i].y;
@@ -131,6 +132,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 		vertex.position = position_vec;
 
 		// Construct the normal vector for this vertex
+		//
 		glm::vec3 normal_vec;
 		normal_vec.x = mesh->mNormals[i].x;
 		normal_vec.y = mesh->mNormals[i].y;
@@ -139,15 +141,18 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 
 		// If the texture coordinates exist, construct the texture vector for this vertex
 		// The index 0 is because Assimp allows for up to 8 differrent sets of texture coordinates
+		//
 		if (mesh->mTextureCoords[0])
 		{
 			// Texture coordinates
+			//
 			glm::vec2 texture_coord_vec;
 			texture_coord_vec.x = mesh->mTextureCoords[0][i].x;
 			texture_coord_vec.y = mesh->mTextureCoords[0][i].y;
 			vertex.texture_coords = texture_coord_vec;
 
 			// Tangent vector to the vertex
+			//
 			if (mesh->mTangents)
 			{
 				glm::vec3 tangent_vec;
@@ -157,7 +162,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 				vertex.tangent = tangent_vec;
 			}
 
-			// Bitangent vector to the vertex (orthogonal to tangent and normal)
+			// Bitangent vector to the vertex (orthogonal to tangent and normal).
+			//
 			if (mesh->mBitangents)
 			{
 				glm::vec3 bi_tangent_vec;
@@ -175,17 +181,18 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 		vertices.push_back(vertex);
 	}
 	
-	/*
-	* Process the mesh faces i.e. the primitives.
-	* In this case the primitives are triangles (due to the aiProcess_Triangulate flag).
-	* For further explanation look at the Model::loadModel method.
-	*/
+	// Process the mesh faces i.e. the primitives.
+	// In this case the primitives are triangles (due to the aiProcess_Triangulate flag).
+	// For further explanation look at the Model::loadModel method.
+	//
 	for (std::size_t i = 0; i < mesh->mNumFaces; i++)
 	{
 		// Get a face from the mesh
+		//
 		aiFace face = mesh->mFaces[i];
 
 		// Loop through the indices of this face
+		//
 		for (std::size_t j = 0; j < face.mNumIndices; j++)
 		{
 			indices.push_back(face.mIndices[j]);
@@ -208,6 +215,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 		else
 		{
 			// 1. Load the diffuse maps
+			//
 			std::vector<Mesh::Texture> diffuse_maps = loadMaterialTextures(
 				material, 
 				aiTextureType_DIFFUSE, 
@@ -216,6 +224,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 			textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
 
 			// 2. Load the specular maps
+			//
 			std::vector<Mesh::Texture> specular_maps = loadMaterialTextures(
 				material, 
 				aiTextureType_SPECULAR, 
@@ -224,6 +233,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 			textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
 
 			// 3. Load the normal maps
+			//
 			std::vector<Mesh::Texture> normal_maps = loadMaterialTextures(
 				material, 
 				aiTextureType_HEIGHT, 
@@ -232,6 +242,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* _scene)
 			textures.insert(textures.end(), normal_maps.begin(), normal_maps.end());
 
 			// 4. Load the height maps
+			//
 			std::vector<Mesh::Texture> height_maps = loadMaterialTextures(
 				material, 
 				aiTextureType_AMBIENT, 
@@ -305,22 +316,22 @@ std::vector<Mesh::Texture> Model::loadMaterialTexturesEmbedded(aiMaterial* mater
 		texture.format = tx_format;
 		textures.push_back(texture);
 	}
-	/*if (AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular_col))
-	{
-		Mesh::Texture texture;
-		texture.color = glm::vec4(specular_col.r, specular_col.g, specular_col.b, specular_col.a);
-		texture.type = TEXTYPEenum::SPECULAR;
-		texture.format = txFormat;
-		textures.push_back(texture);
-	}
-	if (AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_EMISSIVE, &emissive_col))
-	{
-		Mesh::Texture texture;
-		texture.color = glm::vec4(emissive_col.r, emissive_col.g, emissive_col.b, emissive_col.a);
-		texture.type = TEXTYPEenum::EMISSIVE;
-		texture.format = txFormat;
-		textures.push_back(texture);
-	}*/
+	//if (AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular_col))
+	//{
+	//	Mesh::Texture texture;
+	//	texture.color = glm::vec4(specular_col.r, specular_col.g, specular_col.b, specular_col.a);
+	//	texture.type = TEXTYPEenum::SPECULAR;
+	//	texture.format = tx_format;
+	//	textures.push_back(texture);
+	//}
+	//if (AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_EMISSIVE, &emissive_col))
+	//{
+	//	Mesh::Texture texture;
+	//	texture.color = glm::vec4(emissive_col.r, emissive_col.g, emissive_col.b, emissive_col.a);
+	//	texture.type = TEXTYPEenum::EMISSIVE;
+	//	texture.format = tx_format;
+	//	textures.push_back(texture);
+	//}
 
 	return textures;
 }

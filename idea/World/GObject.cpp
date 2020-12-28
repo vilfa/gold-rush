@@ -86,24 +86,27 @@ void GObject::calculateModelBoundingBox()
         Mesh& curr_mesh = model_.meshes_.at(i);
         for (std::size_t j = 0; j < curr_mesh.vertices_.size(); j++)
         {
-            curr_vert = curr_mesh.vertices_.at(i).position;
+            curr_vert = curr_mesh.vertices_.at(j).position;
 
             float x, y, z;
             x = curr_vert.x;
             y = curr_vert.y;
             z = curr_vert.z;
 
-            if (x < min_x) min_x = x; else if (x > max_x) max_x = x;
-            if (y < min_y) min_y = y; else if (y > max_y) max_y = y;
-            if (z < min_z) min_z = z; else if (z > max_z) max_z = z;
+            max_x = std::max(max_x, x);
+            min_x = std::min(min_x, x);
+            max_y = std::max(max_y, y);
+            min_y = std::min(min_y, y);
+            max_z = std::max(max_z, z);
+            min_z = std::min(min_z, z);
         }
     }
 
     float half_x, half_y, half_z, center_x, center_y, center_z;
 
-    half_x = (max_x - min_x) / 2;
-    half_y = (max_y - min_y) / 2;
-    half_z = (max_z - min_z) / 2;
+    half_x = (max_x - min_x) / 2.0f;
+    half_y = (max_y - min_y) / 2.0f;
+    half_z = (max_z - min_z) / 2.0f;
     center_x = min_x + half_x;
     center_y = min_y + half_y;
     center_z = min_z + half_z;

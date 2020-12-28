@@ -13,7 +13,7 @@
 #include "Renderer/Camera.h"
 #include "Game/Entity.h"
 
-class Player : public virtual Entity
+class Player : public Entity
 {
 public:
     glm::vec3 position_;
@@ -34,6 +34,7 @@ public:
         glm::mat4 world_transform = glm::mat4(1.0f));
 
     glm::vec3 GetPosition();
+    void UpdateBoundingBox();
     void HandleMouse(Camera& camera, float x_offset, float y_offset);
     void Draw();
 
