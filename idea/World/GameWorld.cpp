@@ -53,7 +53,7 @@ void GameWorld::SetSunPosition(glm::vec3 new_sun_pos)
     sun_position_ = new_sun_pos;
 }
 
-void GameWorld::RemoveCollectibles(std::vector<Entity> collectibles)
+void GameWorld::RemoveCollectibles(std::vector<Entity> collectibles, Player& player)
 {
     if (collectibles.empty())
     {
@@ -65,6 +65,7 @@ void GameWorld::RemoveCollectibles(std::vector<Entity> collectibles)
         {
             std::vector<glm::mat4>::iterator index = model_mats_all_.at(6)->begin() + hazelnut_index_map_.at(collectibles.at(i).GetModelMatrix());
             model_mats_all_.at(6)->erase(index);
+            player.UpdateScore();
             createModelMatPairs();
             createIndexMap();
         }

@@ -66,6 +66,20 @@ Window::Window(const uint32_t _width,
 		std::exit(EXIT_FAILURE);
 	}
 
+	std::cout << "INFO::WINDOW::WINDOW::INIT_IMGUI" << std::endl;
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	ImFontConfig font_cfg;
+	font_cfg.SizePixels = 32.f;
+	io.Fonts->AddFontDefault(&font_cfg);
+	io.Fonts->Build();
+
+	ImGui_ImplGlfw_InitForOpenGL(window_, true);
+	ImGui_ImplOpenGL3_Init("#version 420 core");
+
 	glViewport(0, 0, width_, height_);
 
 	std::cout << "INFO::WINDOW::WINDOW::GLFW::INIT_END" << std::endl;

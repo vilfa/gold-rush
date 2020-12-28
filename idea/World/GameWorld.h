@@ -37,7 +37,7 @@ public:
     float GetGridHeight(glm::vec3 player_pos);
     glm::vec3& GetSunPosition();
     void SetSunPosition(glm::vec3 new_sun_pos);
-    void RemoveCollectibles(std::vector<Entity> collectible);
+    void RemoveCollectibles(std::vector<Entity> collectible, Player& player);
 
 private:
     const uint32_t _grid_size_;

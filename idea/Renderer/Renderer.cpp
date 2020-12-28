@@ -18,16 +18,25 @@ void Renderer::Render(Camera& camera, Player& player, GameWorld& world)
 	UniformBuffer<glm::vec3> ubo_camera(1, 1);
 	UniformBuffer<glm::vec3> ubo_light(1, 2);
 
+	ImGui::StyleColorsDark();
+	ImGuiWindowFlags imgui_flags = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | 
+		ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
+
 	ProcessMouse(camera, player, window_.GetWindow(), last_x_, last_y_);
 	player.UpdateBoundingBox();
+	player.SetTimeLimit(300.0);
 
 	while (!window_.GetWindowShouldClose())
 	{
 		clearFramebuffers();
 		processFrametime();
-		ProcessKeyboard(camera, player, world);
-		world.RemoveCollectibles(world.quad_tree_.Query(player.GetBoundingBox()));
-		setRenderStats();
+		processKeyboard(camera, player, world);
+		world.RemoveCollectibles(world.quad_tree_.Query(player.GetBoundingBox()), player);
+		player.UpdateTimeRemaining(delta_time_);
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 view_3 = camera.GetViewMatrix3();
@@ -39,13 +48,33 @@ void Renderer::Render(Camera& camera, Player& player, GameWorld& world)
 		ubo_camera.Data(camera.position_, 0);
 		ubo_light.Data(world.GetSunPosition(), 0);
 
+		ImGui::Begin("Score", 0, imgui_flags);
+		ImGui::Text(player.GetScorePretty().c_str());
+		ImGui::Text(player.GetTimeRemainingPretty().c_str());
+		ImGui::SetWindowPos(ImVec2(0.f, 0.f));
+		ImGui::SetWindowSize(ImVec2(200.f, 75.f));
+		ImGui::End();
+
+		ImGui::Begin("Stats", 0, imgui_flags);
+		ImGui::SetWindowFontScale(0.5f);
+		ImGui::Text(getFps().c_str());
+		ImGui::Text(getFrametime().c_str());
+		ImGui::SetWindowPos(ImVec2(window_.GetWidth() - 200.f, window_.GetHeight() - 75.f));
+		ImGui::SetWindowSize(ImVec2(200.f, 75.f));
+		ImGui::End();
+		ImGui::Render();
+
 		world.Draw();
 		player.Draw();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window_.GetWindow());
 		glfwPollEvents();
 	}
 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 	glfwTerminate();
 }
 
@@ -76,7 +105,7 @@ void Renderer::ProcessMouse(Camera& camera, Player& player, GLFWwindow* window,
 	camera.HandleMouse(x_offset, y_offset);
 }
 
-void Renderer::ProcessKeyboard(Camera& camera, Player& player, GameWorld& world)
+void Renderer::processKeyboard(Camera& camera, Player& player, GameWorld& world)
 {
 	if (glfwGetKey(window_.GetWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -152,12 +181,14 @@ void Renderer::clearFramebuffers()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-std::string Renderer::getRenderStats()
+std::string Renderer::getFps()
 {
-	return window_.GetWindowName() + " FPS:" + std::to_string(1 / delta_time_) + "|FT:" + std::to_string(delta_time_ * 1000);
+	//return "FPS:" + std::to_string(1 / delta_time_);
+	return "FPS:" + std::to_string(ImGui::GetIO().Framerate);
 }
 
-void Renderer::setRenderStats()
+std::string Renderer::getFrametime()
 {
-	window_.SetWindowName(getRenderStats());
+	//return "FT:" + std::to_string(delta_time_ * 1000.0);
+	return "FT:" + std::to_string(ImGui::GetIO().DeltaTime * 1000.0);
 }

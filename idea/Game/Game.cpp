@@ -15,15 +15,13 @@ Game::Game(Window& window) :
     player_.position_ = player_start_pos;
     camera_.SetPlayerPosition(player_start_pos);
     camera_.FollowPlayer();
+    player_.SetTimeLimit(300.0);
+    player_.SetScore(0);
 }
 
 void Game::Start()
 {
     renderer_.Render(camera_, player_, game_world_);
-}
-
-void Game::Update()
-{
 }
 
 void Game::HandleFramebuffer(GLFWwindow* window, int width,

@@ -38,12 +38,24 @@ public:
     void HandleMouse(Camera& camera, float x_offset, float y_offset);
     void Draw();
 
+    uint32_t GetScore();
+    void SetScore(uint32_t score);
+    void UpdateScore();
+    void SetTimeLimit(double seconds);
+    void UpdateTimeRemaining(double delta_time);
+    std::string GetTimeRemainingPretty();
+    std::string GetScorePretty();
+
 private:
+    uint32_t score_;
+    double time_remaining_;
+
     static const float _YAW_;
     static const float _PITCH_;
     static const float _SPEED_;
     static const float _SPEED_FAST_;
     static const float _SENSITIVITY_;
-    
+    static const double _TIME_LIMIT_;
+
     void updatePlayerVectors();
 };
