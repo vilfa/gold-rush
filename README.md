@@ -1,2 +1,5 @@
-# idea
-A *very* simple game engine.
+# Squirrel Gold Rush
+This is a simple sandbox game with random terrain generation, where you play
+as a squirrel trying to collect as many golden hazelnuts as possible to stock
+up for the winter. You have a 5 minute time limit to collect as many as possible.
+After the time limit expires, your score automatically resets and you can play again.
