@@ -4,6 +4,8 @@ as a squirrel trying to collect as many golden hazelnuts as possible to stock
 up for the winter. You have a 5 minute time limit to collect as many as possible.
 After the time limit expires, your score automatically resets and you can play again.
 
+This game is written entirely in C++ using GLFW and Open GL version 4.2.
+
 # Screenshots
 ![final version](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/FINAL.png)
 ![finished terrain only](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/finished_terrain.png)
