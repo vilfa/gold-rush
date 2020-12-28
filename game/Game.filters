@@ -18,7 +18,7 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
+    <ClCompile Include="Application\glad.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Renderer.cpp">

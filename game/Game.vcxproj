@@ -24,7 +24,7 @@
     <ProjectGuid>{dfa221cd-e52f-4088-bb25-64b56abe923a}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Engine</ProjectName>
+    <ProjectName>Game</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,16 +73,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\vilfa\Dropbox\code\idea\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\vilfa\Dropbox\code\idea\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\vilfa\Dropbox\code\squirrel-gold-rush\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\vilfa\Dropbox\code\squirrel-gold-rush\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\vilfa\Dropbox\code\idea\include;$(ProjectDir);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\vilfa\Dropbox\code\idea\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\vilfa\Dropbox\code\squirrel-gold-rush\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\vilfa\Dropbox\code\squirrel-gold-rush\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -165,7 +165,7 @@
     <ClCompile Include="World\GObject.cpp" />
     <ClCompile Include="World\GameWorld.cpp" />
     <ClCompile Include="Renderer\Camera.cpp" />
-    <ClCompile Include="glad.c" />
+    <ClCompile Include="Application\glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Renderer\Mesh.cpp" />
     <ClCompile Include="Renderer\Model.cpp" />
