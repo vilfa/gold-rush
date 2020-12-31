@@ -9,4 +9,6 @@ This game is written entirely in C++ using GLFW and Open GL version 4.2.
 # Screenshots
 ![final version](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/FINAL.png)
 ![finished terrain only](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/finished_terrain.png)
-![terrain plants](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/terrain_vegetation.png)
+![terrain plants](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/terrain_vegetation_cropped.png)
+![player squirrel](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/player_squirrel_cropped.png)
+![terrain only](https://github.com/luksii/squirrel-gold-rush/blob/master/screenshots/terrain_only.png)
