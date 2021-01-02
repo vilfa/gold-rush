@@ -96,9 +96,19 @@ int Window::GetWidth() const
 	return width_;
 }
 
+void Window::SetWidth(int width)
+{
+	width_ = (uint32_t)width;
+}
+
 int Window::GetHeight() const
 {
 	return height_;
+}
+
+void Window::SetHeight(int height)
+{
+	height_ = (uint32_t)height;
 }
 
 int Window::GetWindowShouldClose() const

@@ -26,7 +26,9 @@ public:
 
     GLFWwindow* GetWindow() const;
     int GetWidth() const;
+    void SetWidth(int width);
     int GetHeight() const;
+    void SetHeight(int height);
     int GetWindowShouldClose() const;
     bool GetMultisamplingEnabled() const;
     void SetInputMode(int mode, int value);

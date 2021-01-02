@@ -82,6 +82,8 @@ void Renderer::ProcessFramebuffer(GLFWwindow* window, int width,
 	int height)
 {
 	glViewport(0, 0, width, height);
+	window_.SetWidth(width);
+	window_.SetHeight(height);
 }
 
 void Renderer::ProcessMouse(Camera& camera, Player& player, GLFWwindow* window,
