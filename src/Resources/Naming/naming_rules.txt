@@ -1,0 +1,11 @@
+Code naming
+- public class members are all lowercase with underscores
+- private class members are all lowercase with a trailing underscore
+- static class members are all caps
+- const class memebers have a preceding underscore
+- class, struct, file names are camelcase
+- methods are camelcase with first upper
+- method parametes are all lowercase with underscores
+- break after second method parameter, max 2 per line (except constructors can have each param on new line)
+- initializer list color goes on same line as closing bracket of funct.
+- every member of initializer list goes on separate line

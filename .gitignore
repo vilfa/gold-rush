@@ -1,4 +1,4 @@
-.vs/
-Debug/
-x64/
-include/glm/out
+.vs
+.vscode
+build
+imgui.ini
