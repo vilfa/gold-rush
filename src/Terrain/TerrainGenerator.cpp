@@ -9,50 +9,23 @@ TerrainGenerator::TerrainGenerator(const uint32_t _grid_size) : _grid_size_(_gri
     generateVegetationPositions();
 }
 
-std::shared_ptr<std::vector<glm::vec3>> TerrainGenerator::GetGrid()
-{
-    return grid_;
-}
+std::shared_ptr<std::vector<glm::vec3>> TerrainGenerator::GetGrid() { return grid_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetPositions()
-{
-    return positions_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetPositions() { return positions_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetNormals()
-{
-    return normals_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetNormals() { return normals_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetColors()
-{
-    return colors_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetColors() { return colors_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetTrees()
-{
-    return tree_positions_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetTrees() { return tree_positions_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetBushes()
-{
-    return bush_positions_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetBushes() { return bush_positions_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetRocks()
-{
-    return rock_positions_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetRocks() { return rock_positions_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetGrass()
-{
-    return grass_positions_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetGrass() { return grass_positions_; }
 
-std::vector<glm::vec3> &TerrainGenerator::GetHazelnuts()
-{
-    return hazelnut_positions_;
-}
+std::vector<glm::vec3> &TerrainGenerator::GetHazelnuts() { return hazelnut_positions_; }
 
 void TerrainGenerator::generateHeightMap()
 {
@@ -135,8 +108,7 @@ void TerrainGenerator::generateVertexColors()
     }
 }
 
-glm::vec3 TerrainGenerator::calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1,
-                                                    glm::vec3 v2)
+glm::vec3 TerrainGenerator::calculateTriangleNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2)
 {
     glm::vec3 t0 = v0 - v1;
     glm::vec3 t1 = v2 - v1;
@@ -153,38 +125,29 @@ void TerrainGenerator::generateVegetationPositions()
     std::mt19937 rnd_eng(std::random_device{}());
     std::vector<glm::vec3> sample;
 
-    std::sample(
-        grid_->begin(),
-        grid_->end(),
-        std::back_inserter(sample),
-        _grid_size_ * 38,
-        rnd_eng);
-    std::shuffle(
-        sample.begin(),
-        sample.end(),
-        rnd_eng);
+    std::sample(grid_->begin(),
+                grid_->end(),
+                std::back_inserter(sample),
+                _grid_size_ * 38,
+                rnd_eng);
+    std::shuffle(sample.begin(), sample.end(), rnd_eng);
 
     // Distribute the vegetation positions with the following ratio:
     // 40% trees, 15% bushes, 10% rocks, 32% grass buds, 3% hazelnuts
     //
-    std::copy(
-        sample.begin(),
-        sample.begin() + sample.size() * 0.4,
-        std::back_inserter(tree_positions_));
-    std::copy(
-        sample.begin() + sample.size() * 0.4,
-        sample.begin() + sample.size() * 0.55,
-        std::back_inserter(bush_positions_));
-    std::copy(
-        sample.begin() + sample.size() * 0.55,
-        sample.begin() + sample.size() * 0.65,
-        std::back_inserter(rock_positions_));
-    std::copy(
-        sample.begin() + sample.size() * 0.65,
-        sample.begin() + sample.size() * 0.97,
-        std::back_inserter(grass_positions_));
-    std::copy(
-        sample.begin() + sample.size() * 0.97,
-        sample.end(),
-        std::back_inserter(hazelnut_positions_));
+    std::copy(sample.begin(),
+              sample.begin() + sample.size() * 0.4,
+              std::back_inserter(tree_positions_));
+    std::copy(sample.begin() + sample.size() * 0.4,
+              sample.begin() + sample.size() * 0.55,
+              std::back_inserter(bush_positions_));
+    std::copy(sample.begin() + sample.size() * 0.55,
+              sample.begin() + sample.size() * 0.65,
+              std::back_inserter(rock_positions_));
+    std::copy(sample.begin() + sample.size() * 0.65,
+              sample.begin() + sample.size() * 0.97,
+              std::back_inserter(grass_positions_));
+    std::copy(sample.begin() + sample.size() * 0.97,
+              sample.end(),
+              std::back_inserter(hazelnut_positions_));
 }

@@ -1,14 +1,8 @@
 #include "GObject.h"
 
-GObject::GObject(Model obj_model) : model_(obj_model)
-{
-    calculateModelBoundingBox();
-}
+GObject::GObject(Model obj_model) : model_(obj_model) { calculateModelBoundingBox(); }
 
-void GObject::Draw(Shader &shader)
-{
-    model_.Draw(shader);
-}
+void GObject::Draw(Shader &shader) { model_.Draw(shader); }
 
 void GObject::Draw(Shader &shader, glm::vec3 position)
 {
@@ -33,45 +27,25 @@ void GObject::DrawInstanced(Shader &shader, std::vector<glm::mat4> &instance_mod
     model_.DrawInstanced(shader, instance_mod_mats);
 }
 
-void GObject::DrawInstanced(Shader &shader, std::shared_ptr<std::vector<glm::mat4>> instance_mod_mats)
+void GObject::DrawInstanced(Shader &shader,
+                            std::shared_ptr<std::vector<glm::mat4>> instance_mod_mats)
 {
     model_.DrawInstanced(shader, instance_mod_mats);
 }
 
-AABB GObject::GetModelBoundingBox()
-{
-    return model_bounding_box_;
-}
+AABB GObject::GetModelBoundingBox() { return model_bounding_box_; }
 
-float GObject::GetXMaxModelAABB()
-{
-    return model_bounding_box_.XMax();
-}
+float GObject::GetXMaxModelAABB() { return model_bounding_box_.XMax(); }
 
-float GObject::GetXMinModelAABB()
-{
-    return model_bounding_box_.XMin();
-}
+float GObject::GetXMinModelAABB() { return model_bounding_box_.XMin(); }
 
-float GObject::GetYMaxModelAABB()
-{
-    return model_bounding_box_.YMax();
-}
+float GObject::GetYMaxModelAABB() { return model_bounding_box_.YMax(); }
 
-float GObject::GetYMinModelAABB()
-{
-    return model_bounding_box_.YMin();
-}
+float GObject::GetYMinModelAABB() { return model_bounding_box_.YMin(); }
 
-float GObject::GetZMaxModelAABB()
-{
-    return model_bounding_box_.ZMax();
-}
+float GObject::GetZMaxModelAABB() { return model_bounding_box_.ZMax(); }
 
-float GObject::GetZMinModelAABB()
-{
-    return model_bounding_box_.ZMin();
-}
+float GObject::GetZMinModelAABB() { return model_bounding_box_.ZMin(); }
 
 void GObject::calculateModelBoundingBox()
 {

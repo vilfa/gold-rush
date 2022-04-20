@@ -28,9 +28,10 @@ public:
     float pitch_;
 
     Player(glm::vec3 starting_position = glm::vec3(0.0f, 0.0f, 0.0f),
-           TerrainElement terrel = TerrainElement(
-               Model("src/Resources/Models/player/player.obj", true),
-               Shader("src/Resources/Shaders/Model/lowPolyPlayer.vert", "src/Resources/Shaders/Model/lowPolyPlayer.frag")),
+           TerrainElement terrel =
+               TerrainElement(Model("src/Resources/Models/player/player.obj", true),
+                              Shader("src/Resources/Shaders/Model/lowPolyPlayer.vert",
+                                     "src/Resources/Shaders/Model/lowPolyPlayer.frag")),
            glm::mat4 world_transform = glm::mat4(1.0f));
 
     glm::vec3 GetPosition();

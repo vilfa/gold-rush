@@ -1,20 +1,23 @@
 #include "GameWorld.h"
 
-GameWorld::GameWorld(glm::vec3 sun_position, uint32_t grid_size_) : _grid_size_(grid_size_),
-                                                                    terrain_(Terrain(grid_size_)),
-                                                                    skybox_(Skybox("src/Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG)),
-                                                                    quad_tree_(AABB(glm::vec3(0.0f), (float)grid_size_)),
-                                                                    shader_terrain_(Shader("src/Resources/Shaders/Terrain/lowPolyTerrain.vert", "src/Resources/Shaders/Terrain/lowPolyTerrain.frag")),
-                                                                    shader_skybox_(Shader("src/Resources/Shaders/Skybox/fantasySkybox.vert", "src/Resources/Shaders/Skybox/fantasySkybox.frag")),
-                                                                    shader_entity_(Shader("src/Resources/Shaders/Model/lowPolyModel.vert", "src/Resources/Shaders/Model/lowPolyModel.frag")),
-                                                                    trrel_tree_1_(Model("src/Resources/Models/tree_1/tree_1.obj", true), shader_entity_),
-                                                                    trrel_tree_2_(Model("src/Resources/Models/tree_2/tree_2.obj", true), shader_entity_),
-                                                                    trrel_tree_3_(Model("src/Resources/Models/tree_3/tree_3.obj", true), shader_entity_),
-                                                                    trrel_bush_(Model("src/Resources/Models/lil_bush/lil_bush.obj", true), shader_entity_),
-                                                                    trrel_rock_(Model("src/Resources/Models/rock/rock.obj", true), shader_entity_),
-                                                                    trrel_grass_(Model("src/Resources/Models/grass_bud/grass_bud.obj", true), shader_entity_),
-                                                                    trrel_hazelnut_(Model("src/Resources/Models/hazelnut/hazelnut.obj", true), shader_entity_),
-                                                                    sun_position_(sun_position)
+GameWorld::GameWorld(glm::vec3 sun_position, uint32_t grid_size_)
+    : _grid_size_(grid_size_), terrain_(Terrain(grid_size_)),
+      skybox_(Skybox("src/Resources/Skyboxes/Fantasy_01/", SKYBFORMATenum::PNG)),
+      quad_tree_(AABB(glm::vec3(0.0f), (float)grid_size_)),
+      shader_terrain_(Shader("src/Resources/Shaders/Terrain/lowPolyTerrain.vert",
+                             "src/Resources/Shaders/Terrain/lowPolyTerrain.frag")),
+      shader_skybox_(Shader("src/Resources/Shaders/Skybox/fantasySkybox.vert",
+                            "src/Resources/Shaders/Skybox/fantasySkybox.frag")),
+      shader_entity_(Shader("src/Resources/Shaders/Model/lowPolyModel.vert",
+                            "src/Resources/Shaders/Model/lowPolyModel.frag")),
+      trrel_tree_1_(Model("src/Resources/Models/tree_1/tree_1.obj", true), shader_entity_),
+      trrel_tree_2_(Model("src/Resources/Models/tree_2/tree_2.obj", true), shader_entity_),
+      trrel_tree_3_(Model("src/Resources/Models/tree_3/tree_3.obj", true), shader_entity_),
+      trrel_bush_(Model("src/Resources/Models/lil_bush/lil_bush.obj", true), shader_entity_),
+      trrel_rock_(Model("src/Resources/Models/rock/rock.obj", true), shader_entity_),
+      trrel_grass_(Model("src/Resources/Models/grass_bud/grass_bud.obj", true), shader_entity_),
+      trrel_hazelnut_(Model("src/Resources/Models/hazelnut/hazelnut.obj", true), shader_entity_),
+      sun_position_(sun_position)
 {
     grid_ = terrain_.GetGrid();
     setupModelMatsAll();
@@ -42,15 +45,9 @@ void GameWorld::setupModelMatsAll()
     model_mats_all_.push_back(terrain_.GetHazelnutMats());
 }
 
-glm::vec3 &GameWorld::GetSunPosition()
-{
-    return sun_position_;
-}
+glm::vec3 &GameWorld::GetSunPosition() { return sun_position_; }
 
-void GameWorld::SetSunPosition(glm::vec3 new_sun_pos)
-{
-    sun_position_ = new_sun_pos;
-}
+void GameWorld::SetSunPosition(glm::vec3 new_sun_pos) { sun_position_ = new_sun_pos; }
 
 void GameWorld::RemoveCollectibles(std::vector<Entity> collectibles, Player &player)
 {
@@ -60,9 +57,12 @@ void GameWorld::RemoveCollectibles(std::vector<Entity> collectibles, Player &pla
     }
     for (std::size_t i = 0; i < collectibles.size(); i++)
     {
-        if (hazelnut_index_map_.find(collectibles.at(i).GetModelMatrix()) != hazelnut_index_map_.end())
+        if (hazelnut_index_map_.find(collectibles.at(i).GetModelMatrix()) !=
+            hazelnut_index_map_.end())
         {
-            std::vector<glm::mat4>::iterator index = model_mats_all_.at(6)->begin() + hazelnut_index_map_.at(collectibles.at(i).GetModelMatrix());
+            std::vector<glm::mat4>::iterator index =
+                model_mats_all_.at(6)->begin() +
+                hazelnut_index_map_.at(collectibles.at(i).GetModelMatrix());
             model_mats_all_.at(6)->erase(index);
             player.UpdateScore();
             createModelMatPairs();
@@ -75,9 +75,9 @@ float GameWorld::GetGridHeight(glm::vec3 player_pos)
 {
     int64_t grid_size, grid_center, mod_i, i, mod_j, j;
     // Starting grid width height is (128, 128)
-    // Generate map of (128, 128) and scale positions by 2, map still (128, 128), but corrdinates from [0, 256]
-    // Translate map by grid width in -x and -z directions, so coordiantes are now [-128, 128]
-    // Center of height map is at index (64, 64) since it's scaled * 2 and translated
+    // Generate map of (128, 128) and scale positions by 2, map still (128, 128), but corrdinates
+    // from [0, 256] Translate map by grid width in -x and -z directions, so coordiantes are now
+    // [-128, 128] Center of height map is at index (64, 64) since it's scaled * 2 and translated
     //
     grid_size = (int64_t)_grid_size_;
     grid_center = grid_size / 2;
@@ -154,18 +154,13 @@ void GameWorld::createModelMatPairs()
 void GameWorld::createIndexMap()
 {
     hazelnut_index_map_.clear();
-    hazelnut_index_map_ = std::unordered_map<glm::mat4, int>(hazelnut_model_mats_pairs_.begin(), hazelnut_model_mats_pairs_.end());
+    hazelnut_index_map_ = std::unordered_map<glm::mat4, int>(hazelnut_model_mats_pairs_.begin(),
+                                                             hazelnut_model_mats_pairs_.end());
 }
 
-void GameWorld::drawTerrain()
-{
-    terrain_.Draw(shader_terrain_);
-}
+void GameWorld::drawTerrain() { terrain_.Draw(shader_terrain_); }
 
-void GameWorld::drawSkybox()
-{
-    skybox_.Draw(shader_skybox_);
-}
+void GameWorld::drawSkybox() { skybox_.Draw(shader_skybox_); }
 
 void GameWorld::drawWoodland()
 {

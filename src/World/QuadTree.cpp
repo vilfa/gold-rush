@@ -1,11 +1,8 @@
 #include "QuadTree.h"
 
-QuadTree::QuadTree(AABB bounding_box) : _node_capacity_(4),
-                                        bounding_box_(bounding_box),
-                                        quadrant_1_(nullptr),
-                                        quadrant_2_(nullptr),
-                                        quadrant_3_(nullptr),
-                                        quadrant_4_(nullptr)
+QuadTree::QuadTree(AABB bounding_box)
+    : _node_capacity_(4), bounding_box_(bounding_box), quadrant_1_(nullptr), quadrant_2_(nullptr),
+      quadrant_3_(nullptr), quadrant_4_(nullptr)
 {
 }
 
@@ -35,14 +32,10 @@ bool QuadTree::Insert(Entity ent)
         subdivide();
     }
 
-    if (quadrant_1_->Insert(ent))
-        return true;
-    if (quadrant_2_->Insert(ent))
-        return true;
-    if (quadrant_3_->Insert(ent))
-        return true;
-    if (quadrant_4_->Insert(ent))
-        return true;
+    if (quadrant_1_->Insert(ent)) return true;
+    if (quadrant_2_->Insert(ent)) return true;
+    if (quadrant_3_->Insert(ent)) return true;
+    if (quadrant_4_->Insert(ent)) return true;
 
     // This should never happen.
     //

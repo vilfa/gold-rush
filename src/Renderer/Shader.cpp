@@ -1,7 +1,6 @@
 #include "Renderer/Shader.h"
 
-Shader::Shader(const std::string _vertex_path,
-               const std::string _fragment_path)
+Shader::Shader(const std::string _vertex_path, const std::string _fragment_path)
 {
     std::string vertex_source, fragment_source;
     std::ifstream v_shader_file, f_shader_file;
@@ -106,7 +105,8 @@ Shader::Shader(const std::string _vertex_path,
     catch (std::ifstream::failure e)
     {
         std::cout << "ERROR::SHADER::SHADER::FILE_READ_ERROR" << std::endl;
-        std::cout << "Path:" << _vertex_path << ":" << _geometry_path << ":" << _fragment_path << std::endl;
+        std::cout << "Path:" << _vertex_path << ":" << _geometry_path << ":" << _fragment_path
+                  << std::endl;
         std::cout << "Error:" << e.what() << std::endl;
     }
 
@@ -119,7 +119,8 @@ Shader::Shader(const std::string _vertex_path,
     uint32_t vertex_shader, geometry_shader, fragment_shader;
 
     std::cout << "INFO::SHADER::SHADER::COMPILE" << std::endl;
-    std::cout << "Path:" << _vertex_path << ":" << _geometry_path << ":" << _fragment_path << std::endl;
+    std::cout << "Path:" << _vertex_path << ":" << _geometry_path << ":" << _fragment_path
+              << std::endl;
 
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &v_shader_source, NULL);
@@ -152,25 +153,22 @@ Shader::Shader(const std::string _vertex_path,
     glDeleteShader(fragment_shader);
 }
 
-void Shader::Use() const
-{
-    glUseProgram(id_);
-}
+void Shader::Use() const { glUseProgram(id_); }
 
 void Shader::CheckCompile(GLuint id, const SHTYPEenum _type) const
 {
     int success;
     char info_log[512];
 
-    if (_type == SHTYPEenum::VERTEX || _type == SHTYPEenum::GEOMETRY || _type == SHTYPEenum::FRAGMENT)
+    if (_type == SHTYPEenum::VERTEX || _type == SHTYPEenum::GEOMETRY ||
+        _type == SHTYPEenum::FRAGMENT)
     {
         glGetShaderiv(id, GL_COMPILE_STATUS, &success);
         if (!success)
         {
             glGetShaderInfoLog(id, 512, NULL, info_log);
             std::cout << "ERROR::SHADER::CHECK_COMPILE::COMPILATION_FAILED" << std::endl;
-            std::cout << "Type:" << (int)_type << "|Log:" << std::endl
-                      << info_log << std::endl;
+            std::cout << "Type:" << (int)_type << "|Log:" << std::endl << info_log << std::endl;
         }
     }
     else if (_type == SHTYPEenum::PROGRAM)

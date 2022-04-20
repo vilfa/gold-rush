@@ -1,9 +1,7 @@
 #include "Renderer/Model.h"
 
-Model::Model(const std::string _path,
-             bool embedded,
-             bool gamma) : textures_embedded_(embedded),
-                           gamma_correction_(gamma)
+Model::Model(const std::string _path, bool embedded, bool gamma)
+    : textures_embedded_(embedded), gamma_correction_(gamma)
 {
     double time = glfwGetTime();
     std::cout << "INFO::MODEL::MODEL::BEGIN_LOAD" << std::endl;
@@ -34,7 +32,10 @@ void Model::DrawInstanced(Shader &shader, std::vector<glm::mat4> &instance_mod_m
     uint32_t mat_vbo_id;
     glGenBuffers(1, &mat_vbo_id);
     glBindBuffer(GL_ARRAY_BUFFER, mat_vbo_id);
-    glBufferData(GL_ARRAY_BUFFER, instance_size * sizeof(glm::mat4), &instance_mod_mats[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 instance_size * sizeof(glm::mat4),
+                 &instance_mod_mats[0],
+                 GL_STATIC_DRAW);
 
     for (std::size_t i = 0; i < meshes_.size(); i++)
     {
@@ -54,7 +55,10 @@ void Model::DrawInstanced(Shader &shader, std::shared_ptr<std::vector<glm::mat4>
     uint32_t mat_vbo_id;
     glGenBuffers(1, &mat_vbo_id);
     glBindBuffer(GL_ARRAY_BUFFER, mat_vbo_id);
-    glBufferData(GL_ARRAY_BUFFER, instance_size * sizeof(glm::mat4), instance_mod_mats->data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 instance_size * sizeof(glm::mat4),
+                 instance_mod_mats->data(),
+                 GL_STATIC_DRAW);
 
     for (std::size_t i = 0; i < meshes_.size(); i++)
     {
@@ -204,48 +208,44 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *_scene)
 
         if (textures_embedded_)
         {
-            std::vector<Mesh::Texture> embedded_colors = loadMaterialTexturesEmbedded(
-                material,
-                aiTextureType_BASE_COLOR,
-                TEXFORMATenum::EMBEDDED);
+            std::vector<Mesh::Texture> embedded_colors =
+                loadMaterialTexturesEmbedded(material,
+                                             aiTextureType_BASE_COLOR,
+                                             TEXFORMATenum::EMBEDDED);
             textures.insert(textures.end(), embedded_colors.begin(), embedded_colors.end());
         }
         else
         {
             // 1. Load the diffuse maps
             //
-            std::vector<Mesh::Texture> diffuse_maps = loadMaterialTextures(
-                material,
-                aiTextureType_DIFFUSE,
-                TEXTYPEenum::DIFFUSE,
-                TEXFORMATenum::FILE);
+            std::vector<Mesh::Texture> diffuse_maps = loadMaterialTextures(material,
+                                                                           aiTextureType_DIFFUSE,
+                                                                           TEXTYPEenum::DIFFUSE,
+                                                                           TEXFORMATenum::FILE);
             textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
 
             // 2. Load the specular maps
             //
-            std::vector<Mesh::Texture> specular_maps = loadMaterialTextures(
-                material,
-                aiTextureType_SPECULAR,
-                TEXTYPEenum::SPECULAR,
-                TEXFORMATenum::FILE);
+            std::vector<Mesh::Texture> specular_maps = loadMaterialTextures(material,
+                                                                            aiTextureType_SPECULAR,
+                                                                            TEXTYPEenum::SPECULAR,
+                                                                            TEXFORMATenum::FILE);
             textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
 
             // 3. Load the normal maps
             //
-            std::vector<Mesh::Texture> normal_maps = loadMaterialTextures(
-                material,
-                aiTextureType_HEIGHT,
-                TEXTYPEenum::NORMAL,
-                TEXFORMATenum::FILE);
+            std::vector<Mesh::Texture> normal_maps = loadMaterialTextures(material,
+                                                                          aiTextureType_HEIGHT,
+                                                                          TEXTYPEenum::NORMAL,
+                                                                          TEXFORMATenum::FILE);
             textures.insert(textures.end(), normal_maps.begin(), normal_maps.end());
 
             // 4. Load the height maps
             //
-            std::vector<Mesh::Texture> height_maps = loadMaterialTextures(
-                material,
-                aiTextureType_AMBIENT,
-                TEXTYPEenum::HEIGHT,
-                TEXFORMATenum::FILE);
+            std::vector<Mesh::Texture> height_maps = loadMaterialTextures(material,
+                                                                          aiTextureType_AMBIENT,
+                                                                          TEXTYPEenum::HEIGHT,
+                                                                          TEXFORMATenum::FILE);
             textures.insert(textures.end(), height_maps.begin(), height_maps.end());
         }
     }
@@ -253,8 +253,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *_scene)
     return Mesh(vertices, indices, textures, textures_embedded_);
 }
 
-std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial *material, aiTextureType ai_type,
-                                                       TEXTYPEenum tx_type, TEXFORMATenum tx_format)
+std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial *material,
+                                                       aiTextureType ai_type,
+                                                       TEXTYPEenum tx_type,
+                                                       TEXFORMATenum tx_format)
 {
     std::cout << "INFO::MODEL::LOAD_MATERIAL_TEXTURES::LOAD_START" << std::endl;
     std::cout << "INFO::MODEL::LOAD_MATERIAL_TEXTURES::TEXTURE_TYPE" << std::endl;
@@ -280,7 +282,8 @@ std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial *material, aiT
         if (!already_loaded)
         {
             Mesh::Texture texture;
-            texture.id = Mesh::LoadTextureFromFile(std::string(path.C_Str()), directory_, gamma_correction_);
+            texture.id =
+                Mesh::LoadTextureFromFile(std::string(path.C_Str()), directory_, gamma_correction_);
             texture.type = tx_type;
             texture.path = path.C_Str();
             textures.push_back(texture);
@@ -292,7 +295,8 @@ std::vector<Mesh::Texture> Model::loadMaterialTextures(aiMaterial *material, aiT
 }
 
 std::vector<Mesh::Texture> Model::loadMaterialTexturesEmbedded(aiMaterial *material,
-                                                               aiTextureType ai_type, TEXFORMATenum tx_format)
+                                                               aiTextureType ai_type,
+                                                               TEXFORMATenum tx_format)
 {
     std::cout << "INFO::MODEL::LOAD_MATERIAL_TEXTURES_EMBEDDED::LOAD_START" << std::endl;
 

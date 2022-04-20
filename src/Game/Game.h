@@ -20,10 +20,8 @@ public:
 
     void Start();
 
-    void HandleFramebuffer(GLFWwindow *window, int width,
-                           int height);
-    void HandleMouse(GLFWwindow *window, double x_pos,
-                     double y_pos);
+    void HandleFramebuffer(GLFWwindow *window, int width, int height);
+    void HandleMouse(GLFWwindow *window, double x_pos, double y_pos);
 
 private:
     Renderer renderer_;

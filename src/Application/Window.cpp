@@ -12,14 +12,10 @@ Window::Window(const uint32_t _width,
                const int _gl_multisample_count,
                int gl_profile,
                GLFWmonitor *monitor,
-               GLFWwindow *share) : width_(_width),
-                                    height_(_height),
-                                    name_(_name),
-                                    _gl_version_major_(_gl_version_major),
-                                    _gl_version_minor_(_gl_version_minor),
-                                    gl_profile_(gl_profile),
-                                    gl_use_multisampling_(_gl_use_multisampling),
-                                    gl_multisample_count_(_gl_multisample_count)
+               GLFWwindow *share)
+    : width_(_width), height_(_height), name_(_name), _gl_version_major_(_gl_version_major),
+      _gl_version_minor_(_gl_version_minor), gl_profile_(gl_profile),
+      gl_use_multisampling_(_gl_use_multisampling), gl_multisample_count_(_gl_multisample_count)
 {
     std::cout << "INFO::WINDOW::WINDOW::GLFW::INIT_START" << std::endl;
     std::cout << "INFO::WINDOW::WINDOW::OPEN_GL::VERSION" << std::endl;
@@ -87,60 +83,30 @@ Window::Window(const uint32_t _width,
     std::cout << "Window init took:" << (glfwGetTime() - time) * 1000 << "ms" << std::endl;
 }
 
-GLFWwindow *Window::GetWindow() const
-{
-    return window_;
-}
+GLFWwindow *Window::GetWindow() const { return window_; }
 
-int Window::GetWidth() const
-{
-    return width_;
-}
+int Window::GetWidth() const { return width_; }
 
-void Window::SetWidth(int width)
-{
-    width_ = (uint32_t)width;
-}
+void Window::SetWidth(int width) { width_ = (uint32_t)width; }
 
-int Window::GetHeight() const
-{
-    return height_;
-}
+int Window::GetHeight() const { return height_; }
 
-void Window::SetHeight(int height)
-{
-    height_ = (uint32_t)height;
-}
+void Window::SetHeight(int height) { height_ = (uint32_t)height; }
 
-int Window::GetWindowShouldClose() const
-{
-    return glfwWindowShouldClose(window_);
-}
+int Window::GetWindowShouldClose() const { return glfwWindowShouldClose(window_); }
 
-std::string Window::GetWindowName() const
-{
-    return name_;
-}
+std::string Window::GetWindowName() const { return name_; }
 
-bool Window::GetMultisamplingEnabled() const
-{
-    return gl_use_multisampling_;
-}
+bool Window::GetMultisamplingEnabled() const { return gl_use_multisampling_; }
 
 void Window::SetWindowShouldClose(bool shouldClose)
 {
     glfwSetWindowShouldClose(window_, (GLboolean)shouldClose);
 }
 
-void Window::SetInputMode(int mode, int value)
-{
-    glfwSetInputMode(window_, mode, value);
-}
+void Window::SetInputMode(int mode, int value) { glfwSetInputMode(window_, mode, value); }
 
-void Window::SetWindowName(const std::string _name)
-{
-    glfwSetWindowTitle(window_, _name.c_str());
-}
+void Window::SetWindowName(const std::string _name) { glfwSetWindowTitle(window_, _name.c_str()); }
 
 void Window::SetFramebufferSizeCallback(FramebufferSizeCallbackFunction callback)
 {

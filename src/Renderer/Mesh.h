@@ -46,9 +46,12 @@ public:
          std::vector<Mesh::Texture> &textures,
          bool embedded = false);
 
-    static uint32_t LoadTextureFromFile(const std::string _path, const std::string _directory,
-                                        bool gamma = false, bool flip_vertical = true,
-                                        GLenum texture_wrapping = GL_REPEAT, GLenum mipmap_filtering_min = GL_LINEAR_MIPMAP_LINEAR,
+    static uint32_t LoadTextureFromFile(const std::string _path,
+                                        const std::string _directory,
+                                        bool gamma = false,
+                                        bool flip_vertical = true,
+                                        GLenum texture_wrapping = GL_REPEAT,
+                                        GLenum mipmap_filtering_min = GL_LINEAR_MIPMAP_LINEAR,
                                         GLenum mipmap_filtering_max = GL_LINEAR);
     void Draw(Shader &shader);
     void DrawInstanced(Shader &shader, const std::size_t _instance_size);

@@ -46,8 +46,8 @@ private:
     Shader shader_terrain_, shader_skybox_, shader_entity_;
     Skybox skybox_;
     Terrain terrain_;
-    TerrainElement trrel_tree_1_, trrel_tree_2_, trrel_tree_3_,
-        trrel_bush_, trrel_rock_, trrel_grass_, trrel_hazelnut_;
+    TerrainElement trrel_tree_1_, trrel_tree_2_, trrel_tree_3_, trrel_bush_, trrel_rock_,
+        trrel_grass_, trrel_hazelnut_;
 
     ModelMatrixVector model_mats_all_;
     glm::vec3 sun_position_;

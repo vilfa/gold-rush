@@ -18,21 +18,13 @@ Camera::Camera(glm::vec3 position,
                float frustum_near,
                float frustum_far,
                float yaw,
-               float pitch) : position_(position),
-                              player_position_(glm::vec3(0.0f, 0.0f, 0.0f)),
-                              player_offset_(follow_player_offset),
-                              player_radius_(3.0f),
-                              world_up_(up),
-                              _aspect_ratio_(aspect_ratio),
-                              frustum_near_(frustum_near),
-                              frustum_far_(frustum_far),
-                              yaw_(yaw),
-                              pitch_(pitch),
-                              front_(glm::vec3(0.0f, 0.0f, -1.0f)),
-                              movement_speed_(Camera::_SPEED_),
-                              movement_speed_fast_(Camera::_SPEED_FAST_),
-                              mouse_sensitivity_(Camera::_SENSITIVITY_),
-                              fov_(Camera::_FOV_)
+               float pitch)
+    : position_(position), player_position_(glm::vec3(0.0f, 0.0f, 0.0f)),
+      player_offset_(follow_player_offset), player_radius_(3.0f), world_up_(up),
+      _aspect_ratio_(aspect_ratio), frustum_near_(frustum_near), frustum_far_(frustum_far),
+      yaw_(yaw), pitch_(pitch), front_(glm::vec3(0.0f, 0.0f, -1.0f)),
+      movement_speed_(Camera::_SPEED_), movement_speed_fast_(Camera::_SPEED_FAST_),
+      mouse_sensitivity_(Camera::_SENSITIVITY_), fov_(Camera::_FOV_)
 {
     position_ += follow_player_offset;
     updateCameraVectors();
@@ -48,26 +40,17 @@ Camera::Camera(float pos_x,
                float pitch,
                float aspect_ratio,
                float frustum_near,
-               float frustum_far) : position_(glm::vec3(pos_x, pos_y, pos_z)),
-                                    world_up_(glm::vec3(up_x, up_y, up_z)),
-                                    _aspect_ratio_(aspect_ratio),
-                                    frustum_near_(frustum_near),
-                                    frustum_far_(frustum_far),
-                                    yaw_(yaw),
-                                    pitch_(pitch),
-                                    front_(glm::vec3(0.0f, 0.0f, -1.0f)),
-                                    movement_speed_(Camera::_SPEED_),
-                                    movement_speed_fast_(Camera::_SPEED_FAST_),
-                                    mouse_sensitivity_(Camera::_SENSITIVITY_),
-                                    fov_(Camera::_FOV_)
+               float frustum_far)
+    : position_(glm::vec3(pos_x, pos_y, pos_z)), world_up_(glm::vec3(up_x, up_y, up_z)),
+      _aspect_ratio_(aspect_ratio), frustum_near_(frustum_near), frustum_far_(frustum_far),
+      yaw_(yaw), pitch_(pitch), front_(glm::vec3(0.0f, 0.0f, -1.0f)),
+      movement_speed_(Camera::_SPEED_), movement_speed_fast_(Camera::_SPEED_FAST_),
+      mouse_sensitivity_(Camera::_SENSITIVITY_), fov_(Camera::_FOV_)
 {
     updateCameraVectors();
 }
 
-void Camera::SetPlayerPosition(glm::vec3 player_pos)
-{
-    player_position_ = player_pos;
-}
+void Camera::SetPlayerPosition(glm::vec3 player_pos) { player_position_ = player_pos; }
 
 glm::mat4 Camera::GetViewMatrix() const
 {
@@ -83,11 +66,7 @@ glm::mat3 Camera::GetViewMatrix3() const
 
 glm::mat4 Camera::GetProjectionMatrix() const
 {
-    return glm::perspective(
-        glm::radians(fov_),
-        _aspect_ratio_,
-        frustum_near_,
-        frustum_far_);
+    return glm::perspective(glm::radians(fov_), _aspect_ratio_, frustum_near_, frustum_far_);
 }
 
 glm::mat4 Camera::GetProjectionViewMatrix() const

@@ -28,10 +28,9 @@ public:
 
     void Render(Camera &camera, Player &player, GameWorld &world);
 
-    void ProcessFramebuffer(GLFWwindow *window, int width,
-                            int height);
-    void ProcessMouse(Camera &camera, Player &player, GLFWwindow *window,
-                      double x_pos, double y_pos);
+    void ProcessFramebuffer(GLFWwindow *window, int width, int height);
+    void
+    ProcessMouse(Camera &camera, Player &player, GLFWwindow *window, double x_pos, double y_pos);
 
 private:
     Window &window_;

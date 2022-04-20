@@ -1,8 +1,7 @@
 #include "Skybox.h"
 
-Skybox::Skybox(const std::string _directory,
-               const SKYBFORMATenum _format) : directory_(_directory),
-                                               format_(_format)
+Skybox::Skybox(const std::string _directory, const SKYBFORMATenum _format)
+    : directory_(_directory), format_(_format)
 {
     std::string file_format;
     if (format_ == SKYBFORMATenum::JPG)
@@ -14,13 +13,12 @@ Skybox::Skybox(const std::string _directory,
         file_format = ".png";
     }
 
-    std::vector<std::string> files{
-        directory_ + "right" + file_format,
-        directory_ + "left" + file_format,
-        directory_ + "top" + file_format,
-        directory_ + "bottom" + file_format,
-        directory_ + "front" + file_format,
-        directory_ + "back" + file_format};
+    std::vector<std::string> files{directory_ + "right" + file_format,
+                                   directory_ + "left" + file_format,
+                                   directory_ + "top" + file_format,
+                                   directory_ + "bottom" + file_format,
+                                   directory_ + "front" + file_format,
+                                   directory_ + "back" + file_format};
 
     loadCubemap(files);
     setup();
@@ -69,9 +67,15 @@ void Skybox::loadCubemap(const std::vector<std::string> _files)
                 format = GL_RGBA;
             }
 
-            glTexImage2D(
-                GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0,
+                         format,
+                         width,
+                         height,
+                         0,
+                         format,
+                         GL_UNSIGNED_BYTE,
+                         data);
 
             stbi_image_free(data);
         }
@@ -96,48 +100,23 @@ void Skybox::loadCubemap(const std::vector<std::string> _files)
 
 void Skybox::setup()
 {
-    float skyboxVertices[] = {
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
+    float skyboxVertices[] = {-1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
+                              1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
 
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f,
+                              -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f,
+                              -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,
 
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
+                              1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,
+                              1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f,
 
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f,
+                              -1.0f, -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,  1.0f,
+                              1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,
 
-        -1.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f,
+                              -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,
+                              1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f,
 
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f, 1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f};
+                              -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f,
+                              1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f};
 
     glGenVertexArrays(1, &vao_);
     glGenBuffers(1, &vbo_);

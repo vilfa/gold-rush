@@ -13,8 +13,7 @@
 class Skybox
 {
 public:
-    Skybox(const std::string _directory,
-           const SKYBFORMATenum _format);
+    Skybox(const std::string _directory, const SKYBFORMATenum _format);
 
     void Draw(Shader &shader);
 

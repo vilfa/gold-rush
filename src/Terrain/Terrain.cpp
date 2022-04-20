@@ -1,7 +1,7 @@
 #include "Terrain.h"
 
-Terrain::Terrain(const uint32_t _grid_size, const float _height_scale) : _grid_size_(_grid_size),
-                                                                         _height_scale_(_height_scale)
+Terrain::Terrain(const uint32_t _grid_size, const float _height_scale)
+    : _grid_size_(_grid_size), _height_scale_(_height_scale)
 {
     TerrainGenerator tg(_grid_size_);
     grid_ = tg.GetGrid();
@@ -22,52 +22,26 @@ void Terrain::Draw(Shader &shader)
     glBindVertexArray(0);
 }
 
-std::shared_ptr<std::vector<glm::vec3>> Terrain::GetGrid()
-{
-    return grid_;
-}
+std::shared_ptr<std::vector<glm::vec3>> Terrain::GetGrid() { return grid_; }
 
-float Terrain::GetHalfDimension()
-{
-    return (float)_grid_size_;
-}
+float Terrain::GetHalfDimension() { return (float)_grid_size_; }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree1ModelMats()
-{
-    return tree_1_model_mats_;
-}
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree1ModelMats() { return tree_1_model_mats_; }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree2ModelMats()
-{
-    return tree_2_model_mats_;
-}
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree2ModelMats() { return tree_2_model_mats_; }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree3ModelMats()
-{
-    return tree_3_model_mats_;
-}
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetTree3ModelMats() { return tree_3_model_mats_; }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetBushModelMats()
-{
-    return bush_model_mats_;
-}
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetBushModelMats() { return bush_model_mats_; }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetRockModelMats()
-{
-    return rock_model_mats_;
-}
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetRockModelMats() { return rock_model_mats_; }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetGrassModelMats()
-{
-    return grass_model_mats_;
-}
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetGrassModelMats() { return grass_model_mats_; }
 
-std::shared_ptr<std::vector<glm::mat4>> Terrain::GetHazelnutMats()
-{
-    return hazelnut_model_mats_;
-}
+std::shared_ptr<std::vector<glm::mat4>> Terrain::GetHazelnutMats() { return hazelnut_model_mats_; }
 
-void Terrain::setupVertices(std::vector<glm::vec3> &positions, std::vector<glm::vec3> &normals,
+void Terrain::setupVertices(std::vector<glm::vec3> &positions,
+                            std::vector<glm::vec3> &normals,
                             std::vector<glm::vec3> &colors)
 {
     glm::mat4 mod_p_transform = getPositionTransform();
@@ -83,10 +57,13 @@ void Terrain::setupVertices(std::vector<glm::vec3> &positions, std::vector<glm::
     }
 }
 
-void Terrain::setupVegetation(std::vector<glm::vec3> &trees, std::vector<glm::vec3> &bushes,
-                              std::vector<glm::vec3> &rocks, std::vector<glm::vec3> &grass)
+void Terrain::setupVegetation(std::vector<glm::vec3> &trees,
+                              std::vector<glm::vec3> &bushes,
+                              std::vector<glm::vec3> &rocks,
+                              std::vector<glm::vec3> &grass)
 {
-    std::vector<glm::mat4> tree_1_mod_mats, tree_2_mod_mats, tree_3_mod_mats, bush_mod_mats, rock_mod_mats, grass_mod_mats;
+    std::vector<glm::mat4> tree_1_mod_mats, tree_2_mod_mats, tree_3_mod_mats, bush_mod_mats,
+        rock_mod_mats, grass_mod_mats;
     glm::mat4 mod_transform = getPositionTransform();
 
     for (std::size_t i = 0; i < trees.size(); i++)
@@ -154,32 +131,32 @@ void Terrain::setupTerrain()
     glBindVertexArray(vao_);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Terrain::Vertex) * vertices_.size(), vertices_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 sizeof(Terrain::Vertex) * vertices_.size(),
+                 vertices_.data(),
+                 GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        0,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Terrain::Vertex),
-        (const void *)offsetof(Terrain::Vertex, Terrain::Vertex::position));
+    glVertexAttribPointer(0,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Terrain::Vertex),
+                          (const void *)(offsetof(Terrain::Vertex, Terrain::Vertex::position)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(
-        1,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Terrain::Vertex),
-        (const void *)offsetof(Terrain::Vertex, Terrain::Vertex::normal));
+    glVertexAttribPointer(1,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Terrain::Vertex),
+                          (const void *)(offsetof(Terrain::Vertex, Terrain::Vertex::normal)));
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(
-        2,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Terrain::Vertex),
-        (const void *)offsetof(Terrain::Vertex, Terrain::Vertex::color));
+    glVertexAttribPointer(2,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Terrain::Vertex),
+                          (const void *)(offsetof(Terrain::Vertex, Terrain::Vertex::color)));
 
     glBindVertexArray(0);
 }
@@ -187,8 +164,11 @@ void Terrain::setupTerrain()
 glm::mat4 Terrain::getPositionTransform()
 {
     glm::mat4 mod_position = glm::mat4(1.0f);
-    mod_position = glm::translate(mod_position, glm::vec3(-((float)_grid_size_), 0.0f, -((float)_grid_size_)));
-    mod_position = glm::scale(mod_position, glm::vec3((float)(_grid_size_ * 2), _height_scale_, (float)(_grid_size_ * 2)));
+    mod_position =
+        glm::translate(mod_position, glm::vec3(-((float)_grid_size_), 0.0f, -((float)_grid_size_)));
+    mod_position =
+        glm::scale(mod_position,
+                   glm::vec3((float)(_grid_size_ * 2), _height_scale_, (float)(_grid_size_ * 2)));
     return mod_position;
 }
 

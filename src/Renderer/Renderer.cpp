@@ -1,11 +1,8 @@
 #include "Renderer/Renderer.h"
 
-Renderer::Renderer(Window &window) : window_(window),
-                                     delta_time_(0.0),
-                                     last_frame_(0.0),
-                                     first_mouse_(true),
-                                     last_x_((float)window.GetWidth() / 2.0f),
-                                     last_y_((float)window.GetHeight() / 2.0f)
+Renderer::Renderer(Window &window)
+    : window_(window), delta_time_(0.0), last_frame_(0.0), first_mouse_(true),
+      last_x_((float)window.GetWidth() / 2.0f), last_y_((float)window.GetHeight() / 2.0f)
 {
     setupInput(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     setupGlobalEnables();
@@ -33,7 +30,7 @@ void Renderer::Render(Camera &camera, Player &player, GameWorld &world)
         world.RemoveCollectibles(world.quad_tree_.Query(player.GetBoundingBox()), player);
         player.UpdateTimeRemaining(delta_time_);
 
-        // ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
@@ -48,16 +45,16 @@ void Renderer::Render(Camera &camera, Player &player, GameWorld &world)
         ubo_light.Data(world.GetSunPosition(), 0);
 
         ImGui::Begin("Score", 0, imgui_flags);
-        ImGui::Text(player.GetScorePretty().c_str());
-        ImGui::Text(player.GetTimeRemainingPretty().c_str());
+        ImGui::Text("%s", player.GetScorePretty().c_str());
+        ImGui::Text("%s", player.GetTimeRemainingPretty().c_str());
         ImGui::SetWindowPos(ImVec2(0.f, 0.f));
         ImGui::SetWindowSize(ImVec2(200.f, 75.f));
         ImGui::End();
 
         ImGui::Begin("Stats", 0, imgui_flags);
         ImGui::SetWindowFontScale(0.5f);
-        ImGui::Text(getFps().c_str());
-        ImGui::Text(getFrametime().c_str());
+        ImGui::Text("%s", getFps().c_str());
+        ImGui::Text("%s", getFrametime().c_str());
         ImGui::SetWindowPos(ImVec2(window_.GetWidth() - 200.f, window_.GetHeight() - 75.f));
         ImGui::SetWindowSize(ImVec2(200.f, 75.f));
         ImGui::End();
@@ -65,28 +62,30 @@ void Renderer::Render(Camera &camera, Player &player, GameWorld &world)
 
         world.Draw();
         player.Draw();
-        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window_.GetWindow());
         glfwPollEvents();
     }
 
-    // ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
     glfwTerminate();
 }
 
-void Renderer::ProcessFramebuffer(GLFWwindow *window, int width,
-                                  int height)
+void Renderer::ProcessFramebuffer(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
     window_.SetWidth(width);
     window_.SetHeight(height);
 }
 
-void Renderer::ProcessMouse(Camera &camera, Player &player, GLFWwindow *window,
-                            double x_pos, double y_pos)
+void Renderer::ProcessMouse(Camera &camera,
+                            Player &player,
+                            GLFWwindow *window,
+                            double x_pos,
+                            double y_pos)
 {
     if (first_mouse_)
     {
@@ -177,19 +176,11 @@ void Renderer::processFrametime()
     last_frame_ = now;
 }
 
-void Renderer::clearFramebuffers()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
+void Renderer::clearFramebuffers() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
-std::string Renderer::getFps()
-{
-    // return "FPS:" + std::to_string(1 / delta_time_);
-    return "FPS:" + std::to_string(ImGui::GetIO().Framerate);
-}
+std::string Renderer::getFps() { return "FPS:" + std::to_string(ImGui::GetIO().Framerate); }
 
 std::string Renderer::getFrametime()
 {
-    // return "FT:" + std::to_string(delta_time_ * 1000.0);
     return "FT:" + std::to_string(ImGui::GetIO().DeltaTime * 1000.0);
 }

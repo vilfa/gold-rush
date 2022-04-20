@@ -13,17 +13,18 @@ const std::string Mesh::_COLOR_EMISSIVE_NAME_ = "color_emissive_";
 Mesh::Mesh(std::vector<Mesh::Vertex> &vertices,
            std::vector<uint32_t> &indices,
            std::vector<Mesh::Texture> &textures,
-           bool embedded) : vertices_(vertices),
-                            indices_(indices),
-                            textures_(textures),
-                            embedded_(embedded)
+           bool embedded)
+    : vertices_(vertices), indices_(indices), textures_(textures), embedded_(embedded)
 {
     setupMesh();
 }
 
-uint32_t Mesh::LoadTextureFromFile(const std::string _path, const std::string _directory,
-                                   bool gamma, bool flip_vertical,
-                                   GLenum texture_wrapping, GLenum mipmap_filtering_min,
+uint32_t Mesh::LoadTextureFromFile(const std::string _path,
+                                   const std::string _directory,
+                                   bool gamma,
+                                   bool flip_vertical,
+                                   GLenum texture_wrapping,
+                                   GLenum mipmap_filtering_min,
                                    GLenum mipmap_filtering_max)
 {
     const std::string _full_path = _directory + "/" + _path;
@@ -114,23 +115,37 @@ void Mesh::DrawInstanced(Shader &shader, const std::size_t _instance_size)
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * size_of_vec4, (const void *)0);
     glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * size_of_vec4, (const void *)(1 * size_of_vec4));
+    glVertexAttribPointer(4,
+                          4,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          4 * size_of_vec4,
+                          (const void *)(1 * size_of_vec4));
     glEnableVertexAttribArray(5);
-    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * size_of_vec4, (const void *)(2 * size_of_vec4));
+    glVertexAttribPointer(5,
+                          4,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          4 * size_of_vec4,
+                          (const void *)(2 * size_of_vec4));
     glEnableVertexAttribArray(6);
-    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * size_of_vec4, (const void *)(3 * size_of_vec4));
+    glVertexAttribPointer(6,
+                          4,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          4 * size_of_vec4,
+                          (const void *)(3 * size_of_vec4));
 
     glVertexAttribDivisor(3, 1);
     glVertexAttribDivisor(4, 1);
     glVertexAttribDivisor(5, 1);
     glVertexAttribDivisor(6, 1);
 
-    glDrawElementsInstanced(
-        GL_TRIANGLES,
-        (GLsizei)indices_.size(),
-        GL_UNSIGNED_INT,
-        (const void *)0,
-        (GLsizei)_instance_size);
+    glDrawElementsInstanced(GL_TRIANGLES,
+                            (GLsizei)indices_.size(),
+                            GL_UNSIGNED_INT,
+                            (const void *)0,
+                            (GLsizei)_instance_size);
 
     glBindVertexArray(0);
 
@@ -151,42 +166,45 @@ void Mesh::setupMesh()
     // Also: prefer container.data() over &container[0]
     //
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Mesh::Vertex) * vertices_.size(), vertices_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 sizeof(Mesh::Vertex) * vertices_.size(),
+                 vertices_.data(),
+                 GL_STATIC_DRAW);
 
     // INDICES DATA
     // The indices of vertices in a mesh.
     //
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 sizeof(uint32_t) * indices_.size(),
+                 indices_.data(),
+                 GL_STATIC_DRAW);
 
     // VERTEX ATTRIBUTES
     //
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        0,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Mesh::Vertex),
-        (const void *)offsetof(Mesh::Vertex, Mesh::Vertex::position));
+    glVertexAttribPointer(0,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Mesh::Vertex),
+                          (const void *)offsetof(Mesh::Vertex, Mesh::Vertex::position));
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(
-        1,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Mesh::Vertex),
-        (const void *)offsetof(Mesh::Vertex, Mesh::Vertex::normal));
+    glVertexAttribPointer(1,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Mesh::Vertex),
+                          (const void *)offsetof(Mesh::Vertex, Mesh::Vertex::normal));
 
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(
-        2,
-        2,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Mesh::Vertex),
-        (const void *)offsetof(Mesh::Vertex, Mesh::Vertex::texture_coords));
+    glVertexAttribPointer(2,
+                          2,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Mesh::Vertex),
+                          (const void *)offsetof(Mesh::Vertex, Mesh::Vertex::texture_coords));
 
     glBindVertexArray(0);
 }
@@ -265,7 +283,8 @@ void Mesh::setupTexturesEmbedded(Shader &shader)
         }
         catch (const std::out_of_range &e)
         {
-            std::cout << "ERROR::MESH::SETUP_TEXTURES_EMBEDDED::OUT_OF_RANGE_EXCEPTION" << std::endl;
+            std::cout << "ERROR::MESH::SETUP_TEXTURES_EMBEDDED::OUT_OF_RANGE_EXCEPTION"
+                      << std::endl;
             std::cout << e.what() << std::endl;
         }
 

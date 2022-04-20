@@ -54,10 +54,13 @@ private:
     std::shared_ptr<std::vector<glm::mat4>> grass_model_mats_;
     std::shared_ptr<std::vector<glm::mat4>> hazelnut_model_mats_;
 
-    void setupVertices(std::vector<glm::vec3> &positions, std::vector<glm::vec3> &normals,
+    void setupVertices(std::vector<glm::vec3> &positions,
+                       std::vector<glm::vec3> &normals,
                        std::vector<glm::vec3> &colors);
-    void setupVegetation(std::vector<glm::vec3> &trees, std::vector<glm::vec3> &bushes,
-                         std::vector<glm::vec3> &rocks, std::vector<glm::vec3> &grass);
+    void setupVegetation(std::vector<glm::vec3> &trees,
+                         std::vector<glm::vec3> &bushes,
+                         std::vector<glm::vec3> &rocks,
+                         std::vector<glm::vec3> &grass);
     void setupCollectibles(std::vector<glm::vec3> &hazelnuts);
     void setupTerrain();
     glm::mat4 getPositionTransform();
